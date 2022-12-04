@@ -155,10 +155,10 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     controller: passcnt,
                     keyboardType: TextInputType.text,
                     obscureText: true,
-                    decoration: const InputDecoration(
-                        contentPadding: EdgeInsets.all(8),
-                        labelText: 'Şifre',
-                        border: OutlineInputBorder()),
+                    decoration:  InputDecoration(
+                        contentPadding: const EdgeInsets.all(8),
+                        labelText: 'password'.tr(),
+                        border: const OutlineInputBorder()),
                   ),
                   const SizedBox(
                     height: 20,

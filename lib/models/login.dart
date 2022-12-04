@@ -18,7 +18,8 @@ Future<Login> login(String username, String password) async {
     "secretkey": secretkey
   });
   if (response.statusCode == 200) {
-    var res = json.decode(response.body);
+    var dddata = response.body.toString().split("|");
+    var res = json.decode(dddata[0]);
     var dd = md5.convert(utf8.encode(secretkey)).toString();
      bool isadmin = false;
     if (res.toString() == dd) {
