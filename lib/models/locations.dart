@@ -60,6 +60,19 @@ Future<String> calismakaydet(String id) async {
   }
 }
 
+Future<String> calismabitir(String id) async {
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/calismabitir.php');
+  final response = await http.post(url, body: <String, String>{
+    "apid": id,
+  });
+  if (response.statusCode == 200) {
+    var res = json.decode(response.body);
+    return res.toString().replaceAll(" ", "");
+  } else {
+    throw Exception('Failed');
+  }
+}
+
 class Locations {
   String id;
   double? lat;
@@ -69,17 +82,18 @@ class Locations {
   bool mylocation;
   String kullanicisayisi;
   String? aciklama;
+  bool baslatildi;
 
-  Locations({
-    required this.id,
-    this.lat,
-    this.lng,
-    required this.antenAdi,
-    required this.aktifmi,
-    required this.mylocation,
-    required this.kullanicisayisi,
-    this.aciklama,
-  });
+  Locations(
+      {required this.id,
+      this.lat,
+      this.lng,
+      required this.antenAdi,
+      required this.aktifmi,
+      required this.mylocation,
+      required this.kullanicisayisi,
+      this.aciklama,
+      required this.baslatildi});
 
   Locations.copyWith(Locations item, String desc)
       : id = item.id,
@@ -89,7 +103,19 @@ class Locations {
         aktifmi = item.aktifmi,
         mylocation = item.mylocation,
         kullanicisayisi = item.kullanicisayisi,
-        aciklama = desc;
+        aciklama = desc,
+        baslatildi = item.baslatildi;
+
+  Locations.copyWithwork(Locations item, bool baslat)
+      : id = item.id,
+        lng = item.lat,
+        lat = item.lng,
+        antenAdi = item.antenAdi,
+        aktifmi = item.aktifmi,
+        mylocation = item.mylocation,
+        kullanicisayisi = item.kullanicisayisi,
+        aciklama = item.aciklama,
+        baslatildi = baslat;
 
   factory Locations.fromJson(Map json) {
     return Locations(
@@ -101,6 +127,7 @@ class Locations {
       mylocation: false,
       kullanicisayisi: json["OnlineKullanici"],
       aciklama: json["Aciklama"],
+      baslatildi: json["calisma"] != null ? true : false,
     );
   }
 
@@ -112,6 +139,7 @@ class Locations {
       mylocation: false,
       kullanicisayisi: json["OnlineKullanici"],
       aciklama: json["Aciklama"],
+      baslatildi: json["calisma"] != null ? true : false,
     );
   }
 }

@@ -18,6 +18,7 @@ class _VideoPageState extends State<VideoPage> {
   void initState() {
     super.initState();
     flickManager = FlickManager(
+      
       videoPlayerController:
           VideoPlayerController.asset("assets/video.mp4"),
     );
@@ -53,6 +54,13 @@ class _VideoPageState extends State<VideoPage> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: FlickVideoPlayer(
+          flickVideoWithControls: FlickVideoWithControls(
+                videoFit: BoxFit.fitHeight,
+                controls: FlickPortraitControls(
+                  progressBarSettings:
+                      FlickProgressBarSettings(playedColor: Colors.green),
+                ),
+              ),
           flickManager: flickManager
         ),
       ),

@@ -9,11 +9,13 @@ class InfoWindowScreen extends StatelessWidget {
   final Locations location;
   final bool islogin;
   final bool isadmin;
+  final Function callback;
   const InfoWindowScreen(
       {Key? key,
       required this.location,
       required this.islogin,
-      required this.isadmin})
+      required this.isadmin,
+      required this.callback})
       : super(key: key);
 
   @override
@@ -86,13 +88,35 @@ class InfoWindowScreen extends StatelessWidget {
                     isadmin
                         ? SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () => calismakaydet(location.id).whenComplete(() => Toast.show("succesful".tr(),
-                  duration: Toast.lengthShort, gravity: Toast.bottom)),
-                              style:
-                                  ElevatedButton.styleFrom(primary: Colors.red),
-                              child: Text("start".tr()),
-                            ),
+                            child: location.baslatildi
+                                ? ElevatedButton(
+                                    onPressed: () =>
+                                        calismabitir(location.id).then((val) {
+                                      var nloc = Locations.copyWithwork(
+                                          location, false);
+                                      callback(nloc);
+                                      Toast.show("succesful".tr(),
+                                          duration: Toast.lengthShort,
+                                          gravity: Toast.bottom);
+                                    }),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.orange),
+                                    child: Text("stop".tr()),
+                                  )
+                                : ElevatedButton(
+                                    onPressed: () =>
+                                        calismakaydet(location.id).then((val) {
+                                      var nloc = Locations.copyWithwork(
+                                          location, true);
+                                      callback(nloc);
+                                      Toast.show("succesful".tr(),
+                                          duration: Toast.lengthShort,
+                                          gravity: Toast.bottom);
+                                    }),
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.red),
+                                    child: Text("start".tr()),
+                                  ),
                           )
                         : const Center()
                   ],

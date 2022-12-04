@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:particles_flutter/particles_flutter.dart';
 import 'package:wizmir/mappage.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key, this.guid, required this.isadmin}) : super(key: key);
+  const SplashScreen({Key? key, this.guid, required this.isadmin})
+      : super(key: key);
   final String? guid;
   final bool isadmin;
 
@@ -14,14 +16,18 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 3), () {
       setState(() {
-        Navigator.pushReplacement(context,
-            PageTransition(MapPage(title: 'WizmirNET', guid: widget.guid,isadmin: widget.isadmin,)));
+        Navigator.pushReplacement(
+            context,
+            PageTransition(MapPage(
+              title: 'WizmirNET',
+              guid: widget.guid,
+              isadmin: widget.isadmin,
+            )));
       });
     });
   }
@@ -34,21 +40,42 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Align(
-            alignment:Alignment.center,
-            child: SvgPicture.asset("assets/images/wizmirnet_icon2.svg",width: 200,),
-          ),
-          Align(
-            alignment:Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom:38.0),
-              child: SvgPicture.asset("assets/images/ibblogo_tuncbey.svg",width: 200,),
+      body: Container(
+        // decoration: const BoxDecoration(
+        //   image: DecorationImage(
+        //     image: ,
+        //     fit: BoxFit.cover,
+        //     opacity: 0.5
+        //   ),
+        // ),
+        child: Stack(
+          children: [
+            SvgPicture.asset("assets/background.svg"),
+            // Opacity(
+            //     opacity: 0.3,
+            //     child: Image.asset(
+            //       "assets/images/background.jpg",
+            //       height: MediaQuery.of(context).size.height,
+            //     )),
+            Align(
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                "assets/images/wizmirnet_icon2.svg",
+                width: 200,
+              ),
             ),
-          ),
-        ],
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 38.0),
+                child: SvgPicture.asset(
+                  "assets/images/ibblogo_tuncbey.svg",
+                  width: 200,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
