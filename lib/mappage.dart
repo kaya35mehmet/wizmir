@@ -5,6 +5,7 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -13,7 +14,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
 import 'package:video_player/video_player.dart';
-import 'package:wifi_scan/wifi_scan.dart';
 import 'package:wizmir/drawer.dart';
 import 'package:wizmir/functions.dart' as functions;
 import 'package:wizmir/mappage/infowindow.dart';
@@ -56,17 +56,18 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   bool floatingActionButtonvisible = true;
   bool nearlocationsvisible = true;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<WiFiAccessPoint> accessPoints = [];
-  StreamSubscription<List<WiFiAccessPoint>>? subscription;
+
   final PanelController _pc = PanelController();
   List<NearLocations> nlist = [];
   Marker? selectedMarker;
   bool userview = false;
+  late double infoviewheight;
 
   @override
   void initState() {
     setState(() {
       isadmin = widget.isadmin;
+      infoviewheight = widget.isadmin ? 180 : 140;
     });
     if (widget.guid != "0") {
       setState(() {
@@ -153,7 +154,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         aktifmi: true,
         mylocation: true,
         kullanicisayisi: '',
-        id: ''));
+        id: '',
+        baslatildi: false));
     // ignore: use_build_context_synchronously
     wifiAlert(
         locations?.where((element) => element.mylocation == false).toList(),
@@ -191,6 +193,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     location: location,
                     islogin: islogin!,
                     isadmin: isadmin!,
+                    callback: _callbackinfoview,
                   ),
                   LatLng(location.lat!, location.lng!),
                 );
@@ -214,10 +217,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 : !isadmin! && dist > 50
                     ? await functions.bitmapDescriptorFromSvgAsset(
                         context, "assets/icons/wifi6.svg", 40)
-                    : location.aktifmi
+                    : location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
-                            BitmapDescriptor.hueGreen)
-                        : BitmapDescriptor.defaultMarker),
+                            BitmapDescriptor.hueOrange)
+                        : location.aktifmi
+                            ? BitmapDescriptor.defaultMarkerWithHue(
+                                BitmapDescriptor.hueGreen)
+                            : BitmapDescriptor.defaultMarker),
       );
     }
     setState(() {
@@ -251,6 +257,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     setState(() {
       userview = val;
       isadmin = !val;
+      infoviewheight = isadmin! ? 180 : 140;
       generateMarkers(context, latLng).whenComplete(() => Toast.show(
           val ? "switchedtouserview".tr() : "switchedtoadminview".tr(),
           duration: Toast.lengthShort,
@@ -269,6 +276,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         setState(() {
           islogin = true;
           isadmin = value.isadmin!;
+          infoviewheight = isadmin! ? 180 : 140;
           generateMarkers(context, latLng);
         });
       }
@@ -284,6 +292,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     });
   }
 
+  void _callbackinfoview(Locations newlocation) {
+    _customInfoWindowController.hideInfoWindow!();
+    var dd = locations!.firstWhere((element) => element.id == newlocation.id);
+    dd.baslatildi = newlocation.baslatildi;
+    generateMarkers(context, latLng);
+  }
+
   Future<void> _callbackgotolocation(Locations location) async {
     final GoogleMapController controller = await _controller.future;
     CameraPosition nepPos = CameraPosition(
@@ -297,6 +312,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         location: location,
         islogin: islogin!,
         isadmin: isadmin!,
+        callback: _callbackinfoview,
       ),
       LatLng(location.lat!, location.lng!),
     );
@@ -323,87 +339,97 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     var id = await storage.read(key: "importantdays");
     getimportantdays().then(
       (value) async {
-        if (id != value.id) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => AlertDialog(
-              content: Stack(
-                children: [
-                  Container(
-                    child: value.turu == "resim"
-                        ? OctoImage(
-                            image: CachedNetworkImageProvider(value.url),
-                            placeholderBuilder: OctoPlaceholder.blurHash(
-                              'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+        if (id != value.id) {}
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Stack(
+              children: [
+                Container(
+                  child:
+                      // value.turu == "resim"
+                      //     ? OctoImage(
+                      //         image: CachedNetworkImageProvider(value.url),
+                      //         placeholderBuilder: OctoPlaceholder.blurHash(
+                      //           'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+                      //         ),
+                      //         errorBuilder: OctoError.icon(color: Colors.red),
+                      //         fit: BoxFit.cover,
+                      //       )
+                      //     :
+                      
+                      FlickVideoPlayer(
+                        preferredDeviceOrientation : const [DeviceOrientation.portraitDown],
+                          flickVideoWithControls: FlickVideoWithControls(
+                            videoFit: BoxFit.fitHeight,
+                            controls: FlickPortraitControls(
+                              progressBarSettings: FlickProgressBarSettings(
+                                  playedColor: Colors.green),
                             ),
-                            errorBuilder: OctoError.icon(color: Colors.red),
-                            fit: BoxFit.cover,
-                          )
-                        : FlickVideoPlayer(
-                            flickManager: flickManager(value.url)),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      onPressed: () async {
-                        await ImageDownloader.downloadImage(value.url)
-                            .whenComplete(
-                          () => Toast.show("succesful".tr(),
-                              duration: Toast.lengthLong,
-                              gravity: Toast.bottom),
-                        );
-                      },
-                      icon: const Icon(Icons.download),
-                    ),
-                  )
-                ],
-              ),
-              actions: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color.fromARGB(255, 35, 19, 145),
-                          Color.fromARGB(255, 56, 108, 228),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(5, 5),
-                          blurRadius: 10,
-                        )
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Center(
-                        child: Text(
-                          "close".tr(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
                           ),
+                          flickManager: flickManager(
+                              "https://yonetim.wizmir.net/OnemliGunResimler/pexels-dario-fernandez-ruz-9130068.mp4")),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: IconButton(
+                    onPressed: () async {
+                      await ImageDownloader.downloadImage(value.url)
+                          .whenComplete(
+                        () => Toast.show("succesful".tr(),
+                            duration: Toast.lengthLong, gravity: Toast.bottom),
+                      );
+                    },
+                    icon: const Icon(Icons.download),
+                  ),
+                )
+              ],
+            ),
+            actions: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color.fromARGB(255, 35, 19, 145),
+                        Color.fromARGB(255, 56, 108, 228),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(5, 5),
+                        blurRadius: 10,
+                      )
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Center(
+                      child: Text(
+                        "close".tr(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
-          );
-          await storage.write(key: "importantdays", value: value.id);
-        }
+              ),
+            ],
+          ),
+        );
+        await storage.write(key: "importantdays", value: value.id);
       },
     );
   }
@@ -528,7 +554,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     ),
                     CustomInfoWindow(
                       controller: _customInfoWindowController,
-                      height: widget.isadmin ? 180 : 140,
+                      height: infoviewheight,
                       width: MediaQuery.of(context).size.width * 0.7,
                       offset: 50,
                     ),
