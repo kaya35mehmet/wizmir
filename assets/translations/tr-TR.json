@@ -82,5 +82,10 @@
     "direction" : "Yol tarifi",
     "youareconnectedtothewizmirnetnetwork":"WizmirNET ağına bağlısnız!",
     "youarenotconnectedtothewizmirnetnetwork":"WizmirNET ağına bağlı değilsiniz!",
-    "pleasewait" : "Lütfen bekleyin"
+    "pleasewait" : "Lütfen bekleyin",
+    "pleasecompleteporfile" : "Lütfen profilinizi tamamlayınız!",
+    "starttest": "Başla",
+    "or" :"ya da",
+    "incare" : "Bakımda",
+    "maprenewed" : "Harita yenilendi"
 }

@@ -35,8 +35,12 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>to report problems from wifi locations</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs access to location when open.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>This app requires read and write access to the photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

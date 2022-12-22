@@ -10,20 +10,19 @@ Future<Login> login(String username, String password) async {
       .convert(utf8.encode(md5.convert(utf8.encode(username)).toString() +
           md5.convert(utf8.encode(passwordmd5)).toString()))
       .toString();
-
   var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/user.php');
   final response = await http.post(url, body: <String, String>{
     "username": username,
     "password": passwordmd5,
     "secretkey": secretkey
   });
+
   if (response.statusCode == 200) {
     var dddata = response.body.toString().split("|");
     var res = json.decode(dddata[0]);
     var dd = md5.convert(utf8.encode(secretkey)).toString();
-     bool isadmin = false;
+    bool isadmin = false;
     if (res.toString() == dd) {
-     
       var storage = const FlutterSecureStorage();
       await storage.write(key: "guid", value: res.toString());
       await storage.write(key: "number", value: username);
@@ -31,20 +30,27 @@ Future<Login> login(String username, String password) async {
       final response2 = await http.post(url2, body: <String, String>{
         "username": username,
       });
-     
+
       if (response2.statusCode == 200) {
         var res2 = json.decode(response2.body);
         if (res2 == 1) {
           isadmin = true;
           await storage.write(key: "isadmin", value: "1");
         } else {
-          isadmin=false;
+          isadmin = false;
           await storage.write(key: "isadmin", value: "0");
         }
       }
-      return Login(username: username, password: password, isadmin: isadmin, success: res );
+      return Login(
+          username: username,
+          password: password,
+          isadmin: isadmin,
+          success: res,
+          fullprofile: dddata[1].isNotEmpty && dddata[2].isNotEmpty ? true : false
+          );
     } else {
-      return Login(username: username, password: password, isadmin: false, success: "0");
+      return Login(
+          username: username, password: password, isadmin: false, success: "0");
     }
   } else {
     throw Exception('Failed');
@@ -129,8 +135,15 @@ class Login {
   String password;
   bool? isadmin;
   String? success;
+  bool? fullprofile;
 
-  Login({required this.username, required this.password, this.isadmin, this.success});
+  Login(
+      {required this.username,
+      required this.password,
+      this.isadmin,
+      this.success,
+      this.fullprofile,
+      });
 
   factory Login.fromJson(Map json) {
     return Login(
@@ -139,5 +152,3 @@ class Login {
     );
   }
 }
-
-

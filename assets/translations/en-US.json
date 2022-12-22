@@ -11,7 +11,7 @@
     "reportaproblem":"Report a problem",
     "speedtest":"Speed test",
     "locations":"Locations",
-    "version":"Veriyon",
+    "version":"Version",
     "menu":"Menu",
     "closestpoints":"5 closest points",
     "phonenumber" : "Phone number",
@@ -82,5 +82,10 @@
     "direction" : "Direction",
     "youareconnectedtothewizmirnetnetwork":"You are connected to the WizmirNET network",
     "youarenotconnectedtothewizmirnetnetwork":"You are not connected to the WizmirNET network",
-    "pleasewait" : "Please wait"
+    "pleasewait" : "Please wait",
+    "pleasecompleteporfile":"Please complete your profile",
+    "starttest" : "Start",
+    "or" :"or",
+    "incare":"In care",
+    "maprenewed" : "Map renewed"
 }

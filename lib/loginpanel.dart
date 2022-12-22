@@ -12,7 +12,8 @@ class LoginPanelPage extends StatefulWidget {
       {Key? key,
       required this.islogin,
       required this.callback,
-      required this.callbackislogin, required this.pc})
+      required this.callbackislogin,
+      required this.pc})
       : super(key: key);
   final bool islogin;
   final Function callback;
@@ -105,7 +106,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                               Text(
+                              Text(
                                 "login".tr(),
                                 style: const TextStyle(
                                     color: Colors.black,
@@ -155,7 +156,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     controller: passcnt,
                     keyboardType: TextInputType.text,
                     obscureText: true,
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(8),
                         labelText: 'password'.tr(),
                         border: const OutlineInputBorder()),
@@ -165,41 +166,19 @@ class _MyWidgetState extends State<LoginPanelPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                       widget.pc.close();
-                      //  setState(() {
-                      //       islogin = true;
-                      //       passcnt.text = "";
-                      //     });
-                           widget.callbackislogin(phonenumber!, passcnt.text);
-                      // login(phonenumber!, passcnt.text).then((value) {
-                      //   if (value == "0") {
-                      //     Toast.show("Yanlış kullanıcı adı yada şifre!",
-                      //         duration: Toast.lengthShort,
-                      //         gravity: Toast.bottom);
-                      //   } else {
-                      //     _pc.close();
-                      //     Toast.show("Giriş başarılı!",
-                      //         duration: Toast.lengthShort,
-                      //         gravity: Toast.bottom);
-                      //     widget.callbackislogin(true);
-                      //     setState(() {
-                      //       islogin = true;
-                      //       passcnt.text = "";
-                      //     });
-                      //   }
-                      // });
+                      widget.pc.close();
+                      widget.callbackislogin(phonenumber!, passcnt.text);
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50),
-                      // primary: const Color(0xFFf04136),
                     ),
-                    child:  Text("login".tr()),
+                    child: Text("login".tr()),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 40,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GestureDetector(
                         onTap: () => Navigator.push(
@@ -208,39 +187,34 @@ class _MyWidgetState extends State<LoginPanelPage> {
                               builder: (context) => const ForgotPasswordPage(),
                               fullscreenDialog: true),
                         ),
-                        child:  Text(
+                        child: Text(
                           "forgotpassword".tr(),
                           style: const TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  OpenContainer(
+                      OpenContainer(
                     transitionType: _transitionType,
                     openBuilder: (BuildContext context, VoidCallback _) {
                       return const RegisterPage(
                         includeMarkAsDoneButton: false,
                       );
                     },
-                    closedElevation: 6.0,
-                    // closedShape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.all(
-                    //     Radius.circular(_fabDimension / 2),
-                    //   ),
-                    // ),
-                    // closedColor: Theme.of(context).colorScheme.secondary,
+                    closedElevation: 0.0,
                     closedBuilder:
                         (BuildContext context, VoidCallback openContainer) {
-                      return  Padding(
+                      return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text("register".tr()),
                       );
                     },
                   ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  
                 ],
               ),
             ),

@@ -239,7 +239,7 @@ class _SpeedTestState extends State<SpeedTest> {
                                                     return;
                                                   await _testDownloadSpeed();
                                                 },
-                                      child: Text('start'.tr()),
+                                      child: Text('starttest'.tr()),
                                     ),
                                   ),
                                 ),

@@ -19,25 +19,35 @@ class NavigationDrawer extends StatelessWidget {
   final PanelController pc;
   final Function callback;
   final Function callbackuserview;
-  const NavigationDrawer(
-      {Key? key,
-      required this.islogin,
-      required this.pc,
-      required this.callback,
-      required this.isadmin,
-      required this.userview, 
-      required this.callbackuserview,
-      })
-      : super(key: key);
+  const NavigationDrawer({
+    Key? key,
+    required this.islogin,
+    required this.pc,
+    required this.callback,
+    required this.isadmin,
+    required this.userview,
+    required this.callbackuserview,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: Column(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment(0.8, 1),
+            colors: <Color>[
+              Color(0xFF00529c),
+              Color.fromARGB(255, 83, 165, 237),
+            ], 
+            tileMode: TileMode.mirror,
+          ),
+        ),
+        child: Column(
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Material(
@@ -48,7 +58,7 @@ class NavigationDrawer extends StatelessWidget {
                           bottom: 24),
                       color: Colors.white,
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: SvgPicture.asset(
                           "assets/images/wizmirnet_icon2.svg",
                           fit: BoxFit.contain,
@@ -58,13 +68,25 @@ class NavigationDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  child: Wrap(runSpacing: 2, children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(children: [
+                    const SizedBox(
+                      height: 10,
+                    ),
                     ListTile(
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
                       leading: Icon(
-                          islogin ? Icons.logout_sharp : Icons.login_sharp),
-                      title: Text(islogin ? "logout".tr() : "login".tr()),
+                        islogin ? Icons.logout_sharp : Icons.login_sharp,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                        islogin ? "logout".tr() : "login".tr(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                       onTap: () {
                         Scaffold.of(context).closeDrawer();
                         if (islogin) {
@@ -102,10 +124,23 @@ class NavigationDrawer extends StatelessWidget {
                         }
                       },
                     ),
+                    const Divider(
+                      color: Colors.white30,
+                    ),
                     islogin
                         ? ListTile(
-                            leading: const Icon(Icons.graphic_eq_rounded),
-                            title: Text("usagedetails".tr()),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.graphic_eq_rounded,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              "usagedetails".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             onTap: () {
                               Navigator.push(
                                   context,
@@ -115,9 +150,24 @@ class NavigationDrawer extends StatelessWidget {
                           )
                         : const Center(),
                     islogin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
+                    islogin
                         ? ListTile(
-                            leading: const Icon(Icons.password),
-                            title: Text("changepassword".tr()),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.password,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              "changepassword".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             onTap: () {
                               Scaffold.of(context).closeDrawer();
                               Navigator.push(
@@ -131,9 +181,24 @@ class NavigationDrawer extends StatelessWidget {
                             },
                           )
                         : const Center(),
+                    islogin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
                     ListTile(
-                      leading: const Icon(Icons.videocam),
-                      title:  Text("userguide".tr()),
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
+                      leading: const Icon(
+                        Icons.videocam,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                        "userguide".tr(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                       onTap: () {
                         Navigator.push(
                             context,
@@ -141,9 +206,22 @@ class NavigationDrawer extends StatelessWidget {
                                 builder: (context) => const VideoPage()));
                       },
                     ),
+                    const Divider(
+                      color: Colors.white30,
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.question_answer),
-                      title:  Text("faq".tr()),
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
+                      leading: const Icon(
+                        Icons.question_answer,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                        "faq".tr(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                       onTap: () {
                         Navigator.push(
                             context,
@@ -151,9 +229,22 @@ class NavigationDrawer extends StatelessWidget {
                                 builder: (context) => const FAQView()));
                       },
                     ),
+                    const Divider(
+                      color: Colors.white30,
+                    ),
                     ListTile(
-                      leading: const Icon(Icons.warning),
-                      title:  Text("reportaproblem".tr()),
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
+                      leading: const Icon(
+                        Icons.warning,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                        "reportaproblem".tr(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                       onTap: () {
                         Navigator.push(
                           context,
@@ -165,24 +256,52 @@ class NavigationDrawer extends StatelessWidget {
                         );
                       },
                     ),
+                    const Divider(
+                      color: Colors.white30,
+                    ),
                     isadmin
                         ? ListTile(
-                            leading: const Icon(Icons.speed),
-                            title:  Text("speedtest".tr()),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.speed,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              "speedtest".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>  SpeedTest(),
+                                  builder: (context) => const SpeedTest(),
                                 ),
                               );
                             },
                           )
                         : const Center(),
                     isadmin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
+                    isadmin
                         ? ListTile(
-                            leading: const Icon(Icons.location_on),
-                            title:  Text("locations".tr()),
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.location_on,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              "locations".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -193,32 +312,57 @@ class NavigationDrawer extends StatelessWidget {
                             },
                           )
                         : const Center(),
-                   isadmin || userview ? ListTile(
-                      leading: const Icon(Icons.person),
-                      title:  Text( userview ? "adminview".tr() : "userview".tr()),
-                      onTap: () {
-                        callbackuserview(!userview);
-                        Navigator.pop(context);
-                      },
-                    ):const Center(),
+                    isadmin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
+                    isadmin || userview
+                        ? ListTile(
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              userview ? "adminview".tr() : "userview".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            onTap: () {
+                              callbackuserview(!userview);
+                              Navigator.pop(context);
+                            },
+                          )
+                        : const Center(),
+                    isadmin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
                   ]),
                 ),
               ],
             ),
-          ),
-          Expanded(
-            child: Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: ListTile(
-                hoverColor: Colors.blue,
-                dense: true,
-                visualDensity: const VisualDensity(vertical: -4),
-                title:  Text('${'version'.tr()} 1.0.0'),
-                onTap: () {},
+            Expanded(
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: ListTile(
+                  hoverColor: Colors.blue,
+                  dense: true,
+                  visualDensity: const VisualDensity(vertical: -4),
+                  title: Text(
+                    '${'version'.tr()} 1.0.0',
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {},
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

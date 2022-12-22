@@ -27,9 +27,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text(
-          'Üye ol',
-          style: TextStyle(color: Colors.black),
+        title:  Text(
+          'register'.tr(),
+          style:const TextStyle(color: Colors.black),
         ),
         leading: IconButton(
           onPressed: () => Navigator.pop(context, true),
