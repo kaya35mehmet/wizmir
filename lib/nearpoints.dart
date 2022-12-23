@@ -2,6 +2,7 @@
 import 'package:animated_button/animated_button.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -40,19 +41,21 @@ class _MyWidgetState extends State<NearPointsPage> {
   @override
   Widget build(BuildContext context) {
     double _w = MediaQuery.of(context).size.width;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return SlidingUpPanel(
       onPanelOpened: () {
         setState(() {
-          arrow = const Icon(
-            Icons.arrow_downward,color: Colors.white,
+          arrow =  Icon(
+            Icons.arrow_downward,color: brightness == Brightness.light ? Colors.white : null,
           );
         });
         widget.callbackopen(false);
       },
       onPanelClosed: () {
         setState(() {
-          arrow = const Icon(
-            Icons.arrow_upward,color: Colors.white,
+          arrow =  Icon(
+            Icons.arrow_upward,color: brightness == Brightness.light ? Colors.white : null,
           );
         });
         widget.callback(true);
@@ -87,8 +90,8 @@ class _MyWidgetState extends State<NearPointsPage> {
                 children: [
                   Text(
                     "closestpoints".tr(),
-                    style: const TextStyle(
-                        color: Colors.white,
+                    style:  TextStyle(
+                        color: brightness == Brightness.light ? Colors.white : null,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Roboto'),
@@ -152,7 +155,7 @@ class _MyWidgetState extends State<NearPointsPage> {
           ),
           Expanded(
             child: Container(
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration:  BoxDecoration(color: brightness == Brightness.light ? Colors.white : null),
               padding: const EdgeInsets.all(10),
               height: MediaQuery.of(context).size.height * 0.4,
               child: AnimationLimiter(
@@ -176,7 +179,7 @@ class _MyWidgetState extends State<NearPointsPage> {
                             margin: const EdgeInsets.only(bottom: 10),
                             // height: _w / 4,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: brightness == Brightness.light ? Colors.white : Color(0xFF424242),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(10)),
                               boxShadow: [
@@ -195,7 +198,7 @@ class _MyWidgetState extends State<NearPointsPage> {
                               },
                               child: ListTile(
                                 title:
-                                    Text(widget.list[index].locations.antenAdi),
+                                    Text(widget.list[index].locations.antenAdi,),
                                 trailing: IconButton(
                                   onPressed: (() {
                                     functions.showmodalmaps(

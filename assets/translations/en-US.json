@@ -87,5 +87,6 @@
     "starttest" : "Start",
     "or" :"or",
     "incare":"In care",
-    "maprenewed" : "Map renewed"
+    "maprenewed" : "Map renewed",
+    "description" : "Description"
 }

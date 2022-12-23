@@ -58,6 +58,7 @@ class _MyAppState extends State<MyApp> {
       title: 'WizmirNET',
       darkTheme: ThemeData(
         brightness: Brightness.dark,
+        primaryColor: Colors.blue
       ),
       theme: ThemeData(
         brightness: Brightness.light,

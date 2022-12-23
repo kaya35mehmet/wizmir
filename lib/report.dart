@@ -4,6 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:toast/toast.dart';
@@ -29,12 +30,8 @@ class _ReportViewState extends State<ReportView> {
   final ImagePicker _picker = ImagePicker();
   String? phonenumber;
   TextEditingController cnt = TextEditingController();
+  TextEditingController desccnt = TextEditingController();
   String problem = "";
-  // final List<String> list = [
-  //   'Kayıt olamıyorum',
-  //   'SMS gelmedi',
-  //   'Giriş yapamıyorum'
-  // ];
 
   List<Problems> list = [];
   late Future<List<Problems>> datalist;
@@ -61,15 +58,18 @@ class _ReportViewState extends State<ReportView> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme: IconThemeData(
+          color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
         title: Text(
           "reportaproblem".tr(),
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(
+              color: brightness == Brightness.light ? Colors.black : null),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -78,7 +78,37 @@ class _ReportViewState extends State<ReportView> {
           },
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom:50.0),
+        child: FloatingActionButton(
+          backgroundColor:
+              brightness == Brightness.light ? Colors.white : Colors.blue,
+          child: Icon(
+            Icons.camera_alt,
+            size: 30,
+            color: brightness == Brightness.light ? Colors.blue : Colors.white ,
+          ),
+          onPressed: () async {
+            WidgetsFlutterBinding.ensureInitialized();
+            final cameras = await availableCameras();
+            final firstCamera = cameras.first;
+            // ignore: use_build_context_synchronously
+            Navigator.push(
+              context,
+              ScaleTransitions(
+                CameraPage(
+                  camera: firstCamera,
+                ),
+              ),
+            ).then((value) {
+              setState(() {
+                file = value;
+              });
+            });
+          },
+        ),
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -112,9 +142,11 @@ class _ReportViewState extends State<ReportView> {
                                     'whatsproblem'.tr(),
                                     style: const TextStyle(fontSize: 14),
                                   ),
-                                  icon: const Icon(
+                                  icon: Icon(
                                     Icons.arrow_drop_down,
-                                    color: Colors.black45,
+                                    color: brightness == Brightness.light
+                                        ? Colors.black45
+                                        : null,
                                   ),
                                   iconSize: 30,
                                   buttonHeight: 60,
@@ -149,6 +181,58 @@ class _ReportViewState extends State<ReportView> {
                                     selectedValue = value.toString();
                                   },
                                 ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30.0, right: 30),
+                                  child: Row(children: [
+                                    Expanded(
+                                      child: Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 10.0, right: 20.0),
+                                          child: Divider(
+                                            color:
+                                                brightness == Brightness.light
+                                                    ? Colors.black26
+                                                    : null,
+                                            height: 36,
+                                          )),
+                                    ),
+                                    Text(
+                                      "or".tr(),
+                                      style: TextStyle(
+                                          color: brightness == Brightness.light
+                                              ? Colors.black26
+                                              : null),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                          margin: const EdgeInsets.only(
+                                              left: 20.0, right: 10.0),
+                                          child: Divider(
+                                            color:
+                                                brightness == Brightness.light
+                                                    ? Colors.black26
+                                                    : null,
+                                            height: 36,
+                                          )),
+                                    ),
+                                  ]),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                TextField(
+                                  controller: desccnt,
+                                  decoration: InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    label: Text(
+                                      "description".tr(),
+                                    ),
+                                  ),
+                                ),
                                 const SizedBox(height: 30),
                                 !widget.islogin
                                     ? InternationalPhoneNumberInput(
@@ -171,8 +255,11 @@ class _ReportViewState extends State<ReportView> {
                                         errorMessage: "wrongnumber".tr(),
                                         autoValidateMode:
                                             AutovalidateMode.disabled,
-                                        selectorTextStyle: const TextStyle(
-                                            color: Colors.black),
+                                        selectorTextStyle: TextStyle(
+                                            color:
+                                                brightness == Brightness.light
+                                                    ? Colors.black
+                                                    : null),
                                         initialValue: number,
                                         textFieldController: cnt,
                                         formatInput: false,
@@ -213,7 +300,10 @@ class _ReportViewState extends State<ReportView> {
                                                       .size
                                                       .width *
                                                   1,
-                                              color: Colors.black12,
+                                              color:
+                                                  brightness == Brightness.light
+                                                      ? Colors.black12
+                                                      : null,
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
@@ -221,8 +311,11 @@ class _ReportViewState extends State<ReportView> {
                                                 children: [
                                                   Text(
                                                     "clicktouploadfile".tr(),
-                                                    style: const TextStyle(
-                                                        color: Colors.black26,
+                                                    style: TextStyle(
+                                                        color: brightness ==
+                                                                Brightness.light
+                                                            ? Colors.black26
+                                                            : null,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                     textAlign: TextAlign.center,
@@ -242,66 +335,76 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 30.0, right: 30),
-                                  child: Row(children: [
-                                    Expanded(
-                                      child: Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10.0, right: 20.0),
-                                          child: const Divider(
-                                            color: Colors.black26,
-                                            height: 36,
-                                          )),
-                                    ),
-                                    Text(
-                                      "or".tr(),
-                                      style: const TextStyle(
-                                          color: Colors.black26),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 20.0, right: 10.0),
-                                          child: const Divider(
-                                            color: Colors.black26,
-                                            height: 36,
-                                          )),
-                                    ),
-                                  ]),
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                OutlinedButton(
-                                  onPressed: () async {
-                                    WidgetsFlutterBinding.ensureInitialized();
-                                    final cameras = await availableCameras();
-                                    final firstCamera = cameras.first;
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.push(
-                                      context,
-                                      ScaleTransitions(
-                                        CameraPage(
-                                          camera: firstCamera,
-                                        ),
-                                      ),
-                                    ).then((value) {
-                                     setState(() {
-                                        file = value;
-                                     });
-                                    });
-                                  },
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: Icon(
-                                      Icons.camera_alt,
-                                      size: 30,
-                                      color: Colors.black54,
-                                    ),
-                                  ),
-                                )
+                                // Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       left: 30.0, right: 30),
+                                //   child: Row(children: [
+                                //     Expanded(
+                                //       child: Container(
+                                //           margin: const EdgeInsets.only(
+                                //               left: 10.0, right: 20.0),
+                                //           child: Divider(
+                                //             color:
+                                //                 brightness == Brightness.light
+                                //                     ? Colors.black26
+                                //                     : null,
+                                //             height: 36,
+                                //           )),
+                                //     ),
+                                //     Text(
+                                //       "or".tr(),
+                                //       style: TextStyle(
+                                //           color: brightness == Brightness.light
+                                //               ? Colors.black26
+                                //               : null),
+                                //     ),
+                                //     Expanded(
+                                //       child: Container(
+                                //           margin: const EdgeInsets.only(
+                                //               left: 20.0, right: 10.0),
+                                //           child: Divider(
+                                //             color:
+                                //                 brightness == Brightness.light
+                                //                     ? Colors.black26
+                                //                     : null,
+                                //             height: 36,
+                                //           )),
+                                //     ),
+                                //   ]),
+                                // ),
+                                // const SizedBox(
+                                //   height: 10,
+                                // ),
+                                // OutlinedButton(
+                                //   onPressed: () async {
+                                //     WidgetsFlutterBinding.ensureInitialized();
+                                //     final cameras = await availableCameras();
+                                //     final firstCamera = cameras.first;
+                                //     // ignore: use_build_context_synchronously
+                                //     Navigator.push(
+                                //       context,
+                                //       ScaleTransitions(
+                                //         CameraPage(
+                                //           camera: firstCamera,
+                                //         ),
+                                //       ),
+                                //     ).then((value) {
+                                //       setState(() {
+                                //         file = value;
+                                //       });
+                                //     });
+                                //   },
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.all(16.0),
+                                //     child: Icon(
+                                //       Icons.camera_alt,
+                                //       size: 30,
+                                //       color: brightness == Brightness.light
+                                //           ? Colors.black54
+                                //           : null,
+                                //     ),
+                                //   ),
+                                // )
                               ],
                             ),
                           ),

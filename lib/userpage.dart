@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:wizmir/models/userdetails.dart';
 import 'indicator.dart';
 import 'color_extensions.dart';
@@ -31,15 +32,16 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+       var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme:  IconThemeData(
+          color:brightness == Brightness.light ?  Colors.black : null,
         ),
         centerTitle: true,
         title: Text(
           "usagedetails".tr(),
-          style: const TextStyle(color: Colors.black),
+          style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null,),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -48,7 +50,7 @@ class _UserPageState extends State<UserPage> {
           },
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ?  Colors.white : null,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -62,7 +64,7 @@ class _UserPageState extends State<UserPage> {
                       AspectRatio(
                         aspectRatio: 1.5,
                         child: Card(
-                          color: Colors.white,
+                          color:  brightness == Brightness.light ?  Colors.white : null,
                           child: Column(
                             children: <Widget>[
                               const SizedBox(
@@ -108,7 +110,7 @@ class _UserPageState extends State<UserPage> {
                       AspectRatio(
                         aspectRatio: 1.3,
                         child: Card(
-                          color: Colors.white,
+                          color:brightness == Brightness.light ?  Colors.white : null,
                           child: Column(
                             children: <Widget>[
                               const SizedBox(
@@ -184,7 +186,7 @@ class _UserPageState extends State<UserPage> {
                       SizedBox(
                         width: double.infinity,
                         child: Card(
-                          color: Colors.white,
+                          color: brightness == Brightness.light ?  Colors.white : null,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(

@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:wizmir/forgotpassword.dart';
@@ -40,6 +41,8 @@ class _MyWidgetState extends State<LoginPanelPage> {
   @override
   Widget build(BuildContext context) {
     islogin = widget.islogin;
+
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return SlidingUpPanel(
       onPanelOpened: () {
         setState(() {
@@ -66,14 +69,20 @@ class _MyWidgetState extends State<LoginPanelPage> {
       ],
       controller: widget.pc,
       backdropColor: Colors.transparent,
-      color: Colors.transparent,
+      color: brightness == Brightness.light
+          ? Colors.transparent
+          : const Color(0xFF424242),
       minHeight: 0,
       maxHeight: MediaQuery.of(context).size.height * 0.5,
       panel: Column(
         children: [
           Expanded(
             child: Container(
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration: BoxDecoration(
+                color: brightness == Brightness.light
+                    ? Colors.white
+                    : const Color(0xFF424242),
+              ),
               padding: const EdgeInsets.all(10),
               height: MediaQuery.of(context).size.height * 0.2,
               child: Column(
@@ -95,9 +104,11 @@ class _MyWidgetState extends State<LoginPanelPage> {
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.4,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
+                        decoration: BoxDecoration(
+                          color: brightness == Brightness.light
+                              ? Colors.white
+                              : null,
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(10),
                           ),
                         ),
@@ -108,8 +119,10 @@ class _MyWidgetState extends State<LoginPanelPage> {
                             children: [
                               Text(
                                 "login".tr(),
-                                style: const TextStyle(
-                                    color: Colors.black,
+                                style: TextStyle(
+                                    color: brightness == Brightness.light
+                                        ? Colors.black
+                                        : null,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Roboto'),
@@ -141,7 +154,10 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     hintText: "phonenumber".tr(),
                     errorMessage: "wrongnumber".tr(),
                     autoValidateMode: AutovalidateMode.disabled,
-                    selectorTextStyle: const TextStyle(color: Colors.black),
+                    selectorTextStyle: TextStyle(
+                        color: brightness == Brightness.light
+                            ? Colors.black
+                            : null),
                     initialValue: number,
                     textFieldController: controller,
                     formatInput: false,
@@ -194,27 +210,28 @@ class _MyWidgetState extends State<LoginPanelPage> {
                         ),
                       ),
                       OpenContainer(
-                    transitionType: _transitionType,
-                    openBuilder: (BuildContext context, VoidCallback _) {
-                      return const RegisterPage(
-                        includeMarkAsDoneButton: false,
-                      );
-                    },
-                    closedElevation: 0.0,
-                    closedBuilder:
-                        (BuildContext context, VoidCallback openContainer) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("register".tr()),
-                      );
-                    },
-                  ),
+                        // openColor: brightness == Brightness.light ? Colors.white:Colors.black,
+                        closedColor: brightness == Brightness.light ? Colors.white:const Color(0xFF424242),
+                        transitionType: _transitionType,
+                        openBuilder: (BuildContext context, VoidCallback _) {
+                          return const RegisterPage(
+                            includeMarkAsDoneButton: false,
+                          );
+                        },
+                        closedElevation: 0.0,
+                        closedBuilder:
+                            (BuildContext context, VoidCallback openContainer) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("register".tr()),
+                          );
+                        },
+                      ),
                     ],
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  
                 ],
               ),
             ),

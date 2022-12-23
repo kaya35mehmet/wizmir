@@ -2,6 +2,7 @@ import 'package:animated_button/animated_button.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:toast/toast.dart';
 import 'package:wizmir/dd.dart';
 import 'package:wizmir/models/locations.dart';
@@ -24,10 +25,12 @@ class InfoWindowScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-         color: Colors.white,
+         color: brightness == Brightness.light ?  Colors.white : const Color(0xFF424242),
           border: Border.all(width: 1, color: Colors.black12),
           borderRadius: BorderRadius.circular(4)),
       child: Stack(
@@ -42,7 +45,7 @@ class InfoWindowScreen extends StatelessWidget {
               ):const Text(""),
               IconButton(onPressed: (){
                 controller.hideInfoWindow!();
-              }, icon: const Icon(Icons.cancel_outlined, color: Colors.black,)),
+              }, icon: Icon(Icons.cancel_outlined, color: brightness == Brightness.light ?  Colors.black : null,)),
             ],
           ),
           

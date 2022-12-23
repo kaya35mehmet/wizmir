@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:wizmir/addDescription.dart';
 import 'package:wizmir/models/locations.dart';
 
@@ -43,18 +44,20 @@ class _MyWidgetState extends State<Loc> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return DefaultTabController(
       initialIndex: 0,
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.black,
+          iconTheme:  IconThemeData(
+            color: brightness == Brightness.light ?  Colors.black : null,
           ),
           centerTitle: true,
           title:  Text(
             "locations".tr(),
-            style:const TextStyle(color: Colors.black),
+            style: TextStyle(color:brightness == Brightness.light ?  Colors.black : null),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -63,25 +66,25 @@ class _MyWidgetState extends State<Loc> {
             },
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: brightness == Brightness.light ?  Colors.white : null,
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
                 icon: Text(
                   "${'all'.tr()} ($all)",
-                  style: const TextStyle(color: Colors.black),
+                  style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null),
                 ),
               ),
               Tab(
                 icon: Text(
                   "${'active'.tr()} ($active)",
-                  style: const TextStyle(color: Colors.black),
+                  style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null),
                 ),
               ),
               Tab(
                 icon: Text(
                   "${'passive'.tr()} ($passive)",
-                  style: const TextStyle(color: Colors.black),
+                  style:  TextStyle(color:brightness == Brightness.light ?  Colors.black : null),
                 ),
               ),
             ],

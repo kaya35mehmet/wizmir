@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flick_video_player/flick_video_player.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPage extends StatefulWidget {
@@ -32,15 +33,17 @@ class _VideoPageState extends State<VideoPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Scaffold(
       appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.black,
+          iconTheme:  IconThemeData(
+            color: brightness == Brightness.light ? Colors.black : null,
           ),
           centerTitle: true,
           title:  Text(
             "userguide".tr(),
-            style: const TextStyle(color: Colors.black),
+            style:  TextStyle(color:brightness == Brightness.light ? Colors.black : null),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -49,7 +52,7 @@ class _VideoPageState extends State<VideoPage> {
             },
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
+          backgroundColor: brightness == Brightness.light ? Colors.white:null,
         ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

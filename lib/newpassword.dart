@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
@@ -12,7 +13,9 @@ import 'package:wizmir/transitions.dart';
 class NewPasswordPage extends StatefulWidget {
   final String phonenumber;
   final bool isadmin;
-  const NewPasswordPage({Key? key, required this.phonenumber, required this.isadmin}) : super(key: key);
+  const NewPasswordPage(
+      {Key? key, required this.phonenumber, required this.isadmin})
+      : super(key: key);
 
   @override
   State<NewPasswordPage> createState() => _NewPasswordPageState();
@@ -21,15 +24,18 @@ class NewPasswordPage extends StatefulWidget {
 class _NewPasswordPageState extends State<NewPasswordPage> {
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme: IconThemeData(
+          color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title:  Text(
+        title: Text(
           "newpassword".tr(),
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(
+              color: brightness == Brightness.light ? Colors.black : null),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -38,20 +44,27 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
           },
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
-      body:  Padding(
+      body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: SlideAnimationWidget(phonenumber: widget.phonenumber,isadmin: widget.isadmin,),
+        child: SlideAnimationWidget(
+          phonenumber: widget.phonenumber,
+          isadmin: widget.isadmin,
+        ),
       ),
     );
   }
 }
 
 class SlideAnimationWidget extends StatefulWidget {
-  const SlideAnimationWidget({Key? key, required this.phonenumber, required this.isadmin,}) : super(key: key);
-final String phonenumber;
-final bool isadmin;
+  const SlideAnimationWidget({
+    Key? key,
+    required this.phonenumber,
+    required this.isadmin,
+  }) : super(key: key);
+  final String phonenumber;
+  final bool isadmin;
   @override
   State<SlideAnimationWidget> createState() => _SlideAnimationWidgetState();
 }
@@ -80,22 +93,21 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   // }
 
   void _doSomething() async {
-   
     Timer(
       const Duration(milliseconds: 500),
       () {
         if (newpasscnt.text == renewpasscnt.text) {
-          
           newpassword(widget.phonenumber, newpasscnt.text).then((value) {
             Navigator.pushAndRemoveUntil(
                 context,
-                ScaleTransitions( MapPage(
+                ScaleTransitions(MapPage(
                   title: "WizmirNET",
                   guid: "0",
                   isadmin: widget.isadmin,
-                )),ModalRoute.withName('/'));
-                 Toast.show("theoperationissuccessful_pleaselogin".tr(),
-              duration: Toast.lengthShort, gravity: Toast.bottom);
+                )),
+                ModalRoute.withName('/'));
+            Toast.show("theoperationissuccessful_pleaselogin".tr(),
+                duration: Toast.lengthShort, gravity: Toast.bottom);
           });
         } else {
           Toast.show("passwordsdonotmatch_pleasetryagain".tr(),
@@ -109,6 +121,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return SingleChildScrollView(
       child: AnimationLimiter(
           child: AnimationConfiguration.staggeredList(
@@ -131,7 +145,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                   margin: EdgeInsets.only(bottom: w / 20),
                   // height: _w,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: brightness == Brightness.light ? Colors.white : null,
                     borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
@@ -155,9 +169,9 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                       const SizedBox(
                         height: 30,
                       ),
-                       Text(
+                      Text(
                         "phonenumber".tr(),
-                        style:const TextStyle(
+                        style: const TextStyle(
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -175,8 +189,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                       TextField(
                         controller: newpasscnt,
                         obscureText: true,
-                        decoration:  InputDecoration(
-                            border:const OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
                             label: Text("enteryournewpassword".tr())),
                       ),
                       const SizedBox(
@@ -185,8 +199,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                       TextField(
                         controller: renewpasscnt,
                         obscureText: true,
-                        decoration:  InputDecoration(
-                            border:const OutlineInputBorder(),
+                        decoration: InputDecoration(
+                            border: const OutlineInputBorder(),
                             label: Text("reenteryournewpassword".tr())),
                       ),
                       const SizedBox(
@@ -195,8 +209,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                       RoundedLoadingButton(
                         controller: _btnController,
                         onPressed: _doSomething,
-                        child:  Text('send'.tr(),
-                            style:const TextStyle(color: Colors.white)),
+                        child: Text('send'.tr(),
+                            style: const TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),

@@ -6,6 +6,7 @@ import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -50,8 +51,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   // BitmapDescriptor? myMarker;
   final CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
-  Widget icon = const Icon(Icons.location_on, color: Colors.blue);
-  Widget iconrefresh = const Icon(Icons.refresh, color: Colors.blue);
+ 
   bool? islogin;
   bool? isadmin;
   bool floatingActionButtonvisible = true;
@@ -490,6 +490,9 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+     Widget icon =  Icon(Icons.location_on, color: brightness == Brightness.light ? Colors.blue : Colors.white);
+  Widget iconrefresh =  Icon(Icons.refresh, color: brightness == Brightness.light ? Colors.blue : Colors.white);
     ToastContext().init(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -507,7 +510,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
-                  backgroundColor: Colors.white,
+                  backgroundColor: brightness ==   Brightness.light ? Colors.white : Colors.blue,
                   child: iconrefresh,
                   onPressed: () async {
                     setState(() {
@@ -517,7 +520,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       Toast.show("maprenewed".tr(),
                           duration: Toast.lengthLong, gravity: Toast.bottom);
                       iconrefresh =
-                          const Icon(Icons.refresh, color: Colors.blue);
+                           Icon(Icons.refresh, color: brightness ==   Brightness.light ? Colors.blue : Colors.white);
                     });
                   },
                 ),
@@ -525,13 +528,12 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   height: 8,
                 ),
                 FloatingActionButton(
-                  backgroundColor: Colors.white,
+                  backgroundColor: brightness ==   Brightness.light ? Colors.white : Colors.blue,
                   child: icon,
                   onPressed: () async {
                     setState(() {
                       icon = const CircularProgressIndicator();
                     });
-
                     final GoogleMapController controller =
                         await _controller.future;
                     getData().then((value) {
@@ -542,9 +544,9 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       controller.animateCamera(
                           CameraUpdate.newCameraPosition(nepPos));
                       setState(() {
-                        icon = const Icon(
+                        icon =  Icon(
                           Icons.location_on,
-                          color: Colors.blue,
+                          color: brightness == Brightness.light ? Colors.blue : Colors.white,
                         );
                       });
                     });
@@ -556,10 +558,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: const TextStyle(color: Colors.black),
+          style:  TextStyle(color: brightness == Brightness.light  ? Colors.black : null),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
         elevation: 0,
         leading: IconButton(
             onPressed: () {
@@ -568,7 +570,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             },
             icon: Text(
               "menu".tr(),
-              style: const TextStyle(color: Colors.black),
+              style:  TextStyle(color: brightness == Brightness.light ? Colors.black : null),
             )),
       ),
       body: Center(

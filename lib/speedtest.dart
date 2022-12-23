@@ -2,6 +2,7 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:speed_test_dart/classes/classes.dart';
 import 'package:speed_test_dart/speed_test_dart.dart';
 import 'package:wizmir/models/speedtest.dart';
@@ -85,18 +86,19 @@ class _SpeedTestState extends State<SpeedTest> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return DefaultTabController(
       initialIndex: 0,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.black,
+          iconTheme:  IconThemeData(
+            color: brightness == Brightness.light ? Colors.black : null,
           ),
           centerTitle: true,
           title: Text(
             "speedtest".tr(),
-            style: const TextStyle(color: Colors.black),
+            style:  TextStyle(color:brightness == Brightness.light ? Colors.black : null),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -105,19 +107,19 @@ class _SpeedTestState extends State<SpeedTest> {
             },
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
-          bottom: const TabBar(
+          backgroundColor: brightness == Brightness.light ? Colors.white : null,
+          bottom:  TabBar(
             tabs: <Widget>[
               Tab(
                 icon: Text(
                   "WizmirNET",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
               Tab(
                 icon: Text(
                   "GSM",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
             ],

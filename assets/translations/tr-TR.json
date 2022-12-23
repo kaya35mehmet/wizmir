@@ -87,5 +87,6 @@
     "starttest": "Başla",
     "or" :"ya da",
     "incare" : "Bakımda",
-    "maprenewed" : "Harita yenilendi"
+    "maprenewed" : "Harita yenilendi",
+    "description" : "Açıklama"
 }

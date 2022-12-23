@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -31,10 +32,12 @@ class NavigationDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Drawer(
       child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
+        decoration:  BoxDecoration(
+          color: brightness == Brightness.light ? Colors.black : null,
+          gradient: brightness == Brightness.light ? const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment(0.8, 1),
             colors: <Color>[
@@ -42,7 +45,7 @@ class NavigationDrawer extends StatelessWidget {
               Color.fromARGB(255, 83, 165, 237),
             ], 
             tileMode: TileMode.mirror,
-          ),
+          ):null,
         ),
         child: Column(
           children: [
@@ -56,7 +59,7 @@ class NavigationDrawer extends StatelessWidget {
                       padding: EdgeInsets.only(
                           top: MediaQuery.of(context).padding.top + 24,
                           bottom: 24),
-                      color: Colors.white,
+                      // color:brightness == Brightness.light ? Colors.white :Colors.black,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: SvgPicture.asset(
