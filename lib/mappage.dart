@@ -51,7 +51,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   // BitmapDescriptor? myMarker;
   final CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
- 
+
   bool? islogin;
   bool? isadmin;
   bool floatingActionButtonvisible = true;
@@ -156,7 +156,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         mylocation: true,
         kullanicisayisi: '',
         id: '',
-        baslatildi: false));
+        baslatildi: false,
+        lokasyon: ''));
     // ignore: use_build_context_synchronously
     wifiAlert(
         locations?.where((element) => element.mylocation == false).toList(),
@@ -388,8 +389,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                                             playedColor: Colors.green),
                                   ),
                                 ),
-                                flickManager: flickManager(
-                                    "https://yonetim.wizmir.net/OnemliGunResimler/pexels-dario-fernandez-ruz-9130068.mp4")),
+                                flickManager: flickManager(value.url)),
                           ),
                   ),
                   Positioned(
@@ -491,8 +491,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
-     Widget icon =  Icon(Icons.location_on, color: brightness == Brightness.light ? Colors.blue : Colors.white);
-  Widget iconrefresh =  Icon(Icons.refresh, color: brightness == Brightness.light ? Colors.blue : Colors.white);
+    Widget icon = Icon(Icons.location_on,
+        color: brightness == Brightness.light ? Colors.blue : Colors.white);
+    Widget iconrefresh = Icon(Icons.refresh,
+        color: brightness == Brightness.light ? Colors.blue : Colors.white);
     ToastContext().init(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -510,7 +512,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
-                  backgroundColor: brightness ==   Brightness.light ? Colors.white : Colors.blue,
+                  heroTag: "btn11",
+                  backgroundColor: brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.blue,
                   child: iconrefresh,
                   onPressed: () async {
                     setState(() {
@@ -519,8 +524,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     reloadmap().whenComplete(() {
                       Toast.show("maprenewed".tr(),
                           duration: Toast.lengthLong, gravity: Toast.bottom);
-                      iconrefresh =
-                           Icon(Icons.refresh, color: brightness ==   Brightness.light ? Colors.blue : Colors.white);
+                      iconrefresh = Icon(Icons.refresh,
+                          color: brightness == Brightness.light
+                              ? Colors.blue
+                              : Colors.white);
                     });
                   },
                 ),
@@ -528,7 +535,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   height: 8,
                 ),
                 FloatingActionButton(
-                  backgroundColor: brightness ==   Brightness.light ? Colors.white : Colors.blue,
+                  heroTag: "btn22",
+                  backgroundColor: brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.blue,
                   child: icon,
                   onPressed: () async {
                     setState(() {
@@ -544,9 +554,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       controller.animateCamera(
                           CameraUpdate.newCameraPosition(nepPos));
                       setState(() {
-                        icon =  Icon(
+                        icon = Icon(
                           Icons.location_on,
-                          color: brightness == Brightness.light ? Colors.blue : Colors.white,
+                          color: brightness == Brightness.light
+                              ? Colors.blue
+                              : Colors.white,
                         );
                       });
                     });
@@ -558,7 +570,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style:  TextStyle(color: brightness == Brightness.light  ? Colors.black : null),
+          style: TextStyle(
+              color: brightness == Brightness.light ? Colors.black : null),
         ),
         centerTitle: true,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
@@ -570,7 +583,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             },
             icon: Text(
               "menu".tr(),
-              style:  TextStyle(color: brightness == Brightness.light ? Colors.black : null),
+              style: TextStyle(
+                  color: brightness == Brightness.light ? Colors.black : null),
             )),
       ),
       body: Center(

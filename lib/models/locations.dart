@@ -83,6 +83,7 @@ class Locations {
   String kullanicisayisi;
   String? aciklama;
   bool baslatildi;
+  String lokasyon;
 
   Locations(
       {required this.id,
@@ -93,6 +94,7 @@ class Locations {
       required this.mylocation,
       required this.kullanicisayisi,
       this.aciklama,
+      required this.lokasyon,
       required this.baslatildi});
 
   Locations.copyWith(Locations item, String desc)
@@ -102,6 +104,7 @@ class Locations {
         antenAdi = item.antenAdi,
         aktifmi = item.aktifmi,
         mylocation = item.mylocation,
+        lokasyon = item.lokasyon,
         kullanicisayisi = item.kullanicisayisi,
         aciklama = desc,
         baslatildi = item.baslatildi;
@@ -115,6 +118,7 @@ class Locations {
         mylocation = item.mylocation,
         kullanicisayisi = item.kullanicisayisi,
         aciklama = item.aciklama,
+        lokasyon = item.lokasyon,
         baslatildi = baslat;
 
   factory Locations.fromJson(Map json) {
@@ -128,6 +132,7 @@ class Locations {
       kullanicisayisi: json["OnlineKullanici"],
       aciklama: json["Aciklama"],
       baslatildi: json["calisma"] != null ? true : false,
+      lokasyon: json["Lokasyon"],
     );
   }
 
@@ -140,6 +145,7 @@ class Locations {
       kullanicisayisi: json["OnlineKullanici"],
       aciklama: json["Aciklama"],
       baslatildi: json["calisma"] != null ? true : false,
+      lokasyon: json["Lokasyon"],
     );
   }
 }

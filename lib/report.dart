@@ -30,7 +30,7 @@ class _ReportViewState extends State<ReportView> {
   final ImagePicker _picker = ImagePicker();
   String? phonenumber;
   TextEditingController cnt = TextEditingController();
-  TextEditingController desccnt = TextEditingController();
+  // TextEditingController desccnt = TextEditingController();
   String problem = "";
 
   List<Problems> list = [];
@@ -83,6 +83,7 @@ class _ReportViewState extends State<ReportView> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom:50.0),
         child: FloatingActionButton(
+          heroTag: "btn33",
           backgroundColor:
               brightness == Brightness.light ? Colors.white : Colors.blue,
           child: Icon(
@@ -117,6 +118,7 @@ class _ReportViewState extends State<ReportView> {
             future: datalist,
             builder: (context, snapshot) {
               if (snapshot.data != null) {
+                var lang = context.locale.toString();
                 return Column(
                   children: [
                     Expanded(
@@ -157,9 +159,9 @@ class _ReportViewState extends State<ReportView> {
                                   ),
                                   items: list
                                       .map((item) => DropdownMenuItem<String>(
-                                            value: item.name,
+                                            value: lang == "en_US" ? item.sorunTuruIng : item.name,
                                             child: Text(
-                                              item.name,
+                                             lang == "en_US" ? item.sorunTuruIng : item.name,
                                               style: const TextStyle(
                                                 fontSize: 14,
                                               ),
@@ -224,16 +226,7 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                TextField(
-                                  controller: desccnt,
-                                  decoration: InputDecoration(
-                                    border: const OutlineInputBorder(),
-                                    label: Text(
-                                      "description".tr(),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 30),
+                                
                                 !widget.islogin
                                     ? InternationalPhoneNumberInput(
                                         searchBoxDecoration: InputDecoration(

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:particles_flutter/particles_flutter.dart';
-import 'package:wizmir/animatesplash.dart';
 import 'package:wizmir/mappage.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key, this.guid, required this.isadmin})
+  const SplashScreen(
+      {Key? key, this.guid, required this.isadmin, required this.brightness})
       : super(key: key);
   final String? guid;
   final bool isadmin;
+  final Brightness brightness;
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -23,7 +23,6 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     Timer.periodic(const Duration(seconds: 1), (timer) {
-      print("timer: ${timer.tick}");
       setState(() {
         if (timer.tick == 2) {
           showanim = false;
@@ -57,45 +56,43 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: showanim
           ? Image.asset(
-              "assets/images/splash.gif",
+              "assets/images/splash3.gif",
               fit: BoxFit.cover,
               height: double.infinity,
-    width: double.infinity,
-    alignment: Alignment.center,
+              width: double.infinity,
+              alignment: Alignment.center,
             )
           : Stack(
               children: [
-                // Opacity(opacity: 0.3,
-                // child: SvgPicture.asset("assets/background.svg", fit: BoxFit.cover,)),
-                Align(
-                  alignment: Alignment.center,
-                  child: AnimatedCrossFade(
-                    duration: const Duration(milliseconds: 500),
-                    firstCurve: Curves.easeInOut,
-                    secondCurve: Curves.easeInOut,
-                    crossFadeState: showFirst
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    firstChild: SvgPicture.asset(
-                      "assets/images/wizmirnet_icon2.svg",
-                      width: 200,
-                    ),
-                    secondChild: SvgPicture.asset(
-                      "assets/images/ibblogo_tuncbey.svg",
-                      width: 200,
-                    ),
-                  ),
-                ),
-                // showanim ?  Align(
-                //     alignment: Alignment.center,
-                //     child: Padding(
-                //       padding: const EdgeInsets.only(bottom: 38.0),
-                //       child: Image.asset(
-                //         "assets/images/izmir.png",
-                //         width: 200,
-                //       ),
-                //     ),
-                //   ):const Center(),
+                !showanim
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 38.0),
+                          child: SvgPicture.asset(
+                            "assets/images/wizmirnet_icon2.svg",
+                            width: 200,
+                          ),
+                        ),
+                      )
+                    : const Center(),
+                !showanim
+                    ? Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 38.0),
+                          child: widget.brightness == Brightness.light
+                              ? SvgPicture.asset(
+                                  "assets/images/tuncbey_light.svg",
+                                  width: 200,
+                                )
+                              : Image.asset(
+                                  "assets/images/tuncsoyer.png",
+                                  width: 200,
+                                ),
+                        ),
+                      )
+                    : const Center(),
               ],
             ),
     );

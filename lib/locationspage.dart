@@ -26,12 +26,23 @@ class _MyWidgetState extends State<Loc> {
   Future<List<Locations>> getdata() async {
     locationlist = await getdetail();
     await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
+
     setState(() {
       active = locationlist.where((element) => element.aktifmi).length;
       passive = locationlist.where((element) => !element.aktifmi).length;
       all = locationlist.length;
     });
+
     return locationlist;
+  }
+
+  Map<T, List<Locations>> groupBy<S, T>(
+      List<Locations> values, T Function(Locations) key) {
+    var map = <T, List<Locations>>{};
+    for (var element in values) {
+      (map[key(element)] ??= []).add(element);
+    }
+    return map;
   }
 
   _callback(oldlocation, newlocation) {
@@ -51,13 +62,14 @@ class _MyWidgetState extends State<Loc> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme:  IconThemeData(
-            color: brightness == Brightness.light ?  Colors.black : null,
+          iconTheme: IconThemeData(
+            color: brightness == Brightness.light ? Colors.black : null,
           ),
           centerTitle: true,
-          title:  Text(
+          title: Text(
             "locations".tr(),
-            style: TextStyle(color:brightness == Brightness.light ?  Colors.black : null),
+            style: TextStyle(
+                color: brightness == Brightness.light ? Colors.black : null),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -66,25 +78,31 @@ class _MyWidgetState extends State<Loc> {
             },
           ),
           elevation: 0,
-          backgroundColor: brightness == Brightness.light ?  Colors.white : null,
+          backgroundColor: brightness == Brightness.light ? Colors.white : null,
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
                 icon: Text(
                   "${'all'.tr()} ($all)",
-                  style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null),
+                  style: TextStyle(
+                      color:
+                          brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
               Tab(
                 icon: Text(
                   "${'active'.tr()} ($active)",
-                  style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null),
+                  style: TextStyle(
+                      color:
+                          brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
               Tab(
                 icon: Text(
                   "${'passive'.tr()} ($passive)",
-                  style:  TextStyle(color:brightness == Brightness.light ?  Colors.black : null),
+                  style: TextStyle(
+                      color:
+                          brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
             ],
@@ -99,68 +117,106 @@ class _MyWidgetState extends State<Loc> {
             builder: (BuildContext context,
                 AsyncSnapshot<List<Locations>> snapshot) {
               if (locationlist.isNotEmpty) {
-                var aktif =
-                    locationlist.where((element) => element.aktifmi).toList();
-                var pasif =
-                    locationlist.where((element) => !element.aktifmi).toList();
+                // var aktif =
+                //     locationlist.where((element) => element.aktifmi).toList();
+                // var pasif =
+                //     locationlist.where((element) => !element.aktifmi).toList();
+
+                var all = groupBy(
+                    locationlist.toList(),
+                    (Locations obj) => obj.lokasyon);
+                var aktif = groupBy(
+                    locationlist.where((element) => element.aktifmi).toList(),
+                    (Locations obj) => obj.lokasyon);
+                var pasif = groupBy(
+                    locationlist.where((element) => !element.aktifmi).toList(),
+                    (Locations obj) => obj.lokasyon);
                 return TabBarView(
                   children: <Widget>[
-                    ListView.builder(
-                      itemCount: locationlist.length,
+                     ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: all.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(locationlist[index].antenAdi),
-                            trailing: locationlist[index].aciklama != null ? const Icon(Icons.bookmark):null,
-                          ),
+                        var ss = all.values.elementAt(index);
+                        return ExpansionTile(
+                          textColor:brightness == Brightness.light ? Colors.black : null,
+                          collapsedTextColor: brightness == Brightness.light ? Colors.black : null,
+                          collapsedBackgroundColor:brightness == Brightness.light ? Colors.white: null,
+                          title: Text("${all.keys.elementAt(index)} (${ss.length})"),
+                          children: [
+                            ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: ss.length,
+                                itemBuilder:
+                                    (BuildContext context, int index2) {
+                                  return Card(
+                                    child: ListTile(
+                                      title: Text(ss[index2].antenAdi),
+                                      trailing: ss[index2].aciklama != null
+                                          ? const Icon(Icons.bookmark)
+                                          : null,
+                                    ),
+                                  );
+                                }),
+                          ],
                         );
                       },
                     ),
                     ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: aktif.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(aktif[index].antenAdi),
-                            trailing: aktif[index].aciklama != null ? const Icon(Icons.bookmark):null,
-
-                          ),
+                        var ss = aktif.values.elementAt(index);
+                        return ExpansionTile(
+                          textColor:brightness == Brightness.light ? Colors.black : null,
+                          collapsedTextColor: brightness == Brightness.light ? Colors.black : null,
+                          collapsedBackgroundColor:brightness == Brightness.light ? Colors.white: null,
+                           title: Text("${all.keys.elementAt(index)} (${ss.length})"),
+                          children: [
+                            ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: ss.length,
+                                itemBuilder:
+                                    (BuildContext context, int index2) {
+                                  return Card(
+                                    child: ListTile(
+                                      title: Text(ss[index2].antenAdi),
+                                      trailing: ss[index2].aciklama != null
+                                          ? const Icon(Icons.bookmark)
+                                          : null,
+                                    ),
+                                  );
+                                }),
+                          ],
                         );
                       },
                     ),
                     ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: pasif.length,
                       itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          child: ListTile(
-                            title: Text(pasif[index].antenAdi),
-                            trailing: Wrap(
-                              children: [
-                                pasif[index].aciklama != null ? IconButton(
-                                  onPressed: () {
-                                  
-                                  },
-                                  icon: const Icon(Icons.bookmark),
-                                ): const SizedBox(),
-
-                                IconButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => AddDescriptionPage(
-                                          location: pasif[index],
-                                          callback: _callback,
-                                        ),
-                                        fullscreenDialog: true,
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.description),
-                                ),
-                              ],
-                            ),
-                          ),
+                        var ss = pasif.values.elementAt(index);
+                        return ExpansionTile(
+                          textColor:brightness == Brightness.light ? Colors.black : null,
+                          collapsedTextColor: brightness == Brightness.light ? Colors.black : null,
+                          collapsedBackgroundColor:brightness == Brightness.light ? Colors.white: null,
+                                   title: Text("${all.keys.elementAt(index)} (${ss.length})"),
+                          children: [
+                            ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: ss.length,
+                                itemBuilder:
+                                    (BuildContext context, int index2) {
+                                  return Card(
+                                    child: ListTile(
+                                      title: Text(ss[index2].antenAdi),
+                                      trailing: ss[index2].aciklama != null
+                                          ? const Icon(Icons.bookmark)
+                                          : null,
+                                    ),
+                                  );
+                                }),
+                          ],
                         );
                       },
                     ),

@@ -15,13 +15,16 @@ Future<List<Problems>> getproblems() async {
 class Problems {
   String id;
   String name;
+  String sorunTuruIng;
 
-  Problems({required this.id, required this.name});
+  Problems({required this.id, required this.name, required this.sorunTuruIng});
 
   factory Problems.fromJson(Map json) {
+    
     return Problems(
       id: json["Id"],
       name: json["SorunTuru"],
+      sorunTuruIng: json["SorunTuruIng"],
     );
   }
 }

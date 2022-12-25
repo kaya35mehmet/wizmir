@@ -7,8 +7,7 @@ Future<List<Faq>> getsss() async {
   final response = await http.get(url);
 
   if (response.statusCode == 200) {
-
-     Iterable res = json.decode(response.body);
+    Iterable res = json.decode(response.body);
     return res.map((e) => Faq.fromJson(e)).toList();
   } else {
     throw Exception('Failed');
@@ -19,11 +18,15 @@ class Faq {
   String id;
   String title;
   String content;
+  String baslikIng;
+  String icerikIng;
 
   Faq({
     required this.id,
     required this.title,
     required this.content,
+    required this.baslikIng,
+    required this.icerikIng,
   });
 
   factory Faq.fromJson(Map json) {
@@ -31,6 +34,8 @@ class Faq {
       content: json["Icerik"],
       id: json["Id"],
       title: json["Baslik"],
+      baslikIng: json["BaslikIng"],
+      icerikIng: json["IcerikIng"],
     );
   }
 }

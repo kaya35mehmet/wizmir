@@ -1,11 +1,8 @@
 import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:wizmir/animatesplash.dart';
-import 'package:wizmir/dd.dart';
 import 'package:wizmir/splashscreen.dart';
 
 Future<void> main() async {
@@ -58,7 +55,6 @@ class _MyAppState extends State<MyApp> {
       title: 'WizmirNET',
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primaryColor: Colors.blue
       ),
       theme: ThemeData(
         brightness: Brightness.light,
@@ -72,10 +68,10 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      // home: const AnimeWidget(),
       home: SplashScreen(
         guid: guid!,
         isadmin: isadmin,
+        brightness:brightness
       ),
     );
   }
