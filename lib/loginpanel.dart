@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:wizmir/forgotpassword.dart';
@@ -12,7 +13,8 @@ class LoginPanelPage extends StatefulWidget {
       {Key? key,
       required this.islogin,
       required this.callback,
-      required this.callbackislogin, required this.pc})
+      required this.callbackislogin,
+      required this.pc})
       : super(key: key);
   final bool islogin;
   final Function callback;
@@ -39,6 +41,8 @@ class _MyWidgetState extends State<LoginPanelPage> {
   @override
   Widget build(BuildContext context) {
     islogin = widget.islogin;
+
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return SlidingUpPanel(
       onPanelOpened: () {
         setState(() {
@@ -65,14 +69,20 @@ class _MyWidgetState extends State<LoginPanelPage> {
       ],
       controller: widget.pc,
       backdropColor: Colors.transparent,
-      color: Colors.transparent,
+      color: brightness == Brightness.light
+          ? Colors.transparent
+          : const Color(0xFF424242),
       minHeight: 0,
       maxHeight: MediaQuery.of(context).size.height * 0.5,
       panel: Column(
         children: [
           Expanded(
             child: Container(
-              decoration: const BoxDecoration(color: Colors.white),
+              decoration: BoxDecoration(
+                color: brightness == Brightness.light
+                    ? Colors.white
+                    : const Color(0xFF424242),
+              ),
               padding: const EdgeInsets.all(10),
               height: MediaQuery.of(context).size.height * 0.2,
               child: Column(
@@ -94,9 +104,11 @@ class _MyWidgetState extends State<LoginPanelPage> {
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.4,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
+                        decoration: BoxDecoration(
+                          color: brightness == Brightness.light
+                              ? Colors.white
+                              : null,
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(10),
                           ),
                         ),
@@ -105,10 +117,12 @@ class _MyWidgetState extends State<LoginPanelPage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                               Text(
+                              Text(
                                 "login".tr(),
-                                style: const TextStyle(
-                                    color: Colors.black,
+                                style: TextStyle(
+                                    color: brightness == Brightness.light
+                                        ? Colors.black
+                                        : null,
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     fontFamily: 'Roboto'),
@@ -140,7 +154,10 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     hintText: "phonenumber".tr(),
                     errorMessage: "wrongnumber".tr(),
                     autoValidateMode: AutovalidateMode.disabled,
-                    selectorTextStyle: const TextStyle(color: Colors.black),
+                    selectorTextStyle: TextStyle(
+                        color: brightness == Brightness.light
+                            ? Colors.black
+                            : null),
                     initialValue: number,
                     textFieldController: controller,
                     formatInput: false,
@@ -155,7 +172,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     controller: passcnt,
                     keyboardType: TextInputType.text,
                     obscureText: true,
-                    decoration:  InputDecoration(
+                    decoration: InputDecoration(
                         contentPadding: const EdgeInsets.all(8),
                         labelText: 'password'.tr(),
                         border: const OutlineInputBorder()),
@@ -165,41 +182,19 @@ class _MyWidgetState extends State<LoginPanelPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                       widget.pc.close();
-                      //  setState(() {
-                      //       islogin = true;
-                      //       passcnt.text = "";
-                      //     });
-                           widget.callbackislogin(phonenumber!, passcnt.text);
-                      // login(phonenumber!, passcnt.text).then((value) {
-                      //   if (value == "0") {
-                      //     Toast.show("Yanlış kullanıcı adı yada şifre!",
-                      //         duration: Toast.lengthShort,
-                      //         gravity: Toast.bottom);
-                      //   } else {
-                      //     _pc.close();
-                      //     Toast.show("Giriş başarılı!",
-                      //         duration: Toast.lengthShort,
-                      //         gravity: Toast.bottom);
-                      //     widget.callbackislogin(true);
-                      //     setState(() {
-                      //       islogin = true;
-                      //       passcnt.text = "";
-                      //     });
-                      //   }
-                      // });
+                      widget.pc.close();
+                      widget.callbackislogin(phonenumber!, passcnt.text);
                     },
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50),
-                      // primary: const Color(0xFFf04136),
                     ),
-                    child:  Text("login".tr()),
+                    child: Text("login".tr()),
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 40,
                   ),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       GestureDetector(
                         onTap: () => Navigator.push(
@@ -208,38 +203,34 @@ class _MyWidgetState extends State<LoginPanelPage> {
                               builder: (context) => const ForgotPasswordPage(),
                               fullscreenDialog: true),
                         ),
-                        child:  Text(
+                        child: Text(
                           "forgotpassword".tr(),
                           style: const TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold),
                         ),
                       ),
+                      OpenContainer(
+                        // openColor: brightness == Brightness.light ? Colors.white:Colors.black,
+                        closedColor: brightness == Brightness.light ? Colors.white:const Color(0xFF424242),
+                        transitionType: _transitionType,
+                        openBuilder: (BuildContext context, VoidCallback _) {
+                          return const RegisterPage(
+                            includeMarkAsDoneButton: false,
+                          );
+                        },
+                        closedElevation: 0.0,
+                        closedBuilder:
+                            (BuildContext context, VoidCallback openContainer) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text("register".tr()),
+                          );
+                        },
+                      ),
                     ],
                   ),
                   const SizedBox(
                     height: 20,
-                  ),
-                  OpenContainer(
-                    transitionType: _transitionType,
-                    openBuilder: (BuildContext context, VoidCallback _) {
-                      return const RegisterPage(
-                        includeMarkAsDoneButton: false,
-                      );
-                    },
-                    closedElevation: 6.0,
-                    // closedShape: RoundedRectangleBorder(
-                    //   borderRadius: BorderRadius.all(
-                    //     Radius.circular(_fabDimension / 2),
-                    //   ),
-                    // ),
-                    // closedColor: Theme.of(context).colorScheme.secondary,
-                    closedBuilder:
-                        (BuildContext context, VoidCallback openContainer) {
-                      return  Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("register".tr()),
-                      );
-                    },
                   ),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:wizmir/models/faq.dart';
 
 class FAQView extends StatefulWidget {
@@ -18,15 +19,17 @@ class _FAQViewState extends State<FAQView> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme: IconThemeData(
+          color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title:  Text(
+        title: Text(
           "faq".tr(),
-          style:const TextStyle(color: Colors.black),
+          style: TextStyle(
+              color: brightness == Brightness.light ? Colors.black : null),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -35,7 +38,7 @@ class _FAQViewState extends State<FAQView> {
           },
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -44,16 +47,22 @@ class _FAQViewState extends State<FAQView> {
             future: getData(),
             builder: (context, snapshot) {
               if (snapshot.data != null) {
+                var lang = context.locale.toString();
                 return ListView.builder(
                   itemCount: snapshot.data!.length,
                   itemBuilder: ((context, index) => ExpansionTile(
                         title: Text(
-                          snapshot.data![index].title,
+                          lang == "en_US"
+                              ? snapshot.data![index].baslikIng
+                              : snapshot.data![index].title,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         controlAffinity: ListTileControlAffinity.trailing,
                         children: [
-                          ListTile(title: Text(snapshot.data![index].content)),
+                          ListTile(
+                              title: Text(lang == "en_US"
+                                  ? snapshot.data![index].icerikIng
+                                  : snapshot.data![index].content)),
                         ],
                       )),
                 );
@@ -61,9 +70,7 @@ class _FAQViewState extends State<FAQView> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:const [
-                     CircularProgressIndicator()
-                  ],
+                  children: const [CircularProgressIndicator()],
                 );
               }
             }),

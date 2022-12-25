@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
 import 'package:wizmir/models/login.dart';
@@ -30,7 +31,11 @@ String otpcode6 = '';
 
 class OTPPage extends StatefulWidget {
   const OTPPage(
-      {Key? key, required this.type, required this.username, this.user, required this.isadmin})
+      {Key? key,
+      required this.type,
+      required this.username,
+      this.user,
+      required this.isadmin})
       : super(key: key);
   final String type;
   final String username;
@@ -44,7 +49,7 @@ class OTPPage extends StatefulWidget {
 class _OTPPageState extends State<OTPPage> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
-    Timer? _timer;
+  Timer? _timer;
   int _start = 60;
 
   @override
@@ -53,12 +58,11 @@ class _OTPPageState extends State<OTPPage> {
     startTimer();
   }
 
-   void startTimer() {
+  void startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (time) {
       if (_start == 0) {
         setState(() {
           _timer!.cancel();
-     
         });
       } else {
         setState(() {
@@ -79,7 +83,10 @@ class _OTPPageState extends State<OTPPage> {
             if (value == "333") {
               Navigator.pushAndRemoveUntil(
                   context,
-                  ScaleTransitions( NewPasswordPage(phonenumber: widget.username,isadmin: widget.isadmin,)),
+                  ScaleTransitions(NewPasswordPage(
+                    phonenumber: widget.username,
+                    isadmin: widget.isadmin,
+                  )),
                   ModalRoute.withName('/'));
               Toast.show("transactionsuccessful_setyournewpassword".tr(),
                   duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -94,7 +101,10 @@ class _OTPPageState extends State<OTPPage> {
             if (value == "333") {
               Navigator.pushAndRemoveUntil(
                   context,
-                  ScaleTransitions( NewPasswordPage(phonenumber: widget.username,isadmin: widget.isadmin,)),
+                  ScaleTransitions(NewPasswordPage(
+                    phonenumber: widget.username,
+                    isadmin: widget.isadmin,
+                  )),
                   ModalRoute.withName('/'));
               Toast.show("transactionsuccessful_pleaselogin".tr(),
                   duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -111,13 +121,16 @@ class _OTPPageState extends State<OTPPage> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
+      backgroundColor: brightness == Brightness.light ? Colors.white : null,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: IconThemeData(
+            color: brightness == Brightness.light ? Colors.black : null),
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
@@ -129,7 +142,7 @@ class _OTPPageState extends State<OTPPage> {
             Image.asset("assets/images/logo.png",
                 width: MediaQuery.of(context).size.width * 0.5),
             const SizedBox(height: 40.0),
-             Text(
+            Text(
               "pleaseenterthe6digitcode".tr(),
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 18.0),
@@ -137,29 +150,33 @@ class _OTPPageState extends State<OTPPage> {
             const SizedBox(height: 20.0),
             const OTPFields(),
             const SizedBox(height: 20.0),
-            _start > 0 ? Text(
-              "$_start ${'secondsleft'.tr()}",
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16.0, color: Colors.grey),
-            ): const Center(),
+            _start > 0
+                ? Text(
+                    "$_start ${'secondsleft'.tr()}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16.0, color: Colors.grey),
+                  )
+                : const Center(),
             const SizedBox(height: 10.0),
-           _start == 0 ? TextButton(
-              child:  Text(
-                "sendagain".tr(),
-                style:const TextStyle(
-                  color: Colors.red,
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              onPressed: () {},
-            ): const Center(),
+            _start == 0
+                ? TextButton(
+                    child: Text(
+                      "sendagain".tr(),
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {},
+                  )
+                : const Center(),
             const SizedBox(height: 30.0),
             RoundedLoadingButton(
               controller: _btnController,
               onPressed: _doSomething,
-              child:
-                   Text('send'.tr(), style:const TextStyle(color: Colors.white)),
+              child: Text('send'.tr(),
+                  style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),

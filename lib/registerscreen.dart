@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -24,18 +25,20 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text(
-          'Üye ol',
-          style: TextStyle(color: Colors.black),
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
+        title:  Text(
+          'register'.tr(),
+          style: TextStyle(color: brightness == Brightness.light ? Colors.black : null),
         ),
         leading: IconButton(
           onPressed: () => Navigator.pop(context, true),
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back_ios,
-            color: Colors.black,
+            color: brightness == Brightness.light ? Colors.black : null,
           ),
         ),
         actions: <Widget>[
@@ -147,6 +150,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
+     var brightness = SchedulerBinding.instance.window.platformBrightness;
     return SingleChildScrollView(
       child: AnimationLimiter(
           child: AnimationConfiguration.staggeredList(
@@ -168,17 +172,18 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                   margin: EdgeInsets.only(bottom: w / 20),
                   // height: _w,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: brightness == Brightness.light ? Colors.white : null,
                     borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color:  Colors.black.withOpacity(0.1),
                         blurRadius: 40,
                         spreadRadius: 10,
                       ),
                     ],
+                    border:brightness == Brightness.dark ? Border.all(color: Colors.white):null
                   ),
                   child: Column(
                     children: [
@@ -208,7 +213,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         hintText: "phonenumber".tr(),
                         errorMessage: "wrongnumber".tr(),
                         autoValidateMode: AutovalidateMode.disabled,
-                        selectorTextStyle: const TextStyle(color: Colors.black),
+                        selectorTextStyle:  TextStyle(color:brightness == Brightness.light ? Colors.black : null),
                         initialValue: number,
                         textFieldController: cnt,
                         formatInput: false,
@@ -255,7 +260,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                           DropdownButton<String>(
                             value: age,
                             elevation: 0,
-                            style: const TextStyle(color: Colors.black),
+                            style:  TextStyle(color: brightness == Brightness.light ? Colors.black : null),
                             onChanged: (String? value) {
                               setState(() {
                                 age = value!.toString();

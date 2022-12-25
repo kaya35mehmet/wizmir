@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:animated_button/animated_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -25,12 +26,12 @@ import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:wizmir/profilecomplete.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage(
       {Key? key, required this.title, this.guid, required this.isadmin})
       : super(key: key);
-
   final String title;
   final String? guid;
   final bool isadmin;
@@ -50,7 +51,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   // BitmapDescriptor? myMarker;
   final CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
-  Widget icon = const Icon(Icons.location_on, color: Colors.blue);
+
   bool? islogin;
   bool? isadmin;
   bool floatingActionButtonvisible = true;
@@ -67,7 +68,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   void initState() {
     setState(() {
       isadmin = widget.isadmin;
-      infoviewheight = widget.isadmin ? 180 : 140;
+      infoviewheight = widget.isadmin ? 280 : 210;
     });
     if (widget.guid != "0") {
       setState(() {
@@ -136,7 +137,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     latLngfuture = getData();
   }
 
-  reloadmap() {
+  Future<void> reloadmap() async {
     setState(() {
       // latLngfuture = null;
       latLngfuture = getData();
@@ -155,14 +156,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         mylocation: true,
         kullanicisayisi: '',
         id: '',
-        baslatildi: false));
+        baslatildi: false,
+        lokasyon: ''));
     // ignore: use_build_context_synchronously
     wifiAlert(
         locations?.where((element) => element.mylocation == false).toList(),
         latLng,
         context);
     nlist = nearlist();
-    await Future<dynamic>.delayed(const Duration(milliseconds: 2000));
+    await Future<dynamic>.delayed(const Duration(milliseconds: 4000));
+
     return LatLng(dd.latitude, dd.longitude);
   }
 
@@ -180,6 +183,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   Future<void> generateMarkers(context, current) async {
+    var ikon = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/wifi6.svg", 36);
     var localMarkers = <Marker>{};
     for (var location in locations!) {
       var dist = Geolocator.distanceBetween(
@@ -194,6 +199,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     islogin: islogin!,
                     isadmin: isadmin!,
                     callback: _callbackinfoview,
+                    controller: _customInfoWindowController,
                   ),
                   LatLng(location.lat!, location.lng!),
                 );
@@ -215,9 +221,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 ? await functions.bitmapDescriptorFromSvgAsset(
                     context, "assets/icons/buradayim5.svg", 90)
                 : !isadmin! && dist > 50
-                    ? await functions.bitmapDescriptorFromSvgAsset(
-                        context, "assets/icons/wifi6.svg", 40)
-                    : location.baslatildi
+                    ? ikon
+                    : isadmin! && location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
                             BitmapDescriptor.hueOrange)
                         : location.aktifmi
@@ -235,6 +240,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     setState(() {
       floatingActionButtonvisible = val;
       nearlocationsvisible = val;
+      infoviewheight = isadmin! ? 280 : 210;
     });
   }
 
@@ -242,12 +248,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     setState(() {
       floatingActionButtonvisible = val;
       nearlocationsvisible = val;
+      infoviewheight = isadmin! ? 280 : 210;
     });
   }
 
   void _callbacknearopen(val) {
     setState(() {
       floatingActionButtonvisible = val;
+      infoviewheight = isadmin! ? 280 : 210;
     });
   }
 
@@ -257,7 +265,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     setState(() {
       userview = val;
       isadmin = !val;
-      infoviewheight = isadmin! ? 180 : 140;
+      infoviewheight = isadmin! ? 280 : 210;
       generateMarkers(context, latLng).whenComplete(() => Toast.show(
           val ? "switchedtouserview".tr() : "switchedtoadminview".tr(),
           duration: Toast.lengthShort,
@@ -276,9 +284,18 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         setState(() {
           islogin = true;
           isadmin = value.isadmin!;
-          infoviewheight = isadmin! ? 180 : 140;
+          infoviewheight = isadmin! ? 280 : 210;
           generateMarkers(context, latLng);
         });
+
+        if (!value.fullprofile!) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileComplete(
+                        username: phonenumber,
+                      )));
+        }
       }
     });
     FocusScope.of(context).requestFocus(FocusNode());
@@ -288,6 +305,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     setState(() {
       islogin = false;
       isadmin = false;
+      infoviewheight = isadmin! ? 280 : 210;
       generateMarkers(context, latLng);
     });
   }
@@ -296,6 +314,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     _customInfoWindowController.hideInfoWindow!();
     var dd = locations!.firstWhere((element) => element.id == newlocation.id);
     dd.baslatildi = newlocation.baslatildi;
+    infoviewheight = isadmin! ? 280 : 210;
     generateMarkers(context, latLng);
   }
 
@@ -313,6 +332,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         islogin: islogin!,
         isadmin: isadmin!,
         callback: _callbackinfoview,
+        controller: _customInfoWindowController,
       ),
       LatLng(location.lat!, location.lng!),
     );
@@ -320,6 +340,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     _markers?.remove((element) =>
         element.markerId == MarkerId('${location.lat}_${location.lng}'));
     setState(() {
+      infoviewheight = isadmin! ? 280 : 210;
       selectedMarker = Marker(
           markerId: MarkerId('${location.lat}_${location.lng}'),
           position: LatLng(location.lat!, location.lng!),
@@ -339,97 +360,124 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     var id = await storage.read(key: "importantdays");
     getimportantdays().then(
       (value) async {
-        if (id != value.id) {}
-        showDialog(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => AlertDialog(
-            content: Stack(
-              children: [
-                Container(
-                  child:
-                      // value.turu == "resim"
-                      //     ? OctoImage(
-                      //         image: CachedNetworkImageProvider(value.url),
-                      //         placeholderBuilder: OctoPlaceholder.blurHash(
-                      //           'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
-                      //         ),
-                      //         errorBuilder: OctoError.icon(color: Colors.red),
-                      //         fit: BoxFit.cover,
-                      //       )
-                      //     :
-                      
-                      FlickVideoPlayer(
-                        preferredDeviceOrientation : const [DeviceOrientation.portraitDown],
-                          flickVideoWithControls: FlickVideoWithControls(
-                            videoFit: BoxFit.fitHeight,
-                            controls: FlickPortraitControls(
-                              progressBarSettings: FlickProgressBarSettings(
-                                  playedColor: Colors.green),
+        if (id != value.id) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => AlertDialog(
+              contentPadding: EdgeInsets.zero,
+              content: Stack(
+                children: [
+                  Container(
+                    child: value.turu == "resim"
+                        ? OctoImage(
+                            image: CachedNetworkImageProvider(value.url),
+                            placeholderBuilder: OctoPlaceholder.blurHash(
+                              'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
                             ),
+                            errorBuilder: OctoError.icon(color: Colors.red),
+                            fit: BoxFit.cover,
+                          )
+                        : AspectRatio(
+                            aspectRatio: 16 / 9,
+                            child: FlickVideoPlayer(
+                                flickVideoWithControls: FlickVideoWithControls(
+                                  videoFit: BoxFit.fitHeight,
+                                  controls: FlickPortraitControls(
+                                    progressBarSettings:
+                                        FlickProgressBarSettings(
+                                            playedColor: Colors.green),
+                                  ),
+                                ),
+                                flickManager: flickManager(value.url)),
                           ),
-                          flickManager: flickManager(
-                              "https://yonetim.wizmir.net/OnemliGunResimler/pexels-dario-fernandez-ruz-9130068.mp4")),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: IconButton(
-                    onPressed: () async {
-                      await ImageDownloader.downloadImage(value.url)
-                          .whenComplete(
-                        () => Toast.show("succesful".tr(),
-                            duration: Toast.lengthLong, gravity: Toast.bottom),
-                      );
-                    },
-                    icon: const Icon(Icons.download),
                   ),
-                )
-              ],
-            ),
-            actions: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color.fromARGB(255, 35, 19, 145),
-                        Color.fromARGB(255, 56, 108, 228),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                  Positioned(
+                    top: 0,
+                    right: 0,
+                    child: IconButton(
+                      onPressed: () async {
+                        await ImageDownloader.downloadImage(value.url)
+                            .whenComplete(
+                          () => Toast.show("succesful".tr(),
+                              duration: Toast.lengthLong,
+                              gravity: Toast.bottom),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.download,
+                        color: Colors.white,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(5, 5),
-                        blurRadius: 10,
-                      )
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: Text(
-                        "close".tr(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                        ),
+                  )
+                ],
+              ),
+              actions: [
+                Center(
+                  child: AnimatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    duration: 70,
+                    height: 50,
+                    width: 200,
+                    enabled: true,
+                    shadowDegree: ShadowDegree.dark,
+                    color: Colors.blue,
+                    child: Text(
+                      "close".tr(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-        await storage.write(key: "importantdays", value: value.id);
+//  GestureDetector(
+//                     onTap: () {
+//                       Navigator.pop(context);
+//                     },
+//                     child:
+//                     Container(
+//                       decoration: BoxDecoration(
+//                         gradient: const LinearGradient(
+//                           colors: [
+//                             Color.fromARGB(255, 35, 19, 145),
+//                             Color.fromARGB(255, 56, 108, 228),
+//                           ],
+//                           begin: Alignment.topLeft,
+//                           end: Alignment.bottomRight,
+//                         ),
+//                         borderRadius: BorderRadius.circular(20),
+//                         boxShadow: const [
+//                           BoxShadow(
+//                             color: Colors.black12,
+//                             offset: Offset(5, 5),
+//                             blurRadius: 10,
+//                           )
+//                         ],
+//                       ),
+//                       child: Padding(
+//                         padding: const EdgeInsets.all(8.0),
+//                         child: Center(
+//                           child: Text(
+//                             "close".tr(),
+//                             style: const TextStyle(
+//                               color: Colors.white,
+//                               fontSize: 18,
+//                               fontWeight: FontWeight.w500,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                     ),
+              ],
+            ),
+          );
+          await storage.write(key: "importantdays", value: value.id);
+        }
       },
     );
   }
@@ -442,6 +490,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
+    Widget icon = Icon(Icons.location_on,
+        color: brightness == Brightness.light ? Colors.blue : Colors.white);
+    Widget iconrefresh = Icon(Icons.refresh,
+        color: brightness == Brightness.light ? Colors.blue : Colors.white);
     ToastContext().init(context);
     return Scaffold(
       key: _scaffoldKey,
@@ -459,29 +512,38 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
-                  backgroundColor: Colors.white,
-                  child: const Icon(
-                    Icons.refresh,
-                    color: Colors.blue,
-                  ),
+                  heroTag: "btn11",
+                  backgroundColor: brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.blue,
+                  child: iconrefresh,
                   onPressed: () async {
-                    reloadmap();
-                    // setState(() {
-                    //   _callbackdrawer;
-                    // });
+                    setState(() {
+                      iconrefresh = const CircularProgressIndicator();
+                    });
+                    reloadmap().whenComplete(() {
+                      Toast.show("maprenewed".tr(),
+                          duration: Toast.lengthLong, gravity: Toast.bottom);
+                      iconrefresh = Icon(Icons.refresh,
+                          color: brightness == Brightness.light
+                              ? Colors.blue
+                              : Colors.white);
+                    });
                   },
                 ),
                 const SizedBox(
                   height: 8,
                 ),
                 FloatingActionButton(
-                  backgroundColor: Colors.white,
+                  heroTag: "btn22",
+                  backgroundColor: brightness == Brightness.light
+                      ? Colors.white
+                      : Colors.blue,
                   child: icon,
                   onPressed: () async {
                     setState(() {
                       icon = const CircularProgressIndicator();
                     });
-
                     final GoogleMapController controller =
                         await _controller.future;
                     getData().then((value) {
@@ -492,9 +554,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       controller.animateCamera(
                           CameraUpdate.newCameraPosition(nepPos));
                       setState(() {
-                        icon = const Icon(
+                        icon = Icon(
                           Icons.location_on,
-                          color: Colors.blue,
+                          color: brightness == Brightness.light
+                              ? Colors.blue
+                              : Colors.white,
                         );
                       });
                     });
@@ -506,16 +570,21 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: Text(
           widget.title,
-          style: const TextStyle(color: Colors.black),
+          style: TextStyle(
+              color: brightness == Brightness.light ? Colors.black : null),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
         elevation: 0,
         leading: IconButton(
-            onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+            onPressed: () {
+              _customInfoWindowController.hideInfoWindow!();
+              _scaffoldKey.currentState?.openDrawer();
+            },
             icon: Text(
               "menu".tr(),
-              style: const TextStyle(color: Colors.black),
+              style: TextStyle(
+                  color: brightness == Brightness.light ? Colors.black : null),
             )),
       ),
       body: Center(
@@ -556,7 +625,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       controller: _customInfoWindowController,
                       height: infoviewheight,
                       width: MediaQuery.of(context).size.width * 0.7,
-                      offset: 50,
+                      offset: 40,
                     ),
                     LoginPanelPage(
                       islogin: islogin!,

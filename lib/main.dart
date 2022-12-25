@@ -1,19 +1,19 @@
 import 'dart:async';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wizmir/splashscreen.dart';
 
 Future<void> main() async {
-   WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
   runApp(
     EasyLocalization(
         supportedLocales: const [Locale('en', 'US'), Locale('tr', 'TR')],
         path: 'assets/translations',
         fallbackLocale: const Locale('en', 'US'),
-        child:  const MyApp()),
+        child: const MyApp()),
   );
 }
 
@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
 
   String? guid = "0";
   bool isadmin = false;
-
+  var brightness = SchedulerBinding.instance.window.platformBrightness;
   @override
   void initState() {
     _guid();
@@ -42,9 +42,9 @@ class _MyAppState extends State<MyApp> {
             guid = value ?? "0";
           }),
         ));
-        storage.read(key: "isadmin").then((value) => setState(
+    storage.read(key: "isadmin").then((value) => setState(
           () => setState(() {
-            isadmin = value == "1" ?true : false;
+            isadmin = value == "1" ? true : false;
           }),
         ));
   }
@@ -52,10 +52,12 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      
       title: 'WizmirNET',
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+      ),
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
       ).copyWith(
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: <TargetPlatform, PageTransitionsBuilder>{
@@ -66,7 +68,11 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
-      home: SplashScreen(guid: guid!, isadmin: isadmin,),
+      home: SplashScreen(
+        guid: guid!,
+        isadmin: isadmin,
+        brightness:brightness
+      ),
     );
   }
 }

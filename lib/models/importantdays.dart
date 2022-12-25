@@ -33,7 +33,7 @@ class ImportantDays {
       baslik: json["Baslik"],
       id: json["Id"],
       turu: json["Turu"],
-      url: "https://yonetim.wizmir.net/OnemliGunResimler/${json["Url"]}",
+      url: "https://yonetim.wizmir.net/mobilapi/images/${json["Url"]}",
     );
   }
 }

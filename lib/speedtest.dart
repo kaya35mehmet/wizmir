@@ -2,8 +2,9 @@
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:speed_test_dart/classes/classes.dart';
-import 'package:speed_test_dart/speed_test_dart.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_speedtest/flutter_speedtest.dart';
+import 'package:gauges/gauges.dart';
 import 'package:wizmir/models/speedtest.dart';
 
 void main() => runApp(const SpeedTest());
@@ -16,63 +17,25 @@ class SpeedTest extends StatefulWidget {
 }
 
 class _SpeedTestState extends State<SpeedTest> {
-  SpeedTestDart tester = SpeedTestDart();
-  List<Server> bestServersList = [];
+  final _speedtest = FlutterSpeedtest(
+    baseUrl: 'https://speedtest.gsmnet.id.prod.hosts.ooklaserver.net:8080',
+    pathDownload: '/download',
+    pathUpload: '/upload',
+    pathResponseTime: '/ping',
+  );
 
-  double downloadRate = 0;
-  double uploadRate = 0;
+  double _progressDownload = 0;
+  double _progressUpload = 0;
 
-  bool readyToTest = false;
-  bool loadingDownload = false;
-  bool loadingUpload = false;
 
-  String downloadProgress = '0';
-  String uploadProgress = '0';
-
-  Future<void> setBestServers() async {
-    final settings = await tester.getSettings();
-    final servers = settings.servers;
-
-    final _bestServersList = await tester.getBestServers(
-      servers: servers,
-    );
-
-    setState(() {
-      bestServersList = _bestServersList;
-      readyToTest = true;
-    });
-  }
-
-  Future<void> _testDownloadSpeed() async {
-    setState(() {
-      loadingDownload = true;
-    });
-
-    final _downloadRate = await tester.testDownloadSpeed(servers: bestServersList);
-     setState(() {
-        downloadRate = _downloadRate;
-        loadingDownload = false;
-      });
-      _testUploadSpeed();
-  }
-
-  Future<void> _testUploadSpeed() async {
-    setState(() {
-      loadingUpload = true;
-    });
-
-    final _uploadRate = await tester.testUploadSpeed(servers: bestServersList);
-
-    setState(() {
-      uploadRate = _uploadRate;
-      loadingUpload = false;
-    });
-  }
+  double _pointerValue = 0;
+  bool start = false;
+  String btnTitle = "starttest".tr();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setBestServers();
+      // setBestServers();
     });
     super.initState();
   }
@@ -85,18 +48,20 @@ class _SpeedTestState extends State<SpeedTest> {
 
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return DefaultTabController(
       initialIndex: 0,
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          iconTheme: const IconThemeData(
-            color: Colors.black,
+          iconTheme: IconThemeData(
+            color: brightness == Brightness.light ? Colors.black : null,
           ),
           centerTitle: true,
           title: Text(
             "speedtest".tr(),
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(
+                color: brightness == Brightness.light ? Colors.black : null),
           ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -105,19 +70,23 @@ class _SpeedTestState extends State<SpeedTest> {
             },
           ),
           elevation: 0,
-          backgroundColor: Colors.white,
-          bottom: const TabBar(
+          backgroundColor: brightness == Brightness.light ? Colors.white : null,
+          bottom: TabBar(
             tabs: <Widget>[
               Tab(
                 icon: Text(
                   "WizmirNET",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color:
+                          brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
               Tab(
                 icon: Text(
                   "GSM",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(
+                      color:
+                          brightness == Brightness.light ? Colors.black : null),
                 ),
               ),
             ],
@@ -134,84 +103,69 @@ class _SpeedTestState extends State<SpeedTest> {
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                  'Download Test:',
-                                  style: TextStyle(
+                                SizedBox(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20.0, right: 20),
+                                    child: RadialGauge(
+                                      axes: [
+                                        RadialGaugeAxis(
+                                          minValue: 0,
+                                          maxValue: 200,
+                                          minAngle: -150,
+                                          maxAngle: 150,
+                                          radius: 0.4,
+                                          width: 0.2,
+                                          color: Colors.blue,
+                                          ticks: [
+                                            RadialTicks(
+                                                interval: 50,
+                                                alignment:
+                                                    RadialTickAxisAlignment
+                                                        .inside,
+                                                color: Colors.black,
+                                                length: 0.2,
+                                                children: [
+                                                  RadialTicks(
+                                                    ticksInBetween: 5,
+                                                    length: 0.2,
+                                                    color: Colors.white12,
+                                                  ),
+                                                ]),
+                                          ],
+                                          pointers: [
+                                            RadialNeedlePointer(
+                                              value: _pointerValue,
+                                              thicknessStart: 5,
+                                              thicknessEnd: 0,
+                                              color: Colors.red,
+                                              length: 0.4,
+                                              knobRadiusAbsolute: 4,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  'Download Test:  ${_progressDownload.round()} Mbps',
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                loadingDownload
-                                    ? const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(
-                                            value: 1.0),
-                                      ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                if (loadingDownload)
-                                  Column(
-                                    children: [
-                                      Text('downloadspeedbeingtested'.tr()),
-                                       Text('pleasewait'.tr()),
-                                    ],
-                                  )
-                                else
-                                  Text(
-                                      'Download :  ${downloadRate.toStringAsFixed(2)} Mb/s'),
                                 const SizedBox(height: 10),
                                 const Divider(
                                   height: 20,
                                 ),
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                const Text(
-                                  'Upload Test:',
-                                  style: TextStyle(
+                                Text(
+                                  'Upload Test: ${_progressUpload.round()} Mbps',
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                loadingUpload
-                                    ? const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(
-                                            value: 1.0),
-                                      ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                if (loadingUpload)
-                                  Column(
-                                    children: [
-                                      Text('uploadspeedbeingtested'.tr()),
-                                     Text('pleasewait'.tr()),
-
-                                    ],
-                                  )
-                                else
-                                  Text(
-                                      'Upload : ${uploadRate.toStringAsFixed(2)} Mb/s'),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -221,25 +175,56 @@ class _SpeedTestState extends State<SpeedTest> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: readyToTest &&
-                                                !loadingDownload &&
-                                                !loadingUpload
-                                            ? Colors.blue
-                                            : Colors.grey,
+                                        primary:
+                                            !start ? Colors.blue : Colors.grey,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 40.0, vertical: 20.0),
                                         shape: const StadiumBorder(),
                                       ),
-                                      onPressed:
-                                          loadingDownload && loadingUpload
-                                              ? null
-                                              : () async {
-                                                  if (!readyToTest ||
-                                                      bestServersList.isEmpty)
-                                                    return;
-                                                  await _testDownloadSpeed();
-                                                },
-                                      child: Text('start'.tr()),
+                                      onPressed: () async {
+                                        setState(() {
+                                          start = true;
+                                          btnTitle = "wait".tr();
+                                          _progressDownload = 0;
+                                          _progressUpload = 0;
+                                        });
+                                        if (start) {
+                                          _speedtest.getDataspeedtest(
+                                            downloadOnProgress:
+                                                ((percent, transferRate) {
+                                              setState(() {
+                                                _pointerValue = transferRate * 2;
+                                                _progressDownload =
+                                                    transferRate * 2;
+                                              });
+                                            }),
+                                            uploadOnProgress:
+                                                ((percent, transferRate) {
+                                              setState(() {
+                                                _pointerValue = transferRate * 2;
+                                                _progressUpload = transferRate * 2;
+                                              });
+                                            }),
+                                            progressResponse:
+                                                ((responseTime, jitter) {
+                                              setState(() {
+                                                // _ping = responseTime;
+                                                // _jitter = jitter;
+                                              });
+                                            }),
+                                            onError: ((errorMessage) {
+                                              // print(errorMessage);
+                                            }),
+                                            onDone: () {
+                                              setState(() {
+                                                start = false;
+                                                btnTitle = "starttest".tr();
+                                              });
+                                            },
+                                          );
+                                        }
+                                      },
+                                      child: Text(btnTitle),
                                     ),
                                   ),
                                 ),
@@ -261,84 +246,69 @@ class _SpeedTestState extends State<SpeedTest> {
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                  'Download Test:',
-                                  style: TextStyle(
+                                SizedBox(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20.0, right: 20),
+                                    child: RadialGauge(
+                                      axes: [
+                                        RadialGaugeAxis(
+                                          minValue: 0,
+                                          maxValue: 100,
+                                          minAngle: -150,
+                                          maxAngle: 150,
+                                          radius: 0.4,
+                                          width: 0.2,
+                                          color: Colors.blue,
+                                          ticks: [
+                                            RadialTicks(
+                                                interval: 50,
+                                                alignment:
+                                                    RadialTickAxisAlignment
+                                                        .inside,
+                                                color: Colors.black,
+                                                length: 0.2,
+                                                children: [
+                                                  RadialTicks(
+                                                    ticksInBetween: 5,
+                                                    length: 0.2,
+                                                    color: Colors.white12,
+                                                  ),
+                                                ]),
+                                          ],
+                                          pointers: [
+                                            RadialNeedlePointer(
+                                              value: _pointerValue,
+                                              thicknessStart: 5,
+                                              thicknessEnd: 0,
+                                              color: Colors.red,
+                                              length: 0.4,
+                                              knobRadiusAbsolute: 4,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  'Download Test:  ${_progressDownload.round()} Mbps',
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                loadingDownload
-                                    ? const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(
-                                            value: 1.0),
-                                      ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                if (loadingDownload)
-                                  Column(
-                                    children: [
-                              
-                                      Text('downloadspeedbeingtested'.tr()),
-                                      Text('pleasewait'.tr()),
-                                    ],
-                                  )
-                                else
-                                  Text(
-                                      'Download :  ${downloadRate.toStringAsFixed(2)} Mb/s'),
                                 const SizedBox(height: 10),
                                 const Divider(
                                   height: 20,
                                 ),
-                                const SizedBox(
-                                  height: 50,
-                                ),
-                                const Text(
-                                  'Upload Test:',
-                                  style: TextStyle(
+                                Text(
+                                  'Upload Test: ${_progressUpload.round()} Mbps',
+                                  style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                loadingUpload
-                                    ? const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : const SizedBox(
-                                        height: 100.0,
-                                        width: 100.0,
-                                        child: CircularProgressIndicator(
-                                            value: 1.0),
-                                      ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                if (loadingUpload)
-                                  Column(
-                                    children: [
-                                      Text('uploadspeedbeingtested'.tr()),
-                                      Text('pleasewait'.tr()),
-                                    ],
-                                  )
-                                else
-                                  Text(
-                                      'Upload : ${uploadRate.toStringAsFixed(2)} Mb/s'),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -348,25 +318,56 @@ class _SpeedTestState extends State<SpeedTest> {
                                     width: double.infinity,
                                     child: ElevatedButton(
                                       style: ElevatedButton.styleFrom(
-                                        primary: readyToTest &&
-                                                !loadingDownload &&
-                                                !loadingUpload
-                                            ? Colors.blue
-                                            : Colors.grey,
+                                        primary:
+                                            !start ? Colors.blue : Colors.grey,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 40.0, vertical: 20.0),
                                         shape: const StadiumBorder(),
                                       ),
-                                      onPressed:
-                                          loadingDownload && loadingUpload
-                                              ? null
-                                              : () async {
-                                                  if (!readyToTest ||
-                                                      bestServersList.isEmpty)
-                                                    return;
-                                                  await _testDownloadSpeed();
-                                                },
-                                      child: Text('start'.tr()),
+                                      onPressed: () async {
+                                        setState(() {
+                                          start = true;
+                                          btnTitle = "wait".tr();
+                                          _progressDownload = 0;
+                                          _progressUpload = 0;
+                                        });
+                                        if (start) {
+                                          _speedtest.getDataspeedtest(
+                                            downloadOnProgress:
+                                                ((percent, transferRate) {
+                                              setState(() {
+                                                _pointerValue = transferRate * 2;
+                                                _progressDownload =
+                                                    transferRate * 2;
+                                              });
+                                            }),
+                                            uploadOnProgress:
+                                                ((percent, transferRate) {
+                                              setState(() {
+                                                _pointerValue = transferRate * 2;
+                                                _progressUpload = transferRate * 2;
+                                              });
+                                            }),
+                                            progressResponse:
+                                                ((responseTime, jitter) {
+                                              setState(() {
+                                                // _ping = responseTime;
+                                                // _jitter = jitter;
+                                              });
+                                            }),
+                                            onError: ((errorMessage) {
+                                              // print(errorMessage);
+                                            }),
+                                            onDone: () {
+                                              setState(() {
+                                                start = false;
+                                                btnTitle = "starttest".tr();
+                                              });
+                                            },
+                                          );
+                                        }
+                                      },
+                                      child: Text(btnTitle),
                                     ),
                                   ),
                                 ),

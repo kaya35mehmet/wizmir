@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -21,15 +22,16 @@ class ChangePasswordPage extends StatefulWidget {
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   @override
   Widget build(BuildContext context) {
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme:  IconThemeData(
+          color:brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
         title:  Text(
           "changepassword".tr(),
-          style: const TextStyle(color: Colors.black),
+          style:  TextStyle(color:brightness == Brightness.light ? Colors.black : null ),
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -38,7 +40,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           },
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
       body:  Padding(
         padding:const EdgeInsets.all(20.0),
@@ -108,6 +110,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return SingleChildScrollView(
       child: AnimationLimiter(
           child: AnimationConfiguration.staggeredList(
@@ -130,7 +133,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                   margin: EdgeInsets.only(bottom: w / 20),
                   // height: _w,
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color:brightness == Brightness.light ? Colors.white : null,
                     borderRadius: const BorderRadius.all(
                       Radius.circular(20),
                     ),
@@ -141,6 +144,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         spreadRadius: 10,
                       ),
                     ],
+                    border: brightness == Brightness.dark ? Border.all(color: Colors.white): null
                   ),
                   child: Column(
                     children: [
@@ -205,7 +209,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         controller: _btnController,
                         onPressed: _doSomething,
                         child:  Text('send'.tr(),
-                            style: const TextStyle(color: Colors.white)),
+                            style:  TextStyle(color:brightness == Brightness.light ? Colors.white : null)),
                       ),
                     ],
                   ),
