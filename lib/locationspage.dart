@@ -134,7 +134,7 @@ class _MyWidgetState extends State<Loc> {
                 return TabBarView(
                   children: <Widget>[
                      ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                      
                       itemCount: all.length,
                       itemBuilder: (BuildContext context, int index) {
                         var ss = all.values.elementAt(index);
@@ -145,6 +145,7 @@ class _MyWidgetState extends State<Loc> {
                           title: Text("${all.keys.elementAt(index)} (${ss.length})"),
                           children: [
                             ListView.builder(
+                              physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: ss.length,
                                 itemBuilder:
@@ -163,7 +164,7 @@ class _MyWidgetState extends State<Loc> {
                       },
                     ),
                     ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                    
                       itemCount: aktif.length,
                       itemBuilder: (BuildContext context, int index) {
                         var ss = aktif.values.elementAt(index);
@@ -174,6 +175,7 @@ class _MyWidgetState extends State<Loc> {
                            title: Text("${all.keys.elementAt(index)} (${ss.length})"),
                           children: [
                             ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: ss.length,
                                 itemBuilder:
@@ -192,7 +194,7 @@ class _MyWidgetState extends State<Loc> {
                       },
                     ),
                     ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                     
                       itemCount: pasif.length,
                       itemBuilder: (BuildContext context, int index) {
                         var ss = pasif.values.elementAt(index);
@@ -203,6 +205,7 @@ class _MyWidgetState extends State<Loc> {
                                    title: Text("${all.keys.elementAt(index)} (${ss.length})"),
                           children: [
                             ListView.builder(
+                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: ss.length,
                                 itemBuilder:
