@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
 import 'package:wizmir/models/user.dart';
@@ -124,8 +125,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Image.asset(
-                          "assets/images/logo.png",
+                        SvgPicture.asset(
+                          "assets/images/wizmirnet_icon2.svg",
                           width: MediaQuery.of(context).size.width * 0.5,
                         ),
                         const SizedBox(

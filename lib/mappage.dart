@@ -139,7 +139,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   Future<void> reloadmap() async {
     setState(() {
-      // latLngfuture = null;
       latLngfuture = getData();
     });
   }
@@ -199,7 +198,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     islogin: islogin!,
                     isadmin: isadmin!,
                     callback: _callbackinfoview,
-                    controller: _customInfoWindowController,
+                    controller: _customInfoWindowController, closecallback: _closecallback,
                   ),
                   LatLng(location.lat!, location.lng!),
                 );
@@ -310,6 +309,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     });
   }
 
+  void _closecallback(){
+    generateMarkers(context, latLng);
+  }
+
   void _callbackinfoview(Locations newlocation) {
     _customInfoWindowController.hideInfoWindow!();
     var dd = locations!.firstWhere((element) => element.id == newlocation.id);
@@ -332,7 +335,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         islogin: islogin!,
         isadmin: isadmin!,
         callback: _callbackinfoview,
-        controller: _customInfoWindowController,
+        controller: _customInfoWindowController, closecallback: _closecallback,
       ),
       LatLng(location.lat!, location.lng!),
     );
@@ -605,6 +608,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       onTap: (position) {
                         _customInfoWindowController.hideInfoWindow!();
                         _markers!.remove(selectedMarker!);
+                         generateMarkers(context, latLng);
                       },
                       onMapCreated: (GoogleMapController controller) {
                         _controller.complete(controller);
@@ -625,7 +629,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       controller: _customInfoWindowController,
                       height: infoviewheight,
                       width: MediaQuery.of(context).size.width * 0.7,
-                      offset: 40,
+                      offset: 60,
                     ),
                     LoginPanelPage(
                       islogin: islogin!,
