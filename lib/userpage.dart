@@ -99,7 +99,7 @@ class _UserPageState extends State<UserPage> {
                                 height: 18,
                               ),
                               Text(
-                                "${snapshot.data!.toplamSureSaat} ${'hour'.tr()} ${snapshot.data!.toplamSureDakika} ${'minute'.tr()} ${snapshot.data!.toplamSureSaniye} ${'second'.tr()}",
+                                "${ snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()} ${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
                                 style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.w300),
                               )
@@ -123,7 +123,7 @@ class _UserPageState extends State<UserPage> {
                                 children: <Widget>[
                                   Indicator(
                                     color: const Color(0xff0293ee),
-                                    text: 'Toplam Download',
+                                    text: 'totaldownload'.tr(),
                                     isSquare: false,
                                     size: touchedIndex == 0 ? 18 : 16,
                                     textColor: touchedIndex == 0
@@ -132,7 +132,7 @@ class _UserPageState extends State<UserPage> {
                                   ),
                                   Indicator(
                                     color: const Color(0xfff8b250),
-                                    text: 'Toplam Upload',
+                                    text: 'totalupload'.tr(),
                                     isSquare: false,
                                     size: touchedIndex == 1 ? 18 : 16,
                                     textColor: touchedIndex == 1
@@ -218,7 +218,10 @@ class _UserPageState extends State<UserPage> {
                                                 "$sayi.${snapshot.data!.girisLokasyonlari![index].name}"),
                                           );
                                         }))
-                                    : Text("youarenotyetconnected".tr()),
+                                    : Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("youarenotyetconnected".tr()),
+                                    ),
                               ],
                             ),
                           ),
@@ -256,9 +259,10 @@ class _UserPageState extends State<UserPage> {
             return PieChartSectionData(
               color: color0.withOpacity(opacity),
               value: 25,
-              title: download.toString().length > 7
-                  ? '${download.toString().substring(0, 7)}GB'
-                  : '${download}GB',
+                title: "${download.toString().substring(0,download.toString().indexOf("."))}${download.toString().substring(download.toString().indexOf("."),download.toString().indexOf(".")+3)}GB",
+              // title: download.toString().length > 7
+              //     ? '${download.toString().substring(0, 7)}GB'
+              //     : '${download}GB',
               radius: 80,
               titleStyle: const TextStyle(
                   fontSize: 18,
@@ -273,9 +277,10 @@ class _UserPageState extends State<UserPage> {
             return PieChartSectionData(
               color: color1.withOpacity(opacity),
               value: 25,
-              title: upload.toString().length > 7
-                  ? '${upload.toString().substring(0, 7)}GB'
-                  : '${upload}GB',
+              title: "${upload.toString().substring(0,upload.toString().indexOf("."))}${upload.toString().substring(upload.toString().indexOf("."),upload.toString().indexOf(".")+3)}GB",
+              // title: upload.toString().length > 7
+              //     ? '${upload.toString().substring(0, 7)}GB'
+              //     : '${upload}GB',
               radius: 65,
               titleStyle: const TextStyle(
                   fontSize: 18,

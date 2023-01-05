@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.2"
+  at_gauges:
+    dependency: "direct main"
+    description:
+      name: at_gauges
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -371,13 +378,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  gauges:
-    dependency: "direct main"
-    description:
-      name: gauges
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   geolocator:
     dependency: "direct main"
     description:

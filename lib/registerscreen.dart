@@ -191,10 +191,11 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                       const SizedBox(
                         height: 20,
                       ),
-                      SvgPicture.asset(
-                        "assets/images/wizmirnet_icon2.svg",
-                        width: MediaQuery.of(context).size.width * 0.5,
-                      ),
+                      Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.5,),
+                      // SvgPicture.asset(
+                      //   "assets/images/wizmirnet_icon2.svg",
+                      //   width: MediaQuery.of(context).size.width * 0.5,
+                      // ),
                       const SizedBox(
                         height: 40,
                       ),

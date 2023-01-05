@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: showanim
           ? Image.asset(
-              "assets/images/splash3.gif",
+              "assets/images/splash.gif",
               fit: BoxFit.cover,
               height: double.infinity,
               width: double.infinity,
@@ -69,10 +69,11 @@ class _SplashScreenState extends State<SplashScreen>
                         alignment: Alignment.center,
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 38.0),
-                          child: SvgPicture.asset(
-                            "assets/images/wizmirnet_icon2.svg",
-                            width: 200,
-                          ),
+                          child: Image.asset("assets/images/wizmirnetson.png",width: 200,)
+                          // SvgPicture.asset(
+                          //   "assets/images/wizmirnet_icon2.svg",
+                          //   width: 200,
+                          // ),
                         ),
                       )
                     : const Center(),

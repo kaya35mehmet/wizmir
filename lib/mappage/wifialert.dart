@@ -17,7 +17,8 @@ Future<void> wifiAlert(locations,latLng,context) async {
           content: Wrap(
             runSpacing: 10,
             children: [
-              SvgPicture.asset("assets/images/wizmirnet_icon2.svg"),
+              Image.asset("assets/images/wizmirnetson.png"),
+              // SvgPicture.asset("assets/images/wizmirnet_icon2.svg"),
                Text(
                 'area'.tr(),
                 style:const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),

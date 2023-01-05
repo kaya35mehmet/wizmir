@@ -5,6 +5,7 @@ import 'package:flutter_launch/flutter_launch.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -30,7 +31,7 @@ class NavigationDrawer extends StatelessWidget {
     required this.callback,
     required this.isadmin,
     required this.userview,
-    required this.callbackuserview,
+    required this.callbackuserview, 
   }) : super(key: key);
 
   @override
@@ -62,16 +63,16 @@ class NavigationDrawer extends StatelessWidget {
                   child: InkWell(
                     child: Container(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).padding.top,
-                          bottom: 4),
+                          top: MediaQuery.of(context).padding.top, bottom: 4),
                       // color:brightness == Brightness.light ? Colors.white :Colors.black,
                       child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: SvgPicture.asset(
-                          "assets/images/wizmirnet_icon2.svg",
-                          fit: BoxFit.contain,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                        ),
+                        padding: const EdgeInsets.only(left:20.0, right: 20),
+                        child: Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.5,)
+                        // SvgPicture.asset(
+                        //   "assets/images/wizmirnet_icon2.svg",
+                        //   fit: BoxFit.contain,
+                        //   width: MediaQuery.of(context).size.width * 0.5,
+                        // ),
                       ),
                     ),
                   ),
@@ -285,7 +286,7 @@ class NavigationDrawer extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SpeedTest(),
+                                  builder: (context) =>  const SpeedTest(),
                                 ),
                               );
                             },
@@ -354,54 +355,6 @@ class NavigationDrawer extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-                child: Align(
-                    alignment: FractionalOffset.bottomCenter,
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text(
-                          "İhbar Hattı",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                const number = '153'; //set the number here
-                                await FlutterPhoneDirectCaller.callNumber(
-                                    number);
-                              },
-                              child: Image.asset(
-                                "assets/images/phone.png",
-                                width: 50,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 40,
-                            ),
-                            GestureDetector(
-                              onTap: ()  {
-                                 FlutterLaunch.launchWhatsapp(phone: "905309194035", message: "");
-                   
-                              },
-                              child: Image.asset(
-                                "assets/images/whatsapp.png",
-                                width: 45,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    )),
-            ),
             Expanded(
               child: Align(
                 alignment: FractionalOffset.bottomCenter,
@@ -422,5 +375,4 @@ class NavigationDrawer extends StatelessWidget {
       ),
     );
   }
-  
 }
