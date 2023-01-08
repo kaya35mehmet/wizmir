@@ -46,7 +46,7 @@ Future<Login> login(String username, String password) async {
           password: password,
           isadmin: isadmin,
           success: res,
-          fullprofile: dddata[1].isNotEmpty && dddata[2].isNotEmpty ? true : false
+          fullprofile: dddata[1] != "" && dddata[2] != "" ? true : false
           );
     } else {
       return Login(

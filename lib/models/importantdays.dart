@@ -21,12 +21,26 @@ class ImportantDays {
   String baslik;
   String turu;
   String url;
+  DateTime baslangicTarihi;
+  DateTime bitisTarihi;
+  int gosterimSayisi;
+  int silindi;
+  int aktif;
+  int onay;
 
   ImportantDays(
       {required this.id,
       required this.baslik,
       required this.turu,
-      required this.url});
+      required this.url,
+      required this.baslangicTarihi,
+      required this.bitisTarihi,
+      required this.gosterimSayisi,
+      required this.silindi,
+      required this.aktif,
+      required this.onay,
+      
+      });
 
   factory ImportantDays.fromjson(Map json) {
     return ImportantDays(
@@ -34,6 +48,12 @@ class ImportantDays {
       id: json["Id"],
       turu: json["Turu"],
       url: "https://yonetim.wizmir.net/mobilapi/images/${json["Url"]}",
+      aktif: int.parse(json["Aktif"]), 
+      baslangicTarihi: DateTime.parse(json["BaslangicTarihi"]), 
+      bitisTarihi: DateTime.parse(json["BitisTarihi"]), 
+      gosterimSayisi: int.parse(json["GosterimSayisi"]), 
+      onay: int.parse(json["Onay"]), 
+      silindi: int.parse(json["Silindi"]),
     );
   }
 }

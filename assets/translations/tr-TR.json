@@ -89,5 +89,9 @@
     "or" :"ya da",
     "incare" : "Bakımda",
     "maprenewed" : "Harita yenilendi",
-    "description" : "Açıklama"
+    "description" : "Açıklama",
+    "area": "Şuanda WizmirNET çekim alanındasınız.",
+    "totaldownload" :"Toplam Download",
+    "totalupload" :"Toplam Upload",
+    "other":"Diğer"
 }

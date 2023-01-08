@@ -30,7 +30,7 @@ class _ReportViewState extends State<ReportView> {
   final ImagePicker _picker = ImagePicker();
   String? phonenumber;
   TextEditingController cnt = TextEditingController();
-  // TextEditingController desccnt = TextEditingController();
+  TextEditingController desccnt = TextEditingController();
   String problem = "";
 
   List<Problems> list = [];
@@ -81,7 +81,7 @@ class _ReportViewState extends State<ReportView> {
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom:50.0),
+        padding: const EdgeInsets.only(bottom: 50.0),
         child: FloatingActionButton(
           heroTag: "btn33",
           backgroundColor:
@@ -89,7 +89,7 @@ class _ReportViewState extends State<ReportView> {
           child: Icon(
             Icons.camera_alt,
             size: 30,
-            color: brightness == Brightness.light ? Colors.blue : Colors.white ,
+            color: brightness == Brightness.light ? Colors.blue : Colors.white,
           ),
           onPressed: () async {
             WidgetsFlutterBinding.ensureInitialized();
@@ -119,6 +119,19 @@ class _ReportViewState extends State<ReportView> {
             builder: (context, snapshot) {
               if (snapshot.data != null) {
                 var lang = context.locale.toString();
+                var items = list
+                    .map((item) => DropdownMenuItem<String>(
+                          value:
+                              lang == "en_US" ? item.sorunTuruIng : item.name,
+                          child: Text(
+                            lang == "en_US" ? item.sorunTuruIng : item.name,
+                            style: const TextStyle(
+                              fontSize: 14,
+                            ),
+                          ),
+                        ))
+                    .toList();
+              
                 return Column(
                   children: [
                     Expanded(
@@ -157,17 +170,7 @@ class _ReportViewState extends State<ReportView> {
                                   dropdownDecoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
                                   ),
-                                  items: list
-                                      .map((item) => DropdownMenuItem<String>(
-                                            value: lang == "en_US" ? item.sorunTuruIng : item.name,
-                                            child: Text(
-                                             lang == "en_US" ? item.sorunTuruIng : item.name,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                          ))
-                                      .toList(),
+                                  items: items,
                                   validator: (value) {
                                     if (value == null) {
                                       return 'choose'.tr();
@@ -186,47 +189,29 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 30.0, right: 30),
-                                  child: Row(children: [
-                                    Expanded(
-                                      child: Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 10.0, right: 20.0),
-                                          child: Divider(
-                                            color:
-                                                brightness == Brightness.light
-                                                    ? Colors.black26
-                                                    : null,
-                                            height: 36,
-                                          )),
+                              problem == "Other" ||problem ==  "Diğer" ?  TextField(
+                                controller: desccnt,
+                                  minLines: 4,
+                                  maxLines: 7,
+                                  decoration: InputDecoration(
+                                    focusedBorder: const OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.blue, width: 1.0),
                                     ),
-                                    Text(
-                                      "or".tr(),
-                                      style: TextStyle(
+                                    enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
                                           color: brightness == Brightness.light
-                                              ? Colors.black26
-                                              : null),
+                                              ? Colors.grey
+                                              : Colors.white,
+                                          width: 1.0),
                                     ),
-                                    Expanded(
-                                      child: Container(
-                                          margin: const EdgeInsets.only(
-                                              left: 20.0, right: 10.0),
-                                          child: Divider(
-                                            color:
-                                                brightness == Brightness.light
-                                                    ? Colors.black26
-                                                    : null,
-                                            height: 36,
-                                          )),
-                                    ),
-                                  ]),
-                                ),
+                                    hintText: 'description'.tr(),
+                                  ),
+                                ): const Center(),
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                
+
                                 !widget.islogin
                                     ? InternationalPhoneNumberInput(
                                         searchBoxDecoration: InputDecoration(
@@ -277,13 +262,14 @@ class _ReportViewState extends State<ReportView> {
                                   },
                                   child: file == null
                                       ? DottedBorder(
+                                        color: Colors.grey,
                                           borderType: BorderType.RRect,
-                                          radius: const Radius.circular(10),
-                                          padding: const EdgeInsets.all(6),
+                                          radius: const Radius.circular(4),
+                                          padding: const EdgeInsets.all(2),
                                           child: ClipRRect(
                                             borderRadius:
                                                 const BorderRadius.all(
-                                                    Radius.circular(10)),
+                                                    Radius.circular(4)),
                                             child: Container(
                                               height: MediaQuery.of(context)
                                                       .size
@@ -398,6 +384,43 @@ class _ReportViewState extends State<ReportView> {
                                 //     ),
                                 //   ),
                                 // )
+                                //  Padding(
+                                //   padding: const EdgeInsets.only(
+                                //       left: 30.0, right: 30),
+                                //   child: Row(children: [
+                                //     Expanded(
+                                //       child: Container(
+                                //           margin: const EdgeInsets.only(
+                                //               left: 10.0, right: 20.0),
+                                //           child: Divider(
+                                //             color:
+                                //                 brightness == Brightness.light
+                                //                     ? Colors.black26
+                                //                     : null,
+                                //             height: 36,
+                                //           )),
+                                //     ),
+                                //     Text(
+                                //       "or".tr(),
+                                //       style: TextStyle(
+                                //           color: brightness == Brightness.light
+                                //               ? Colors.black26
+                                //               : null),
+                                //     ),
+                                //     Expanded(
+                                //       child: Container(
+                                //           margin: const EdgeInsets.only(
+                                //               left: 20.0, right: 10.0),
+                                //           child: Divider(
+                                //             color:
+                                //                 brightness == Brightness.light
+                                //                     ? Colors.black26
+                                //                     : null,
+                                //             height: 36,
+                                //           )),
+                                //     ),
+                                //   ]),
+                                // ),
                               ],
                             ),
                           ),
@@ -412,10 +435,11 @@ class _ReportViewState extends State<ReportView> {
                           sendreport(
                                   phonenumber,
                                   problem,
+                                  desccnt.text,
                                   widget.locations != null
                                       ? widget.locations!.id
                                       : "",
-                                  File(file!.path))
+                                  file != null ?File(file!.path): null)
                               .then((value) {
                             Toast.show("sent".tr(),
                                 duration: Toast.lengthShort,

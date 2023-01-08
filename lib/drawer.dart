@@ -1,10 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_launch/flutter_launch.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wizmir/changepassword.dart';
 import 'package:wizmir/faqview.dart';
 import 'package:wizmir/locationspage.dart';
@@ -27,7 +31,7 @@ class NavigationDrawer extends StatelessWidget {
     required this.callback,
     required this.isadmin,
     required this.userview,
-    required this.callbackuserview,
+    required this.callbackuserview, 
   }) : super(key: key);
 
   @override
@@ -35,17 +39,19 @@ class NavigationDrawer extends StatelessWidget {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Drawer(
       child: Container(
-        decoration:  BoxDecoration(
+        decoration: BoxDecoration(
           color: brightness == Brightness.light ? Colors.black : null,
-          gradient: brightness == Brightness.light ? const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment(0.8, 1),
-            colors: <Color>[
-              Color(0xFF00529c),
-              Color.fromARGB(255, 83, 165, 237),
-            ], 
-            tileMode: TileMode.mirror,
-          ):null,
+          gradient: brightness == Brightness.light
+              ? const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment(0.8, 1),
+                  colors: <Color>[
+                    Color(0xFF00529c),
+                    Color.fromARGB(255, 83, 165, 237),
+                  ],
+                  tileMode: TileMode.mirror,
+                )
+              : null,
         ),
         child: Column(
           children: [
@@ -57,16 +63,16 @@ class NavigationDrawer extends StatelessWidget {
                   child: InkWell(
                     child: Container(
                       padding: EdgeInsets.only(
-                          top: MediaQuery.of(context).padding.top + 24,
-                          bottom: 24),
+                          top: MediaQuery.of(context).padding.top, bottom: 4),
                       // color:brightness == Brightness.light ? Colors.white :Colors.black,
                       child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: SvgPicture.asset(
-                          "assets/images/wizmirnet_icon2.svg",
-                          fit: BoxFit.contain,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                        ),
+                        padding: const EdgeInsets.only(left:80.0, right: 80,bottom: 4),
+                        child: Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.2,)
+                        // SvgPicture.asset(
+                        //   "assets/images/wizmirnet_icon2.svg",
+                        //   fit: BoxFit.contain,
+                        //   width: MediaQuery.of(context).size.width * 0.5,
+                        // ),
                       ),
                     ),
                   ),
@@ -280,7 +286,7 @@ class NavigationDrawer extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const SpeedTest(),
+                                  builder: (context) =>  const SpeedTest(),
                                 ),
                               );
                             },

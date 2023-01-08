@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
 import 'package:wizmir/models/login.dart';
@@ -139,8 +140,9 @@ class _OTPPageState extends State<OTPPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 20.0),
-            Image.asset("assets/images/logo.png",
-                width: MediaQuery.of(context).size.width * 0.5),
+            Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.5,),
+            // SvgPicture.asset("assets/images/wizmirnet_icon2.svg",
+            //     width: MediaQuery.of(context).size.width * 0.5),
             const SizedBox(height: 40.0),
             Text(
               "pleaseenterthe6digitcode".tr(),

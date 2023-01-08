@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wizmir/addDescription.dart';
 import 'package:wizmir/models/locations.dart';
 
@@ -123,8 +124,7 @@ class _MyWidgetState extends State<Loc> {
                 //     locationlist.where((element) => !element.aktifmi).toList();
 
                 var all = groupBy(
-                    locationlist.toList(),
-                    (Locations obj) => obj.lokasyon);
+                    locationlist.toList(), (Locations obj) => obj.lokasyon);
                 var aktif = groupBy(
                     locationlist.where((element) => element.aktifmi).toList(),
                     (Locations obj) => obj.lokasyon);
@@ -133,46 +133,23 @@ class _MyWidgetState extends State<Loc> {
                     (Locations obj) => obj.lokasyon);
                 return TabBarView(
                   children: <Widget>[
-                     ListView.builder(
-                      
+                    ListView.builder(
                       itemCount: all.length,
                       itemBuilder: (BuildContext context, int index) {
                         var ss = all.values.elementAt(index);
                         return ExpansionTile(
-                          textColor:brightness == Brightness.light ? Colors.black : null,
-                          collapsedTextColor: brightness == Brightness.light ? Colors.black : null,
-                          collapsedBackgroundColor:brightness == Brightness.light ? Colors.white: null,
-                          title: Text("${all.keys.elementAt(index)} (${ss.length})"),
-                          children: [
-                            ListView.builder(
-                              physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                itemCount: ss.length,
-                                itemBuilder:
-                                    (BuildContext context, int index2) {
-                                  return Card(
-                                    child: ListTile(
-                                      title: Text(ss[index2].antenAdi),
-                                      trailing: ss[index2].aciklama != null
-                                          ? const Icon(Icons.bookmark)
-                                          : null,
-                                    ),
-                                  );
-                                }),
-                          ],
-                        );
-                      },
-                    ),
-                    ListView.builder(
-                    
-                      itemCount: aktif.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var ss = aktif.values.elementAt(index);
-                        return ExpansionTile(
-                          textColor:brightness == Brightness.light ? Colors.black : null,
-                          collapsedTextColor: brightness == Brightness.light ? Colors.black : null,
-                          collapsedBackgroundColor:brightness == Brightness.light ? Colors.white: null,
-                           title: Text("${all.keys.elementAt(index)} (${ss.length})"),
+                          textColor: brightness == Brightness.light
+                              ? Colors.black
+                              : null,
+                          collapsedTextColor: brightness == Brightness.light
+                              ? Colors.black
+                              : null,
+                          collapsedBackgroundColor:
+                              brightness == Brightness.light
+                                  ? Colors.white
+                                  : null,
+                          title: Text(
+                              "${all.keys.elementAt(index)} (${ss.length})"),
                           children: [
                             ListView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
@@ -194,18 +171,25 @@ class _MyWidgetState extends State<Loc> {
                       },
                     ),
                     ListView.builder(
-                     
-                      itemCount: pasif.length,
+                      itemCount: aktif.length,
                       itemBuilder: (BuildContext context, int index) {
-                        var ss = pasif.values.elementAt(index);
+                        var ss = aktif.values.elementAt(index);
                         return ExpansionTile(
-                          textColor:brightness == Brightness.light ? Colors.black : null,
-                          collapsedTextColor: brightness == Brightness.light ? Colors.black : null,
-                          collapsedBackgroundColor:brightness == Brightness.light ? Colors.white: null,
-                                   title: Text("${all.keys.elementAt(index)} (${ss.length})"),
+                          textColor: brightness == Brightness.light
+                              ? Colors.black
+                              : null,
+                          collapsedTextColor: brightness == Brightness.light
+                              ? Colors.black
+                              : null,
+                          collapsedBackgroundColor:
+                              brightness == Brightness.light
+                                  ? Colors.white
+                                  : null,
+                          title: Text(
+                              "${aktif.keys.elementAt(index)} (${ss.length})"),
                           children: [
                             ListView.builder(
-                                 physics: const NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: ss.length,
                                 itemBuilder:
@@ -216,6 +200,57 @@ class _MyWidgetState extends State<Loc> {
                                       trailing: ss[index2].aciklama != null
                                           ? const Icon(Icons.bookmark)
                                           : null,
+                                    ),
+                                  );
+                                }),
+                          ],
+                        );
+                      },
+                    ),
+                    ListView.builder(
+                      itemCount: pasif.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        var ss = pasif.values.elementAt(index);
+                        return ExpansionTile(
+                          textColor: brightness == Brightness.light
+                              ? Colors.black
+                              : null,
+                          collapsedTextColor: brightness == Brightness.light
+                              ? Colors.black
+                              : null,
+                          collapsedBackgroundColor:
+                              brightness == Brightness.light
+                                  ? Colors.white
+                                  : null,
+                          title: Text(
+                              "${pasif.keys.elementAt(index)} (${ss.length})"),
+                          children: [
+                            ListView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: ss.length,
+                                itemBuilder:
+                                    (BuildContext context, int index2) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                               AddDescriptionPage(
+                                            callback: _callback,
+                                            location: ss[index2],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    child: Card(
+                                      child: ListTile(
+                                        title: Text(ss[index2].antenAdi),
+                                        trailing: ss[index2].aciklama != null
+                                            ? const Icon(Icons.bookmark)
+                                            : null,
+                                      ),
                                     ),
                                   );
                                 }),

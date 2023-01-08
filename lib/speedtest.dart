@@ -1,13 +1,11 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers, duplicate_ignore
-
+import 'package:at_gauges/at_gauges.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_speedtest/flutter_speedtest.dart';
-import 'package:gauges/gauges.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:wizmir/functions.dart' as functions;
 import 'package:wizmir/models/speedtest.dart';
-
-void main() => runApp(const SpeedTest());
 
 class SpeedTest extends StatefulWidget {
   const SpeedTest({super.key});
@@ -23,10 +21,10 @@ class _SpeedTestState extends State<SpeedTest> {
     pathUpload: '/upload',
     pathResponseTime: '/ping',
   );
-
+  double? lat;
+  double? lng;
   double _progressDownload = 0;
   double _progressUpload = 0;
-
 
   double _pointerValue = 0;
   bool start = false;
@@ -36,11 +34,21 @@ class _SpeedTestState extends State<SpeedTest> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // setBestServers();
+       getloc();
     });
     super.initState();
   }
 
-  Future<int> getdata() async {
+  getloc() async {
+       var dd =  await functions.determinePosition();
+     setState(() {
+       lat = dd.latitude;
+       lng = dd.latitude;
+     });
+  }
+
+  Future<String> getdata() async {
+  
     var statu = await getUserStatus();
     await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
     return statu;
@@ -99,54 +107,36 @@ class _SpeedTestState extends State<SpeedTest> {
                 return TabBarView(
                   children: [
                     Center(
-                      child: snapshot.data == 1
+                      child: snapshot.data != "0"
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 SizedBox(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0, right: 20),
-                                    child: RadialGauge(
-                                      axes: [
-                                        RadialGaugeAxis(
-                                          minValue: 0,
-                                          maxValue: 200,
-                                          minAngle: -150,
-                                          maxAngle: 150,
-                                          radius: 0.4,
-                                          width: 0.2,
-                                          color: Colors.blue,
-                                          ticks: [
-                                            RadialTicks(
-                                                interval: 50,
-                                                alignment:
-                                                    RadialTickAxisAlignment
-                                                        .inside,
-                                                color: Colors.black,
-                                                length: 0.2,
-                                                children: [
-                                                  RadialTicks(
-                                                    ticksInBetween: 5,
-                                                    length: 0.2,
-                                                    color: Colors.white12,
-                                                  ),
-                                                ]),
-                                          ],
-                                          pointers: [
-                                            RadialNeedlePointer(
-                                              value: _pointerValue,
-                                              thicknessStart: 5,
-                                              thicknessEnd: 0,
-                                              color: Colors.red,
-                                              length: 0.4,
-                                              knobRadiusAbsolute: 4,
-                                            ),
-                                          ],
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20),
+                                      child: ScaleRadialGauge(
+                                        maxValue: 200,
+                                        actualValue: _pointerValue,
+                                        minValue: 0,
+                                        size: 400,
+                                        title: Text(
+                                          snapshot.data.toString(),
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                      ],
-                                    ),
-                                  ),
+                                        titlePosition: TitlePosition.top,
+                                        pointerColor: Colors.blue,
+                                        needleColor: Colors.blue,
+                                        decimalPlaces: 0,
+                                        isAnimate: true,
+                                        animationDuration: 500,
+                                        unit: const TextSpan(
+                                          text: 'Mbps',
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                      )),
                                 ),
                                 Text(
                                   'Download Test:  ${_progressDownload.round()} Mbps',
@@ -193,7 +183,8 @@ class _SpeedTestState extends State<SpeedTest> {
                                             downloadOnProgress:
                                                 ((percent, transferRate) {
                                               setState(() {
-                                                _pointerValue = transferRate * 2;
+                                                _pointerValue =
+                                                    transferRate * 2;
                                                 _progressDownload =
                                                     transferRate * 2;
                                               });
@@ -201,8 +192,10 @@ class _SpeedTestState extends State<SpeedTest> {
                                             uploadOnProgress:
                                                 ((percent, transferRate) {
                                               setState(() {
-                                                _pointerValue = transferRate * 2;
-                                                _progressUpload = transferRate * 2;
+                                                _pointerValue =
+                                                    transferRate * 2;
+                                                _progressUpload =
+                                                    transferRate * 2;
                                               });
                                             }),
                                             progressResponse:
@@ -219,6 +212,7 @@ class _SpeedTestState extends State<SpeedTest> {
                                               setState(() {
                                                 start = false;
                                                 btnTitle = "starttest".tr();
+                                                 setSpeedTest(_progressDownload.toString(), _progressUpload.toString(), snapshot.data.toString(), "$lat,$lng");
                                               });
                                             },
                                           );
@@ -242,54 +236,35 @@ class _SpeedTestState extends State<SpeedTest> {
                             ),
                     ),
                     Center(
-                      child: snapshot.data == 0
+                      child: snapshot.data == "0"
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 SizedBox(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 20.0, right: 20),
-                                    child: RadialGauge(
-                                      axes: [
-                                        RadialGaugeAxis(
-                                          minValue: 0,
-                                          maxValue: 100,
-                                          minAngle: -150,
-                                          maxAngle: 150,
-                                          radius: 0.4,
-                                          width: 0.2,
-                                          color: Colors.blue,
-                                          ticks: [
-                                            RadialTicks(
-                                                interval: 50,
-                                                alignment:
-                                                    RadialTickAxisAlignment
-                                                        .inside,
-                                                color: Colors.black,
-                                                length: 0.2,
-                                                children: [
-                                                  RadialTicks(
-                                                    ticksInBetween: 5,
-                                                    length: 0.2,
-                                                    color: Colors.white12,
-                                                  ),
-                                                ]),
-                                          ],
-                                          pointers: [
-                                            RadialNeedlePointer(
-                                              value: _pointerValue,
-                                              thicknessStart: 5,
-                                              thicknessEnd: 0,
-                                              color: Colors.red,
-                                              length: 0.4,
-                                              knobRadiusAbsolute: 4,
-                                            ),
-                                          ],
+                                      padding: const EdgeInsets.only(
+                                          left: 20.0, right: 20),
+                                      child: ScaleRadialGauge(
+                                        maxValue: 200,
+                                        actualValue: _pointerValue,
+                                        minValue: 0,
+                                        size: 400,
+                                        title: const Text(
+                                          '',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                      ],
-                                    ),
-                                  ),
+                                        titlePosition: TitlePosition.top,
+                                        pointerColor: Colors.blue,
+                                        needleColor: Colors.blue,
+                                        decimalPlaces: 0,
+                                        isAnimate: false,
+                                        animationDuration: 500,
+                                        unit: const TextSpan(
+                                            text: 'Mbps',
+                                            style: TextStyle(fontSize: 10)),
+                                      )),
                                 ),
                                 Text(
                                   'Download Test:  ${_progressDownload.round()} Mbps',
@@ -336,7 +311,8 @@ class _SpeedTestState extends State<SpeedTest> {
                                             downloadOnProgress:
                                                 ((percent, transferRate) {
                                               setState(() {
-                                                _pointerValue = transferRate * 2;
+                                                _pointerValue =
+                                                    transferRate * 2;
                                                 _progressDownload =
                                                     transferRate * 2;
                                               });
@@ -344,8 +320,10 @@ class _SpeedTestState extends State<SpeedTest> {
                                             uploadOnProgress:
                                                 ((percent, transferRate) {
                                               setState(() {
-                                                _pointerValue = transferRate * 2;
-                                                _progressUpload = transferRate * 2;
+                                                _pointerValue =
+                                                    transferRate * 2;
+                                                _progressUpload =
+                                                    transferRate * 2;
                                               });
                                             }),
                                             progressResponse:
@@ -362,6 +340,7 @@ class _SpeedTestState extends State<SpeedTest> {
                                               setState(() {
                                                 start = false;
                                                 btnTitle = "starttest".tr();
+                                                setSpeedTest(_progressDownload.toString(), _progressUpload.toString(), "gsm", "$lat,$lng");
                                               });
                                             },
                                           );

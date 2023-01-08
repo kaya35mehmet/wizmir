@@ -14,13 +14,14 @@ class InfoWindowScreen extends StatelessWidget {
   final bool islogin;
   final bool isadmin;
   final Function callback;
+  final Function closecallback;
   final CustomInfoWindowController controller;
   const InfoWindowScreen(
       {Key? key,
       required this.location,
       required this.islogin,
       required this.isadmin,
-      required this.callback, required this.controller})
+      required this.callback, required this.controller, required this.closecallback})
       : super(key: key);
 
   @override
@@ -44,13 +45,13 @@ class InfoWindowScreen extends StatelessWidget {
                 child:  Text("incare".tr(), style:const TextStyle(color: Colors.red,fontWeight: FontWeight.bold,fontSize: 16), ),
               ):const Text(""),
               IconButton(onPressed: (){
+                closecallback();
                 controller.hideInfoWindow!();
               }, icon: Icon(Icons.cancel_outlined, color: brightness == Brightness.light ?  Colors.black : null,)),
             ],
           ),
           
-          Expanded(
-            child: Padding(
+           Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -179,8 +180,6 @@ class InfoWindowScreen extends StatelessWidget {
                   ],
                 ),
               ),
-            
-          ),
         ],
       ),
     );

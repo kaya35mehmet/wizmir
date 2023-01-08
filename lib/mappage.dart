@@ -7,6 +7,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_launch/flutter_launch.dart';
+import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -63,6 +66,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Marker? selectedMarker;
   bool userview = false;
   late double infoviewheight;
+  String? _darkMapStyle;
+  FlickManager? flickManager;
 
   @override
   void initState() {
@@ -82,6 +87,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     checklocation();
     startTimer();
     super.initState();
+    _loadMapStyles();
+  }
+
+  Future _loadMapStyles() async {
+    _darkMapStyle = await rootBundle.loadString('assets/map_styles/dark.json');
   }
 
   Future<dynamic> getlocation() async {
@@ -139,7 +149,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   Future<void> reloadmap() async {
     setState(() {
-      // latLngfuture = null;
       latLngfuture = getData();
     });
   }
@@ -200,6 +209,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     isadmin: isadmin!,
                     callback: _callbackinfoview,
                     controller: _customInfoWindowController,
+                    closecallback: _closecallback,
                   ),
                   LatLng(location.lat!, location.lng!),
                 );
@@ -310,6 +320,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     });
   }
 
+  void _closecallback() {
+    generateMarkers(context, latLng);
+  }
+
   void _callbackinfoview(Locations newlocation) {
     _customInfoWindowController.hideInfoWindow!();
     var dd = locations!.firstWhere((element) => element.id == newlocation.id);
@@ -333,6 +347,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         isadmin: isadmin!,
         callback: _callbackinfoview,
         controller: _customInfoWindowController,
+        closecallback: _closecallback,
       ),
       LatLng(location.lat!, location.lng!),
     );
@@ -350,135 +365,124 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     });
   }
 
-  FlickManager flickManager(url) {
-    return FlickManager(
+  FlickManager setflickManager(url) {
+    flickManager = FlickManager(
       videoPlayerController: VideoPlayerController.network(url),
     );
+    return flickManager!;
   }
 
   Future<void> startTimer() async {
-    var id = await storage.read(key: "importantdays");
     getimportantdays().then(
       (value) async {
-        if (id != value.id) {
-          showDialog(
-            barrierDismissible: false,
-            context: context,
-            builder: (context) => AlertDialog(
-              contentPadding: EdgeInsets.zero,
-              content: Stack(
-                children: [
-                  Container(
-                    child: value.turu == "resim"
-                        ? OctoImage(
-                            image: CachedNetworkImageProvider(value.url),
-                            placeholderBuilder: OctoPlaceholder.blurHash(
-                              'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
-                            ),
-                            errorBuilder: OctoError.icon(color: Colors.red),
-                            fit: BoxFit.cover,
-                          )
-                        : AspectRatio(
-                            aspectRatio: 16 / 9,
-                            child: FlickVideoPlayer(
-                                flickVideoWithControls: FlickVideoWithControls(
-                                  videoFit: BoxFit.fitHeight,
-                                  controls: FlickPortraitControls(
-                                    progressBarSettings:
-                                        FlickProgressBarSettings(
-                                            playedColor: Colors.green),
-                                  ),
-                                ),
-                                flickManager: flickManager(value.url)),
-                          ),
-                  ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: IconButton(
-                      onPressed: () async {
-                        await ImageDownloader.downloadImage(value.url)
-                            .whenComplete(
-                          () => Toast.show("succesful".tr(),
-                              duration: Toast.lengthLong,
-                              gravity: Toast.bottom),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.download,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              actions: [
-                Center(
-                  child: AnimatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    duration: 70,
-                    height: 50,
-                    width: 200,
-                    enabled: true,
-                    shadowDegree: ShadowDegree.dark,
-                    color: Colors.blue,
-                    child: Text(
-                      "close".tr(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ),
-//  GestureDetector(
-//                     onTap: () {
-//                       Navigator.pop(context);
-//                     },
-//                     child:
-//                     Container(
-//                       decoration: BoxDecoration(
-//                         gradient: const LinearGradient(
-//                           colors: [
-//                             Color.fromARGB(255, 35, 19, 145),
-//                             Color.fromARGB(255, 56, 108, 228),
-//                           ],
-//                           begin: Alignment.topLeft,
-//                           end: Alignment.bottomRight,
-//                         ),
-//                         borderRadius: BorderRadius.circular(20),
-//                         boxShadow: const [
-//                           BoxShadow(
-//                             color: Colors.black12,
-//                             offset: Offset(5, 5),
-//                             blurRadius: 10,
-//                           )
-//                         ],
-//                       ),
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(8.0),
-//                         child: Center(
-//                           child: Text(
-//                             "close".tr(),
-//                             style: const TextStyle(
-//                               color: Colors.white,
-//                               fontSize: 18,
-//                               fontWeight: FontWeight.w500,
-//                             ),
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                     ),
-              ],
-            ),
-          );
-          await storage.write(key: "importantdays", value: value.id);
+        var importantdays = await storage.read(key: "importantdays");
+        String id = "";
+        int kalangosterimSayisi = -1;
+        if (importantdays == null) {
+          showdialog(value);
+          await storage.write(
+              key: "importantdays",
+              value: "${value.id}:${value.gosterimSayisi}:${--value.gosterimSayisi}");
+        }
+
+        if (importantdays != null) {
+          id = importantdays.split(":")[0];
+          kalangosterimSayisi = int.parse(importantdays.split(":")[2]);
+
+          if (id == value.id && kalangosterimSayisi > 0) {
+            showdialog(value);
+            await storage.write(
+                key: "importantdays",
+                value: "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+          }
+
+          if (id != value.id) {
+            showdialog(value);
+            await storage.write(
+                key: "importantdays",
+                value: "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+          }
         }
       },
+    );
+  }
+
+  showdialog(value) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+        contentPadding: EdgeInsets.zero,
+        content: Stack(
+          children: [
+            Container(
+              child: value.turu == "resim"
+                  ? OctoImage(
+                      image: CachedNetworkImageProvider(value.url),
+                      placeholderBuilder: OctoPlaceholder.blurHash(
+                        'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+                      ),
+                      errorBuilder: OctoError.icon(color: Colors.red),
+                      fit: BoxFit.cover,
+                    )
+                  : AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: FlickVideoPlayer(
+                          flickVideoWithControls: FlickVideoWithControls(
+                            videoFit: BoxFit.fitHeight,
+                            controls: FlickPortraitControls(
+                              progressBarSettings: FlickProgressBarSettings(
+                                  playedColor: Colors.green),
+                            ),
+                          ),
+                          flickManager: setflickManager(value.url)),
+                    ),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                onPressed: () async {
+                  await ImageDownloader.downloadImage(value.url).whenComplete(
+                    () => Toast.show("succesful".tr(),
+                        duration: Toast.lengthLong, gravity: Toast.bottom),
+                  );
+                },
+                icon: const Icon(
+                  Icons.download,
+                  color: Colors.white,
+                ),
+              ),
+            )
+          ],
+        ),
+        actions: [
+          Center(
+            child: AnimatedButton(
+              onPressed: () {
+                if (flickManager != null) {
+                  flickManager!.dispose();
+                }
+                Navigator.pop(context);
+              },
+              duration: 70,
+              height: 50,
+              width: 200,
+              enabled: true,
+              shadowDegree: ShadowDegree.dark,
+              color: Colors.blue,
+              child: Text(
+                "close".tr(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -496,6 +500,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     Widget iconrefresh = Icon(Icons.refresh,
         color: brightness == Brightness.light ? Colors.blue : Colors.white);
     ToastContext().init(context);
+
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -511,6 +516,46 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6.0),
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.transparent,
+                    heroTag: "btnwhatsapp",
+                    onPressed: () {
+                      FlutterLaunch.launchWhatsapp(
+                          phone: "905309194035", message: "");
+                    },
+                    child: SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Image.asset("assets/images/whatsapp.png"),
+                      // decoration: const BoxDecoration(
+                      //   shape: BoxShape.circle,
+                      //   image: DecorationImage(
+                      //       image: AssetImage('assets/images/whatsapp.png')),
+                      // ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: FloatingActionButton(
+                    heroTag: "btnhim",
+                    onPressed: () async {
+                      const number = '153';
+                      await FlutterPhoneDirectCaller.callNumber(number);
+                    },
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                            image: AssetImage('assets/images/him.jpeg')),
+                      ),
+                    ),
+                  ),
+                ),
                 FloatingActionButton(
                   heroTag: "btn11",
                   backgroundColor: brightness == Brightness.light
@@ -577,15 +622,15 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
         elevation: 0,
         leading: IconButton(
-            onPressed: () {
-              _customInfoWindowController.hideInfoWindow!();
-              _scaffoldKey.currentState?.openDrawer();
-            },
-            icon: Text(
-              "menu".tr(),
-              style: TextStyle(
-                  color: brightness == Brightness.light ? Colors.black : null),
-            )),
+          onPressed: () {
+            _customInfoWindowController.hideInfoWindow!();
+            _scaffoldKey.currentState?.openDrawer();
+          },
+          icon: Icon(
+            Icons.menu,
+            color: brightness == Brightness.light ? Colors.black : null,
+          ),
+        ),
       ),
       body: Center(
         child: FutureBuilder<LatLng>(
@@ -605,12 +650,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       onTap: (position) {
                         _customInfoWindowController.hideInfoWindow!();
                         _markers!.remove(selectedMarker!);
+                        generateMarkers(context, latLng);
                       },
                       onMapCreated: (GoogleMapController controller) {
                         _controller.complete(controller);
                         generateMarkers(context, latLng);
                         _customInfoWindowController.googleMapController =
                             controller;
+                        if (brightness == Brightness.dark) {
+                          controller.setMapStyle(_darkMapStyle);
+                        }
                       },
                       onCameraMove: (position) {
                         _customInfoWindowController.onCameraMove!();
@@ -625,7 +674,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                       controller: _customInfoWindowController,
                       height: infoviewheight,
                       width: MediaQuery.of(context).size.width * 0.7,
-                      offset: 40,
+                      offset: 60,
                     ),
                     LoginPanelPage(
                       islogin: islogin!,

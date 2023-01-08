@@ -29,7 +29,7 @@ Future<String> sendreport2(username, sorun, String? apid) async {
   }
 }
 
-Future<String> sendreport(username, sorun, String? apid, File? file) async {
+Future<String> sendreport(username, sorun, diger, String? apid, File? file) async {
   var storage = const FlutterSecureStorage();
   if (username == null || username == "") {
     username = await storage.read(key: "number");
@@ -41,7 +41,8 @@ Future<String> sendreport(username, sorun, String? apid, File? file) async {
   request.fields["guid"] = guid;
   request.fields["username"] = username;
   request.fields["sorun"] = sorun;
-  request.fields["apid"] = apid!;
+  request.fields["apid"] = apid ?? "";
+  request.fields["diger"] = diger ?? "";
  
   if (file != null) {
     var pic = await http.MultipartFile.fromPath("resim", file.path);

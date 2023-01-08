@@ -89,5 +89,9 @@
     "or" :"or",
     "incare":"In care",
     "maprenewed" : "Map renewed",
-    "description" : "Description"
+    "description" : "Description",
+    "area" : "You are now in the WizmirNET shooting area.",
+    "totaldownload" :"Total Download",
+    "totalupload" :"Total Upload",
+    "other" : "Other"
 }

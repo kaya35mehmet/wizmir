@@ -1,6 +1,8 @@
 
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../models/locations.dart';
@@ -15,10 +17,11 @@ Future<void> wifiAlert(locations,latLng,context) async {
           content: Wrap(
             runSpacing: 10,
             children: [
-              Image.asset("assets/images/logo.png"),
-              const Text(
-                'Şuanda WizmirNET çekim alanındasınız.',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+              Image.asset("assets/images/wizmirnetson.png"),
+              // SvgPicture.asset("assets/images/wizmirnet_icon2.svg"),
+               Text(
+                'area'.tr(),
+                style:const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                 textAlign: TextAlign.center,
               ),
             ],
