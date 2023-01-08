@@ -66,8 +66,8 @@ class NavigationDrawer extends StatelessWidget {
                           top: MediaQuery.of(context).padding.top, bottom: 4),
                       // color:brightness == Brightness.light ? Colors.white :Colors.black,
                       child: Padding(
-                        padding: const EdgeInsets.only(left:20.0, right: 20),
-                        child: Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.5,)
+                        padding: const EdgeInsets.only(left:80.0, right: 80,bottom: 4),
+                        child: Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.2,)
                         // SvgPicture.asset(
                         //   "assets/images/wizmirnet_icon2.svg",
                         //   fit: BoxFit.contain,

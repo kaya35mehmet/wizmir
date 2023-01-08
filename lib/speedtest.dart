@@ -34,17 +34,21 @@ class _SpeedTestState extends State<SpeedTest> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // setBestServers();
-      
+       getloc();
     });
     super.initState();
   }
 
-  Future<String> getdata() async {
-     var dd =  await functions.determinePosition();
+  getloc() async {
+       var dd =  await functions.determinePosition();
      setState(() {
        lat = dd.latitude;
        lng = dd.latitude;
      });
+  }
+
+  Future<String> getdata() async {
+  
     var statu = await getUserStatus();
     await Future<dynamic>.delayed(const Duration(milliseconds: 3000));
     return statu;
