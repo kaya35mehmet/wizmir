@@ -93,5 +93,8 @@
     "area": "Şuanda WizmirNET çekim alanındasınız.",
     "totaldownload" :"Toplam Download",
     "totalupload" :"Toplam Upload",
-    "other":"Diğer"
+    "other":"Diğer",
+    "updateprofile" : "Profil Güncelle",
+    "name" : "Ad",
+    "surname" : "Soyad"
 }

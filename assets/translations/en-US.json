@@ -93,5 +93,8 @@
     "area" : "You are now in the WizmirNET shooting area.",
     "totaldownload" :"Total Download",
     "totalupload" :"Total Upload",
-    "other" : "Other"
+    "other" : "Other",
+    "updateprofile" : "Update Profile",
+    "name" : "Name",
+    "surname" : "Surname"
 }

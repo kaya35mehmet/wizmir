@@ -73,9 +73,10 @@ class _MyWidgetState extends State<LoginPanelPage> {
           ? Colors.transparent
           : const Color(0xFF424242),
       minHeight: 0,
-      maxHeight: MediaQuery.of(context).size.height * 0.5,
+      maxHeight: MediaQuery.of(context).size.height * 0.55,
       panel: Column(
         children: [
+
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -84,7 +85,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     : const Color(0xFF424242),
               ),
               padding: const EdgeInsets.all(10),
-              height: MediaQuery.of(context).size.height * 0.2,
+              height: MediaQuery.of(context).size.height * 0.4,
               child: Column(
                 children: [
                   Center(
@@ -134,6 +135,20 @@ class _MyWidgetState extends State<LoginPanelPage> {
                       ),
                     ),
                   ),
+                  Divider(),
+                  Padding(
+                          padding: const EdgeInsets.only(
+                              left: 80.0, right: 80, bottom: 4),
+                          child: Image.asset(
+                            "assets/images/wizmirnetson.png",
+                            width: MediaQuery.of(context).size.width * 0.4,
+                          )
+                          // SvgPicture.asset(
+                          //   "assets/images/wizmirnet_icon2.svg",
+                          //   fit: BoxFit.contain,
+                          //   width: MediaQuery.of(context).size.width * 0.5,
+                          // ),
+                          ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -191,7 +206,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     child: Text("login".tr()),
                   ),
                   const SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

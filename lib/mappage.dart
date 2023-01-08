@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:octo_image/octo_image.dart';
+import 'package:open_whatsapp/open_whatsapp.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
@@ -522,18 +523,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     backgroundColor: Colors.transparent,
                     heroTag: "btnwhatsapp",
                     onPressed: () {
-                      FlutterLaunch.launchWhatsapp(
-                          phone: "905309194035", message: "");
+                         FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
+                      // FlutterLaunch.launchWhatsapp(
+                      //     phone: "905309194035", message: "");
                     },
                     child: SizedBox(
                       width: 100,
                       height: 100,
                       child: Image.asset("assets/images/whatsapp.png"),
-                      // decoration: const BoxDecoration(
-                      //   shape: BoxShape.circle,
-                      //   image: DecorationImage(
-                      //       image: AssetImage('assets/images/whatsapp.png')),
-                      // ),
                     ),
                   ),
                 ),
@@ -613,12 +610,18 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             )
           : null,
       appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(
-              color: brightness == Brightness.light ? Colors.black : null),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset("assets/images/ibblogo.png",width: 230,),
+          ],
         ),
-        centerTitle: true,
+        // Text(
+        //   widget.title,
+        //   style: TextStyle(
+        //       color: brightness == Brightness.light ? Colors.black : null),
+        // ),
+        // centerTitle: false,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
         elevation: 0,
         leading: IconButton(
@@ -626,9 +629,12 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             _customInfoWindowController.hideInfoWindow!();
             _scaffoldKey.currentState?.openDrawer();
           },
-          icon: Icon(
-            Icons.menu,
-            color: brightness == Brightness.light ? Colors.black : null,
+          icon: Padding(
+            padding: const EdgeInsets.all(0),
+            child: Icon(
+              Icons.menu,
+              color: brightness == Brightness.light ? Colors.black : null,
+            ),
           ),
         ),
       ),

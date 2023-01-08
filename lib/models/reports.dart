@@ -35,7 +35,8 @@ Future<String> sendreport(username, sorun, diger, String? apid, File? file) asyn
     username = await storage.read(key: "number");
   }
   var guid = await storage.read(key: "guid") ?? "-";
-
+ 
+ 
   var request = http.MultipartRequest(
       "POST", Uri.parse("https://yonetim.wizmir.net/mobilapi/sorunkaydet.php"));
   request.fields["guid"] = guid;

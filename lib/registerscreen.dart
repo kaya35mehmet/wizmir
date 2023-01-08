@@ -31,13 +31,14 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
-        title:  Text(
+        title: Text(
           'register'.tr(),
-          style: TextStyle(color: brightness == Brightness.light ? Colors.black : null),
+          style: TextStyle(
+              color: brightness == Brightness.light ? Colors.black : null),
         ),
         leading: IconButton(
           onPressed: () => Navigator.pop(context, true),
-          icon:  Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
             color: brightness == Brightness.light ? Colors.black : null,
           ),
@@ -78,6 +79,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
 
   TextEditingController cnt = TextEditingController();
   TextEditingController namecnt = TextEditingController();
+  TextEditingController surnamecnt = TextEditingController();
   String initialCountry = 'TR';
   PhoneNumber number = PhoneNumber(isoCode: 'TR');
   String? phonenumber;
@@ -102,10 +104,10 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
           if (passcnt.text.length > 5) {
             User user = User(
                 telefon: phonenumber!,
-                adsoyad: namecnt.text,
+                ad: namecnt.text,
                 sifre: passcnt.text,
                 cinsiyet: cinsiyet,
-                yas: age);
+                yas: age, soyad: surnamecnt.text);
             Timer(
               const Duration(milliseconds: 500),
               () {
@@ -142,8 +144,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
             duration: Toast.lengthShort, gravity: Toast.bottom);
       }
     } else {
-       Toast.show("chooseyourage".tr(),
-            duration: Toast.lengthShort, gravity: Toast.bottom);
+      Toast.show("chooseyourage".tr(),
+          duration: Toast.lengthShort, gravity: Toast.bottom);
     }
     _btnController.reset();
   }
@@ -151,193 +153,207 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
-     var brightness = SchedulerBinding.instance.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return SingleChildScrollView(
       child: AnimationLimiter(
-          child: AnimationConfiguration.staggeredList(
-        position: 2,
-        delay: const Duration(milliseconds: 100),
-        child: SlideAnimation(
-          duration: const Duration(milliseconds: 2500),
-          curve: Curves.fastLinearToSlowEaseIn,
-          horizontalOffset: 30,
-          verticalOffset: 900.0,
-          child: FlipAnimation(
-            duration: const Duration(milliseconds: 3000),
+        child: AnimationConfiguration.staggeredList(
+          position: 2,
+          delay: const Duration(milliseconds: 100),
+          child: SlideAnimation(
+            duration: const Duration(milliseconds: 2500),
             curve: Curves.fastLinearToSlowEaseIn,
-            flipAxis: FlipAxis.y,
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  margin: EdgeInsets.only(bottom: w / 20),
-                  // height: _w,
-                  decoration: BoxDecoration(
-                    color: brightness == Brightness.light ? Colors.white : null,
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(20),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color:  Colors.black.withOpacity(0.1),
-                        blurRadius: 40,
-                        spreadRadius: 10,
-                      ),
-                    ],
-                    border:brightness == Brightness.dark ? Border.all(color: Colors.white):null
-                  ),
-                  child: Column(
-                    children: [
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Image.asset("assets/images/wizmirnetson.png",width: MediaQuery.of(context).size.width * 0.5,),
-                      // SvgPicture.asset(
-                      //   "assets/images/wizmirnet_icon2.svg",
-                      //   width: MediaQuery.of(context).size.width * 0.5,
-                      // ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      InternationalPhoneNumberInput(
-                        searchBoxDecoration: InputDecoration(
-                            labelText: "searchbycountrynameordialingcode".tr()),
-                        onInputChanged: (PhoneNumber number) {
-                          setState(() {
-                            phonenumber = number.phoneNumber;
-                          });
-                        },
-                        onInputValidated: (bool value) {},
-                        selectorConfig: const SelectorConfig(
-                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+            horizontalOffset: 30,
+            verticalOffset: 900.0,
+            child: FlipAnimation(
+              duration: const Duration(milliseconds: 3000),
+              curve: Curves.fastLinearToSlowEaseIn,
+              flipAxis: FlipAxis.y,
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    margin: EdgeInsets.only(bottom: w / 20),
+                    // height: _w,
+                    decoration: BoxDecoration(
+                        color: brightness == Brightness.light
+                            ? Colors.white
+                            : null,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(20),
                         ),
-                        ignoreBlank: false,
-                        hintText: "phonenumber".tr(),
-                        errorMessage: "wrongnumber".tr(),
-                        autoValidateMode: AutovalidateMode.disabled,
-                        selectorTextStyle:  TextStyle(color:brightness == Brightness.light ? Colors.black : null),
-                        initialValue: number,
-                        textFieldController: cnt,
-                        formatInput: false,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            signed: true, decimal: true),
-                        inputBorder: const OutlineInputBorder(),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        controller: namecnt,
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(8),
-                            labelText: 'namesurname'.tr(),
-                            border: const OutlineInputBorder()),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      TextField(
-                        controller: passcnt,
-                        keyboardType: TextInputType.text,
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(8),
-                            labelText: 'password'.tr(),
-                            border: const OutlineInputBorder()),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            "age".tr(),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          DropdownButton<String>(
-                            value: age,
-                            elevation: 0,
-                            style:  TextStyle(color: brightness == Brightness.light ? Colors.black : null),
-                            onChanged: (String? value) {
-                              setState(() {
-                                age = value!.toString();
-                              });
-                            },
-                            items: list
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value.toString(),
-                                child: Text(value.toString(),
-                                    style: const TextStyle(fontSize: 16)),
-                              );
-                            }).toList(),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 40,
+                            spreadRadius: 10,
                           ),
                         ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: ListTile(
-                              title: Text('female'.tr()),
-                              leading: Radio<Gender>(
-                                value: Gender.kadin,
-                                groupValue: _character,
-                                onChanged: (Gender? value) {
-                                  setState(() {
-                                    _character = value;
-                                    cinsiyet = "female".tr();
-                                  });
-                                },
+                        border: brightness == Brightness.dark
+                            ? Border.all(color: Colors.white)
+                            : null),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Image.asset(
+                          "assets/images/wizmirnetson.png",
+                          width: MediaQuery.of(context).size.width * 0.5,
+                        ),
+                        // SvgPicture.asset(
+                        //   "assets/images/wizmirnet_icon2.svg",
+                        //   width: MediaQuery.of(context).size.width * 0.5,
+                        // ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        InternationalPhoneNumberInput(
+                          searchBoxDecoration: InputDecoration(
+                              labelText:
+                                  "searchbycountrynameordialingcode".tr()),
+                          onInputChanged: (PhoneNumber number) {
+                            setState(() {
+                              phonenumber = number.phoneNumber;
+                            });
+                          },
+                          onInputValidated: (bool value) {},
+                          selectorConfig: const SelectorConfig(
+                            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                          ),
+                          ignoreBlank: false,
+                          hintText: "phonenumber".tr(),
+                          errorMessage: "wrongnumber".tr(),
+                          autoValidateMode: AutovalidateMode.disabled,
+                          selectorTextStyle: TextStyle(
+                              color: brightness == Brightness.light
+                                  ? Colors.black
+                                  : null),
+                          initialValue: number,
+                          textFieldController: cnt,
+                          formatInput: false,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              signed: true, decimal: true),
+                          inputBorder: const OutlineInputBorder(),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
+                          controller: namecnt,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(8),
+                              labelText: 'namesurname'.tr(),
+                              border: const OutlineInputBorder()),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
+                          controller: passcnt,
+                          keyboardType: TextInputType.text,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(8),
+                              labelText: 'password'.tr(),
+                              border: const OutlineInputBorder()),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "age".tr(),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            DropdownButton<String>(
+                              value: age,
+                              elevation: 0,
+                              style: TextStyle(
+                                  color: brightness == Brightness.light
+                                      ? Colors.black
+                                      : null),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  age = value!.toString();
+                                });
+                              },
+                              items: list.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value.toString(),
+                                  child: Text(value.toString(),
+                                      style: const TextStyle(fontSize: 16)),
+                                );
+                              }).toList(),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: ListTile(
+                                title: Text('female'.tr()),
+                                leading: Radio<Gender>(
+                                  value: Gender.kadin,
+                                  groupValue: _character,
+                                  onChanged: (Gender? value) {
+                                    setState(() {
+                                      _character = value;
+                                      cinsiyet = "female".tr();
+                                    });
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: ListTile(
-                              title: Text('male'.tr()),
-                              leading: Radio<Gender>(
-                                value: Gender.erkek,
-                                groupValue: _character,
-                                onChanged: (Gender? value) {
-                                  setState(() {
-                                    _character = value;
-                                    cinsiyet = "male".tr();
-                                  });
-                                },
+                            Expanded(
+                              flex: 1,
+                              child: ListTile(
+                                title: Text('male'.tr()),
+                                leading: Radio<Gender>(
+                                  value: Gender.erkek,
+                                  groupValue: _character,
+                                  onChanged: (Gender? value) {
+                                    setState(() {
+                                      _character = value;
+                                      cinsiyet = "male".tr();
+                                    });
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      RoundedLoadingButton(
-                        controller: _btnController,
-                        onPressed: _doSomething,
-                        child: Text('register'.tr(),
-                            style: const TextStyle(color: Colors.white)),
-                      ),
-                    ],
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        RoundedLoadingButton(
+                          controller: _btnController,
+                          onPressed: _doSomething,
+                          child: Text('register'.tr(),
+                              style: const TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-              ],
+                  const SizedBox(
+                    height: 40,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      )),
+      ),
     );
   }
 }
