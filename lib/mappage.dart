@@ -14,7 +14,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
 import 'package:octo_image/octo_image.dart';
-import 'package:open_whatsapp/open_whatsapp.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
@@ -523,9 +522,9 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     backgroundColor: Colors.transparent,
                     heroTag: "btnwhatsapp",
                     onPressed: () {
-                         FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
-                      // FlutterLaunch.launchWhatsapp(
-                      //     phone: "905309194035", message: "");
+                        //  FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
+                      FlutterLaunch.launchWhatsapp(
+                          phone: "905309194035", message: "");
                     },
                     child: SizedBox(
                       width: 100,
