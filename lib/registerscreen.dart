@@ -4,10 +4,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
+import 'package:wizmir/models/kvkk.dart';
 import 'package:wizmir/models/login.dart';
 import 'package:wizmir/models/user.dart';
 import 'package:wizmir/otp.dart';
@@ -24,6 +24,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
@@ -70,7 +71,7 @@ class SlideAnimationWidget extends StatefulWidget {
 enum Gender { erkek, kadin }
 
 List<String> list = List<String>.generate(
-    83, (int index) => (index + 18).toString(),
+    80, (int index) => (DateTime.now().year - index).toString(),
     growable: true);
 
 class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
@@ -87,27 +88,38 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   Gender? _character = Gender.kadin;
   String cinsiyet = "female".tr();
   String age = "";
+  bool checkvalue = false;
+  String kvkk = "";
 
   @override
   void initState() {
     list.insert(0, "choose".tr());
     setState(() {
       age = list.first;
+    
     });
+    getkvkkdata();
     super.initState();
   }
 
+  getkvkkdata() async {
+      kvkk = await getkvkk();
+  }
+
   void _doSomething() async {
-    if (age != "Choose" && age != "Seçiniz") {
+    if (checkvalue) {
+      if (age != "Choose" && age != "Seçiniz") {
       if (phonenumber != null && namecnt.text != "") {
         if (phonenumber!.length == 13) {
           if (passcnt.text.length > 5) {
             User user = User(
-                telefon: phonenumber!,
-                ad: namecnt.text,
-                sifre: passcnt.text,
-                cinsiyet: cinsiyet,
-                yas: age, soyad: surnamecnt.text);
+              telefon: phonenumber!,
+              ad: namecnt.text,
+              soyad: surnamecnt.text,
+              sifre: passcnt.text,
+              cinsiyet: cinsiyet,
+              yas: age,
+            );
             Timer(
               const Duration(milliseconds: 500),
               () {
@@ -147,8 +159,14 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
       Toast.show("chooseyourage".tr(),
           duration: Toast.lengthShort, gravity: Toast.bottom);
     }
+    } else {
+         Toast.show("pleasecheck".tr(),
+          duration: Toast.lengthShort, gravity: Toast.bottom);
+    }
     _btnController.reset();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -194,18 +212,14 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: 20,
+                          height: 0,
                         ),
                         Image.asset(
                           "assets/images/wizmirnetson.png",
-                          width: MediaQuery.of(context).size.width * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.3,
                         ),
-                        // SvgPicture.asset(
-                        //   "assets/images/wizmirnet_icon2.svg",
-                        //   width: MediaQuery.of(context).size.width * 0.5,
-                        // ),
                         const SizedBox(
-                          height: 40,
+                          height: 20,
                         ),
                         InternationalPhoneNumberInput(
                           searchBoxDecoration: InputDecoration(
@@ -243,7 +257,18 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                               contentPadding: const EdgeInsets.all(8),
-                              labelText: 'namesurname'.tr(),
+                              labelText: 'name'.tr(),
+                              border: const OutlineInputBorder()),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
+                          controller: surnamecnt,
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.all(8),
+                              labelText: 'surname'.tr(),
                               border: const OutlineInputBorder()),
                         ),
                         const SizedBox(
@@ -328,6 +353,52 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                                       cinsiyet = "male".tr();
                                     });
                                   },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Checkbox(value: checkvalue, onChanged: (value) {
+                              setState(() {
+                                checkvalue = !checkvalue;
+                              });
+                            }),
+                            Flexible(
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    barrierDismissible: false,
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children:  [
+                                          Text(kvkk)
+                                        ],
+                                      ),
+                                      actions: [
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ElevatedButton(
+                                              onPressed: () async {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("ok".tr())),
+                                        )
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: Text(
+                                  "kvkk".tr(),
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(249, 36, 36, 159)),
                                 ),
                               ),
                             ),

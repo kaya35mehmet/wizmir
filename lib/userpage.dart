@@ -39,10 +39,19 @@ class _UserPageState extends State<UserPage> {
           color:brightness == Brightness.light ?  Colors.black : null,
         ),
         centerTitle: true,
-        title: Text(
-          "usagedetails".tr(),
-          style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null,),
+        title:Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset(
+              "assets/images/ibblogo.png",
+              width: 230,
+            ),
+          ],
         ),
+        //  Text(
+        //   "usagedetails".tr(),
+        //   style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null,),
+        // ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

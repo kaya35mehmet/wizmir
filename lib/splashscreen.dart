@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen>
     return Scaffold(
       body: showanim
           ? Image.asset(
-              "assets/images/splash.gif",
+              "assets/images/newsplash.gif",
               fit: BoxFit.cover,
               height: double.infinity,
               width: double.infinity,

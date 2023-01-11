@@ -17,6 +17,7 @@ import 'package:octo_image/octo_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wizmir/drawer.dart';
 import 'package:wizmir/functions.dart' as functions;
@@ -194,6 +195,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Future<void> generateMarkers(context, current) async {
     var ikon = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/wifi6.svg", 36);
+    var ikon2 = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/wifi7inactive.svg", 36);
+    var buradayim = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/buradayim5.svg", 90);
     var localMarkers = <Marker>{};
     for (var location in locations!) {
       var dist = Geolocator.distanceBetween(
@@ -228,10 +233,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             markerId: MarkerId('${location.lat}_${location.lng}'),
             position: LatLng(location.lat!, location.lng!),
             icon: location.mylocation
-                ? await functions.bitmapDescriptorFromSvgAsset(
-                    context, "assets/icons/buradayim5.svg", 90)
+                ? buradayim
                 : !isadmin! && dist > 50
-                    ? ikon
+                    ? location.aktifmi
+                        ? ikon
+                        : ikon2
                     : isadmin! && location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
                             BitmapDescriptor.hueOrange)
@@ -286,8 +292,37 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   void _callbackislogin(phonenumber, password) {
     login(phonenumber, password).then((value) {
       if (value.success == "0") {
-        Toast.show("wrongusernameorpassword".tr(),
-            duration: Toast.lengthShort, gravity: Toast.bottom);
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  // title: Text('Dialog Title'),
+                  content: Text('wrongusernameorpassword'.tr()),
+                  actions: <Widget>[
+                    Center(
+                      child: AnimatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        duration: 70,
+                        height: 50,
+                        width: 200,
+                        enabled: true,
+                        shadowDegree: ShadowDegree.dark,
+                        color: Colors.blue,
+                        child: Text(
+                          "ok".tr(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ));
+        // Toast.show("wrongusernameorpassword".tr(),
+        //     duration: Toast.lengthShort, gravity: Toast.bottom);
       } else {
         Toast.show("loginsuccessful".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -382,7 +417,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           showdialog(value);
           await storage.write(
               key: "importantdays",
-              value: "${value.id}:${value.gosterimSayisi}:${--value.gosterimSayisi}");
+              value:
+                  "${value.id}:${value.gosterimSayisi}:${--value.gosterimSayisi}");
         }
 
         if (importantdays != null) {
@@ -393,14 +429,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             showdialog(value);
             await storage.write(
                 key: "importantdays",
-                value: "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+                value:
+                    "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
           }
 
           if (id != value.id) {
             showdialog(value);
             await storage.write(
                 key: "importantdays",
-                value: "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+                value:
+                    "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
           }
         }
       },
@@ -486,6 +524,22 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
   }
 
+  void openWhatsapp() async {
+  var whatsapp = '+905309194035';
+  var whatsappURL = Uri.parse(
+    'whatsapp://send?phone=$whatsapp&text=');
+
+  if (await canLaunchUrl(whatsappURL)) {
+    await launchUrl(whatsappURL);
+  } else {
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     content: Text("WhatsApp is not installed on the device"),
+    //   ),
+    // );
+  }
+}
+
   @override
   void dispose() {
     _customInfoWindowController.dispose();
@@ -521,11 +575,20 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   child: FloatingActionButton(
                     backgroundColor: Colors.transparent,
                     heroTag: "btnwhatsapp",
-                    onPressed: () {
-                        //  FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
-                      FlutterLaunch.launchWhatsapp(
-                          phone: "905309194035", message: "");
-                    },
+                    // onPressed: () async {
+                    //   //  FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
+                    //   FlutterLaunch.launchWhatsapp(
+                    //       phone: "905309194035", message: "");
+
+                    //   // await launchUrl(
+                    //   //   Uri(
+                    //   //       scheme: 'https',
+                    //   //       host: 'https://wa.me/+905309194035',
+                    //   //       ),
+                    //   //   mode: LaunchMode.externalApplication,
+                    //   // );
+                    // },
+                    onPressed: () => openWhatsapp(),
                     child: SizedBox(
                       width: 100,
                       height: 100,
@@ -539,7 +602,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     heroTag: "btnhim",
                     onPressed: () async {
                       const number = '153';
-                      await FlutterPhoneDirectCaller.callNumber(number);
+                      // await FlutterPhoneDirectCaller.callNumber(number);
+
+                      final Uri launchUri = Uri(
+                        scheme: 'tel',
+                        path: number,
+                      );
+                      await launchUrl(launchUri);
                     },
                     child: Container(
                       width: 100,
@@ -612,7 +681,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Image.asset("assets/images/ibblogo.png",width: 230,),
+            Image.asset(
+              "assets/images/ibblogo.png",
+              width: 230,
+            ),
           ],
         ),
         // Text(

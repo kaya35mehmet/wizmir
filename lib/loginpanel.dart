@@ -135,7 +135,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                       ),
                     ),
                   ),
-                  Divider(),
+                  const Divider(),
                   Padding(
                           padding: const EdgeInsets.only(
                               left: 80.0, right: 80, bottom: 4),

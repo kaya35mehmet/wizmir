@@ -26,11 +26,20 @@ class _FAQViewState extends State<FAQView> {
           color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title: Text(
-          "faq".tr(),
-          style: TextStyle(
-              color: brightness == Brightness.light ? Colors.black : null),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset(
+              "assets/images/ibblogo.png",
+              width: 230,
+            ),
+          ],
         ),
+        // Text(
+        //   "faq".tr(),
+        //   style: TextStyle(
+        //       color: brightness == Brightness.light ? Colors.black : null),
+        // ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

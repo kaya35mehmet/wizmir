@@ -32,10 +32,8 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>comgooglemaps</string>
-		<string>iosamap</string>
-		<string>yandexmaps</string>
-		<string>yandexnavi</string>
+		<string>whatsapp</string>
+		<string>tel</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -75,9 +73,5 @@
 	<false/>
 	<key>kNEHotspotHelperCommandTypeFilterScanList</key>
 	<string>This app shows public wifi hotspots</string>
-	<key>LSApplicationQueriesSchemes</key>
-<array>
-  <string>whatsapp</string>
-</array>
 </dict>
 </plist>

@@ -7,6 +7,7 @@ import 'package:toast/toast.dart';
 import 'package:wizmir/changepassword.dart';
 import 'package:wizmir/faqview.dart';
 import 'package:wizmir/locationspage.dart';
+import 'package:wizmir/opportunity.dart';
 import 'package:wizmir/report.dart';
 import 'package:wizmir/speedtest.dart';
 import 'package:wizmir/updateprofile.dart';
@@ -219,6 +220,34 @@ class NavigationDrawer extends StatelessWidget {
                                   ),
                                 ),
                               );
+                            },
+                          )
+                        : const Center(),
+                    islogin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
+                    islogin
+                        ? ListTile(
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.adjust,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              "opportunity".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const Opportunity()));
                             },
                           )
                         : const Center(),

@@ -63,7 +63,7 @@ class SlideAnimationWidget extends StatefulWidget {
 enum Gender { erkek, kadin }
 
 List<String> list = List<String>.generate(
-    83, (int index) => (index + 18).toString(),
+    80, (int index) => (DateTime.now().year - index).toString(),
     growable: true);
 
 class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
