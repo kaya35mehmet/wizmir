@@ -32,6 +32,10 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<string>comgooglemaps</string>
+		<string>iosamap</string>
+		<string>yandexmaps</string>
+		<string>yandexnavi</string>
 		<string>whatsapp</string>
 		<string>tel</string>
 	</array>

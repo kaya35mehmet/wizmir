@@ -30,24 +30,26 @@ class _UserPageState extends State<UserPage> {
     return details!;
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
-       var brightness = SchedulerBinding.instance.window.platformBrightness;
+    var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Scaffold(
       appBar: AppBar(
-        iconTheme:  IconThemeData(
-          color:brightness == Brightness.light ?  Colors.black : null,
+        iconTheme: IconThemeData(
+          color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title:Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/ibblogo.png",
-              width: 230,
+        flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 40.0, right: 40),
+            child: SafeArea(
+              child: Image.asset(
+                "assets/images/ibblogo.png",
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        ),
+          ),
         //  Text(
         //   "usagedetails".tr(),
         //   style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null,),
@@ -59,7 +61,7 @@ class _UserPageState extends State<UserPage> {
           },
         ),
         elevation: 0,
-        backgroundColor: brightness == Brightness.light ?  Colors.white : null,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -70,56 +72,95 @@ class _UserPageState extends State<UserPage> {
                 if (snapshot.data != null) {
                   return Column(
                     children: [
-                      AspectRatio(
-                        aspectRatio: 1.5,
-                        child: Card(
-                          color:  brightness == Brightness.light ?  Colors.white : null,
-                          child: Column(
-                            children: <Widget>[
-                              const SizedBox(
-                                height: 40,
+                      Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              height: 140,
+                              child: Card(
+                                color: brightness == Brightness.light
+                                    ? Colors.white
+                                    : null,
+                                child: Column(
+                                  children: <Widget>[
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "totalnumberoflogin".tr(),
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54),
+                                    ),
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    Text(
+                                      "${details?.toplamGiris}",
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Text(
-                                "totalnumberoflogin".tr(),
-                                style: const TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(
-                                height: 18,
-                              ),
-                              Text(
-                                "${details?.toplamGiris}",
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w300),
-                              ),
-                              const SizedBox(
-                                height: 18,
-                              ),
-                              Text(
-                                "totalusagetime".tr(),
-                                style: const TextStyle(
-                                    decoration: TextDecoration.underline,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              const SizedBox(
-                                height: 18,
-                              ),
-                              Text(
-                                "${ snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()} ${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w300),
-                              )
-                            ],
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            flex: 2,
+                            child: SizedBox(
+                              height: 140,
+                              child: Card(
+                                color: brightness == Brightness.light
+                                    ? Colors.white
+                                    : null,
+                                child: Column(
+                                  children: <Widget>[
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                    Text(
+                                      "totalusagetime".tr(),
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54),
+                                    ),
+                                    const SizedBox(
+                                      height: 18,
+                                    ),
+                                    Text(
+                                      "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                        " ${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}", style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold),),
+                                    const SizedBox(
+                                      height: 20,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       AspectRatio(
                         aspectRatio: 1.3,
                         child: Card(
-                          color:brightness == Brightness.light ?  Colors.white : null,
+                          color: brightness == Brightness.light
+                              ? Colors.white
+                              : null,
                           child: Column(
                             children: <Widget>[
                               const SizedBox(
@@ -195,7 +236,9 @@ class _UserPageState extends State<UserPage> {
                       SizedBox(
                         width: double.infinity,
                         child: Card(
-                          color: brightness == Brightness.light ?  Colors.white : null,
+                          color: brightness == Brightness.light
+                              ? Colors.white
+                              : null,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
@@ -228,9 +271,10 @@ class _UserPageState extends State<UserPage> {
                                           );
                                         }))
                                     : Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text("youarenotyetconnected".tr()),
-                                    ),
+                                        padding: const EdgeInsets.all(8.0),
+                                        child:
+                                            Text("youarenotyetconnected".tr()),
+                                      ),
                               ],
                             ),
                           ),
@@ -268,7 +312,8 @@ class _UserPageState extends State<UserPage> {
             return PieChartSectionData(
               color: color0.withOpacity(opacity),
               value: 25,
-                title: "${download.toString().substring(0,download.toString().indexOf("."))}${download.toString().substring(download.toString().indexOf("."),download.toString().indexOf(".")+3)}GB",
+              title:
+                  "${download.toString().substring(0, download.toString().indexOf("."))}${download.toString().substring(download.toString().indexOf("."), download.toString().indexOf(".") + 3)}GB",
               // title: download.toString().length > 7
               //     ? '${download.toString().substring(0, 7)}GB'
               //     : '${download}GB',
@@ -286,7 +331,8 @@ class _UserPageState extends State<UserPage> {
             return PieChartSectionData(
               color: color1.withOpacity(opacity),
               value: 25,
-              title: "${upload.toString().substring(0,upload.toString().indexOf("."))}${upload.toString().substring(upload.toString().indexOf("."),upload.toString().indexOf(".")+3)}GB",
+              title:
+                  "${upload.toString().substring(0, upload.toString().indexOf("."))}${upload.toString().substring(upload.toString().indexOf("."), upload.toString().indexOf(".") + 3)}GB",
               // title: upload.toString().length > 7
               //     ? '${upload.toString().substring(0, 7)}GB'
               //     : '${upload}GB',

@@ -87,7 +87,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   @override
   void initState() {
     data = getdata();
-    list.insert(0, "choose".tr());
+    // list.insert(0, "choose".tr());
     setState(() {
       age = list.first;
     });

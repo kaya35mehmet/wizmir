@@ -525,20 +525,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   void openWhatsapp() async {
-  var whatsapp = '+905309194035';
-  var whatsappURL = Uri.parse(
-    'whatsapp://send?phone=$whatsapp&text=');
-
-  if (await canLaunchUrl(whatsappURL)) {
-    await launchUrl(whatsappURL);
-  } else {
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   const SnackBar(
-    //     content: Text("WhatsApp is not installed on the device"),
-    //   ),
-    // );
+    var whatsapp = '+905309194035';
+    var whatsappUrl = "whatsapp://send?phone=$whatsapp&text=";
+    try {
+      launch(whatsappUrl);
+    } catch (e) {
+      //To handle error and display error message
+    }
   }
-}
 
   @override
   void dispose() {
@@ -677,34 +671,50 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               ],
             )
           : null,
-      appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/ibblogo.png",
-              width: 230,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50.0),
+        child: AppBar(
+          // title: Container(   // <--- Change here
+          //      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.1), // <-- play with the double number
+          //      child: Image.asset("assets/images/ibblogo.png", fit: BoxFit.cover)
+          //   ),
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 40.0, right: 40),
+            child: SafeArea(
+              child: Image.asset(
+                "assets/images/ibblogo.png",
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        ),
-        // Text(
-        //   widget.title,
-        //   style: TextStyle(
-        //       color: brightness == Brightness.light ? Colors.black : null),
-        // ),
-        // centerTitle: false,
-        backgroundColor: brightness == Brightness.light ? Colors.white : null,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            _customInfoWindowController.hideInfoWindow!();
-            _scaffoldKey.currentState?.openDrawer();
-          },
-          icon: Padding(
-            padding: const EdgeInsets.all(0),
-            child: Icon(
-              Icons.menu,
-              color: brightness == Brightness.light ? Colors.black : null,
+          ),
+          //  Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     Image.asset(
+          //       "assets/images/ibblogo.png",
+          //       width: 230,
+          //     ),
+          //   ],
+          // ),
+          // Text(
+          //   widget.title,
+          //   style: TextStyle(
+          //       color: brightness == Brightness.light ? Colors.black : null),
+          // ),
+          centerTitle: false,
+          backgroundColor: brightness == Brightness.light ? Colors.white : null,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              _customInfoWindowController.hideInfoWindow!();
+              _scaffoldKey.currentState?.openDrawer();
+            },
+            icon: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Icon(
+                Icons.menu,
+                color: brightness == Brightness.light ? Colors.black : null,
+              ),
             ),
           ),
         ),

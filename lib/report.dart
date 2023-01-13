@@ -66,15 +66,15 @@ class _ReportViewState extends State<ReportView> {
           color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Image.asset(
-              "assets/images/ibblogo.png",
-              width: 230,
+        flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 40.0, right: 40),
+            child: SafeArea(
+              child: Image.asset(
+                "assets/images/ibblogo.png",
+                fit: BoxFit.cover,
+              ),
             ),
-          ],
-        ),
+          ),
         // Text(
         //   "reportaproblem".tr(),
         //   style: TextStyle(
