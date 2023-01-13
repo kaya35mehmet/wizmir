@@ -101,5 +101,6 @@
     "pleasecheck" : "Please Accept The Confidentiality Agreement",
     "opportunity" : "Opportunity",
     "comingsoon":"Opportunities To Be Offered By WizmirNet Are Coming Soon",
-    "suggestion" : "Suggestion"
+    "suggestion" : "Suggestion",
+    "nonotification" : "No Notification"
 }

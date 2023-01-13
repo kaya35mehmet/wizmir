@@ -30,6 +30,7 @@ import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:wizmir/notification.dart';
 import 'package:wizmir/profilecomplete.dart';
 
 class MapPage extends StatefulWidget {
@@ -687,20 +688,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
-          //  Row(
-          //   mainAxisAlignment: MainAxisAlignment.center,
-          //   children: [
-          //     Image.asset(
-          //       "assets/images/ibblogo.png",
-          //       width: 230,
-          //     ),
-          //   ],
-          // ),
-          // Text(
-          //   widget.title,
-          //   style: TextStyle(
-          //       color: brightness == Brightness.light ? Colors.black : null),
-          // ),
+          actions: [
+            IconButton(onPressed: (){
+Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const NotificationScreen()));
+            }, icon: Icon(Icons.notifications, color: brightness == Brightness.light ? Colors.black : null,))
+          ],
           centerTitle: false,
           backgroundColor: brightness == Brightness.light ? Colors.white : null,
           elevation: 0,
