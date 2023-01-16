@@ -85,6 +85,7 @@ class NavigationDrawer extends StatelessWidget {
                       height: 10,
                     ),
                     ListTile(
+                        dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: Icon(
@@ -139,7 +140,9 @@ class NavigationDrawer extends StatelessWidget {
                     ),
                     islogin
                         ? ListTile(
-                            visualDensity: const VisualDensity(
+                          minVerticalPadding: -10,
+                          dense: true,
+                            visualDensity: const  VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
                               Icons.graphic_eq_rounded,
@@ -166,6 +169,7 @@ class NavigationDrawer extends StatelessWidget {
                         : const Center(),
                     islogin
                         ? ListTile(
+                            dense: true,
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
@@ -198,6 +202,7 @@ class NavigationDrawer extends StatelessWidget {
                         : const Center(),
                     islogin
                         ? ListTile(
+                            dense: true,
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
@@ -230,6 +235,7 @@ class NavigationDrawer extends StatelessWidget {
                         : const Center(),
                     islogin
                         ? ListTile(
+                            dense: true,
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
@@ -257,6 +263,7 @@ class NavigationDrawer extends StatelessWidget {
                           )
                         : const Center(),
                     ListTile(
+                        dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: const Icon(
@@ -280,6 +287,7 @@ class NavigationDrawer extends StatelessWidget {
                       color: Colors.white30,
                     ),
                     ListTile(
+                        dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: const Icon(
@@ -303,6 +311,7 @@ class NavigationDrawer extends StatelessWidget {
                       color: Colors.white30,
                     ),
                     ListTile(
+                        dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: const Icon(
@@ -331,6 +340,7 @@ class NavigationDrawer extends StatelessWidget {
                     ),
                     isadmin
                         ? ListTile(
+                            dense: true,
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
@@ -360,6 +370,7 @@ class NavigationDrawer extends StatelessWidget {
                         : const Center(),
                     isadmin
                         ? ListTile(
+                            dense: true,
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
@@ -389,6 +400,7 @@ class NavigationDrawer extends StatelessWidget {
                         : const Center(),
                     isadmin || userview
                         ? ListTile(
+                            dense: true,
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(

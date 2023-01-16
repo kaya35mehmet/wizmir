@@ -689,12 +689,17 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             ),
           ),
           actions: [
-            IconButton(onPressed: (){
-Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const NotificationScreen()));
-            }, icon: Icon(Icons.notifications, color: brightness == Brightness.light ? Colors.black : null,))
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationScreen()));
+                },
+                icon: Icon(
+                  Icons.notifications,
+                  color: brightness == Brightness.light ? Colors.black : null,
+                ))
           ],
           centerTitle: false,
           backgroundColor: brightness == Brightness.light ? Colors.white : null,

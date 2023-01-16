@@ -76,7 +76,6 @@ class _MyWidgetState extends State<LoginPanelPage> {
       maxHeight: MediaQuery.of(context).size.height * 0.55,
       panel: Column(
         children: [
-
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -221,7 +220,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                         child: Text(
                           "forgotpassword".tr(),
                           style: const TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.bold),
+                               fontWeight: FontWeight.bold),
                         ),
                       ),
                       OpenContainer(
@@ -238,7 +237,8 @@ class _MyWidgetState extends State<LoginPanelPage> {
                             (BuildContext context, VoidCallback openContainer) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("register".tr()),
+                            child: Text("register".tr(),style: const TextStyle(
+                               fontWeight: FontWeight.bold),),
                           );
                         },
                       ),
