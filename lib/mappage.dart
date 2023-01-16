@@ -680,10 +680,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           //      child: Image.asset("assets/images/ibblogo.png", fit: BoxFit.cover)
           //   ),
           flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 40.0, right: 40),
+            padding: const EdgeInsets.only(left: 50.0, right: 50,bottom: 10),
             child: SafeArea(
               child: Image.asset(
-                "assets/images/ibblogo.png",
+                brightness == Brightness.light ? "assets/images/ibblogo.png" : "assets/images/ibblogolight.png",
                 fit: BoxFit.cover,
               ),
             ),

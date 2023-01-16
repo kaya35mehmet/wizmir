@@ -30,8 +30,6 @@ class _UserPageState extends State<UserPage> {
     return details!;
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
@@ -42,18 +40,16 @@ class _UserPageState extends State<UserPage> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 40.0, right: 40),
-            child: SafeArea(
-              child: Image.asset(
-                "assets/images/ibblogo.png",
-                fit: BoxFit.cover,
-              ),
+          padding: const EdgeInsets.only(left: 50.0, right: 50, bottom: 10),
+          child: SafeArea(
+            child: Image.asset(
+              brightness == Brightness.light
+                  ? "assets/images/ibblogo.png"
+                  : "assets/images/ibblogolight.png",
+              fit: BoxFit.cover,
             ),
           ),
-        //  Text(
-        //   "usagedetails".tr(),
-        //   style:  TextStyle(color: brightness == Brightness.light ?  Colors.black : null,),
-        // ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -72,88 +68,67 @@ class _UserPageState extends State<UserPage> {
                 if (snapshot.data != null) {
                   return Column(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: SizedBox(
-                              height: 140,
-                              child: Card(
-                                color: brightness == Brightness.light
-                                    ? Colors.white
-                                    : null,
+                      Card(
+                        color: Colors.white,
+                        elevation: 0,
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 8.0,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Expanded(
                                 child: Column(
-                                  children: <Widget>[
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Text(
-                                      "totalnumberoflogin".tr(),
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54),
-                                    ),
-                                    const SizedBox(
-                                      height: 18,
-                                    ),
+                                  children: [
                                     Text(
                                       "${details?.toplamGiris}",
                                       style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black),
                                     ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: SizedBox(
-                              height: 140,
-                              child: Card(
-                                color: brightness == Brightness.light
-                                    ? Colors.white
-                                    : null,
-                                child: Column(
-                                  children: <Widget>[
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
+                                    const SizedBox(height: 10.0),
                                     Text(
-                                      "totalusagetime".tr(),
+                                      "totalnumberoflogin".tr(),
                                       style: const TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black54),
                                     ),
-                                    const SizedBox(
-                                      height: 18,
-                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
                                     Text(
                                       "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
-                                      style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
+                                               style:
+                                          Theme.of(context).textTheme.headline6,
                                     ),
                                     Text(
-                                        " ${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}", style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),),
-                                    const SizedBox(
-                                      height: 20,
+                                      " ${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
+                                               style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    const SizedBox(height: 10.0),
+                                    Text(
+                                      "totalusagetime".tr(),
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black54),
                                     ),
                                   ],
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                       AspectRatio(
                         aspectRatio: 1.3,

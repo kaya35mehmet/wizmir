@@ -66,20 +66,15 @@ class _ReportViewState extends State<ReportView> {
           color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 40.0, right: 40),
+         flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 50.0, right: 50,bottom: 10),
             child: SafeArea(
               child: Image.asset(
-                "assets/images/ibblogo.png",
+                brightness == Brightness.light ? "assets/images/ibblogo.png" : "assets/images/ibblogolight.png",
                 fit: BoxFit.cover,
               ),
             ),
           ),
-        // Text(
-        //   "reportaproblem".tr(),
-        //   style: TextStyle(
-        //       color: brightness == Brightness.light ? Colors.black : null),
-        // ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
