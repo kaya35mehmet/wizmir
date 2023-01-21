@@ -70,34 +70,38 @@ class _MyWidgetState extends State<NearPointsPage> {
       controller: _pc,
       backdropColor: Colors.transparent,
       color: Colors.transparent,
-      minHeight: 70,
+      minHeight: 75,
       panel: Column(
         children: [
-          AnimatedButton(
-            color: Colors.blue,
-            onPressed: () {
-              if (_pc.isPanelOpen) {
-                _pc.close();
-              } else {
-                _pc.open();
-              }
-            },
-            enabled: true,
-            shadowDegree: ShadowDegree.light,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "closestpoints".tr(),
-                    style:  TextStyle(
-                        color: brightness == Brightness.light ? Colors.white : null,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: 'Roboto'),
-                  ),
-                  arrow,
-                ],
+          Container(
+            margin: const EdgeInsets.only(bottom:0.0),
+            child: AnimatedButton(
+              height: 50,
+              color: Colors.lightBlue,
+              onPressed: () {
+                if (_pc.isPanelOpen) {
+                  _pc.close();
+                } else {
+                  _pc.open();
+                }
+              },
+              enabled: true,
+              shadowDegree: ShadowDegree.light,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "closestpoints".tr(),
+                      style:  TextStyle(
+                          color: brightness == Brightness.light ? Colors.white : null,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Roboto'),
+                    ),
+                    arrow,
+                  ],
+                ),
               ),
             ),
           ),

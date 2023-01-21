@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';

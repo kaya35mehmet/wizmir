@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:animated_button/animated_button.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,6 +18,7 @@ import 'package:octo_image/octo_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wizmir/drawer.dart';
 import 'package:wizmir/functions.dart' as functions;
@@ -29,6 +31,7 @@ import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:wizmir/notification.dart';
 import 'package:wizmir/profilecomplete.dart';
 
 class MapPage extends StatefulWidget {
@@ -194,6 +197,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Future<void> generateMarkers(context, current) async {
     var ikon = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/wifi6.svg", 36);
+    var ikon2 = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/wifi7inactive.svg", 36);
+    var buradayim = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/buradayim5.svg", 90);
     var localMarkers = <Marker>{};
     for (var location in locations!) {
       var dist = Geolocator.distanceBetween(
@@ -228,10 +235,11 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             markerId: MarkerId('${location.lat}_${location.lng}'),
             position: LatLng(location.lat!, location.lng!),
             icon: location.mylocation
-                ? await functions.bitmapDescriptorFromSvgAsset(
-                    context, "assets/icons/buradayim5.svg", 90)
+                ? buradayim
                 : !isadmin! && dist > 50
-                    ? ikon
+                    ? location.aktifmi
+                        ? ikon
+                        : ikon2
                     : isadmin! && location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
                             BitmapDescriptor.hueOrange)
@@ -284,10 +292,54 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   void _callbackislogin(phonenumber, password) {
-    login(phonenumber, password).then((value) {
+    login(phonenumber, password).then((value) async {
       if (value.success == "0") {
-        Toast.show("wrongusernameorpassword".tr(),
-            duration: Toast.lengthShort, gravity: Toast.bottom);
+        ArtDialogResponse response = await ArtSweetAlert.show(
+            barrierDismissible: false,
+            context: context,
+            artDialogArgs: ArtDialogArgs(
+                // denyButtonText: "Cancel",
+                // title: "Are you sure?",
+                confirmButtonColor: Colors.lightBlue,
+                text: "wrongusernameorpassword".tr(),
+                confirmButtonText: "ok".tr(),
+                type: ArtSweetAlertType.warning));
+
+       
+
+        
+        // showDialog(
+        //     context: context,
+        //     builder: (_) =>
+        //     AlertDialog(
+        //           // title: Text('Dialog Title'),
+        //           content: Text('wrongusernameorpassword'.tr()),
+        //           actions: <Widget>[
+        //             Center(
+        //               child: AnimatedButton(
+        //                 onPressed: () {
+        //                   Navigator.pop(context);
+        //                 },
+        //                 duration: 70,
+        //                 height: 50,
+        //                 width: 200,
+        //                 enabled: true,
+        //                 shadowDegree: ShadowDegree.dark,
+        //                 color: Colors.blue,
+        //                 child: Text(
+        //                   "ok".tr(),
+        //                   style: const TextStyle(
+        //                     color: Colors.white,
+        //                     fontSize: 18,
+        //                     fontWeight: FontWeight.w500,
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ],
+        //         ));
+        // Toast.show("wrongusernameorpassword".tr(),
+        //     duration: Toast.lengthShort, gravity: Toast.bottom);
       } else {
         Toast.show("loginsuccessful".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -382,7 +434,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           showdialog(value);
           await storage.write(
               key: "importantdays",
-              value: "${value.id}:${value.gosterimSayisi}:${--value.gosterimSayisi}");
+              value:
+                  "${value.id}:${value.gosterimSayisi}:${--value.gosterimSayisi}");
         }
 
         if (importantdays != null) {
@@ -393,14 +446,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             showdialog(value);
             await storage.write(
                 key: "importantdays",
-                value: "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+                value:
+                    "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
           }
 
           if (id != value.id) {
             showdialog(value);
             await storage.write(
                 key: "importantdays",
-                value: "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+                value:
+                    "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
           }
         }
       },
@@ -486,6 +541,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     );
   }
 
+  void openWhatsapp() async {
+    var whatsapp = '+905309194035';
+    var whatsappUrl = "whatsapp://send?phone=$whatsapp&text=";
+    try {
+      launch(whatsappUrl);
+    } catch (e) {
+      //To handle error and display error message
+    }
+  }
+
   @override
   void dispose() {
     _customInfoWindowController.dispose();
@@ -521,19 +586,24 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   child: FloatingActionButton(
                     backgroundColor: Colors.transparent,
                     heroTag: "btnwhatsapp",
-                    onPressed: () {
-                      FlutterLaunch.launchWhatsapp(
-                          phone: "905309194035", message: "");
-                    },
+                    // onPressed: () async {
+                    //   //  FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
+                    //   FlutterLaunch.launchWhatsapp(
+                    //       phone: "905309194035", message: "");
+
+                    //   // await launchUrl(
+                    //   //   Uri(
+                    //   //       scheme: 'https',
+                    //   //       host: 'https://wa.me/+905309194035',
+                    //   //       ),
+                    //   //   mode: LaunchMode.externalApplication,
+                    //   // );
+                    // },
+                    onPressed: () => openWhatsapp(),
                     child: SizedBox(
                       width: 100,
                       height: 100,
                       child: Image.asset("assets/images/whatsapp.png"),
-                      // decoration: const BoxDecoration(
-                      //   shape: BoxShape.circle,
-                      //   image: DecorationImage(
-                      //       image: AssetImage('assets/images/whatsapp.png')),
-                      // ),
                     ),
                   ),
                 ),
@@ -543,7 +613,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     heroTag: "btnhim",
                     onPressed: () async {
                       const number = '153';
-                      await FlutterPhoneDirectCaller.callNumber(number);
+                      // await FlutterPhoneDirectCaller.callNumber(number);
+
+                      final Uri launchUri = Uri(
+                        scheme: 'tel',
+                        path: number,
+                      );
+                      await launchUrl(launchUri);
                     },
                     child: Container(
                       width: 100,
@@ -612,23 +688,52 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               ],
             )
           : null,
-      appBar: AppBar(
-        title: Text(
-          widget.title,
-          style: TextStyle(
-              color: brightness == Brightness.light ? Colors.black : null),
-        ),
-        centerTitle: true,
-        backgroundColor: brightness == Brightness.light ? Colors.white : null,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {
-            _customInfoWindowController.hideInfoWindow!();
-            _scaffoldKey.currentState?.openDrawer();
-          },
-          icon: Icon(
-            Icons.menu,
-            color: brightness == Brightness.light ? Colors.black : null,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(50.0),
+        child: AppBar(
+          // title: Container(   // <--- Change here
+          //      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.1), // <-- play with the double number
+          //      child: Image.asset("assets/images/ibblogo.png", fit: BoxFit.cover)
+          //   ),
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 70.0, right: 70),
+            child: SafeArea(
+              child: Image.asset(
+                brightness == Brightness.light
+                    ? "assets/images/1.png"
+                    : "assets/images/2.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationScreen()));
+                },
+                icon: Icon(
+                  Icons.notifications,
+                  color: brightness == Brightness.light ? Colors.black : null,
+                ))
+          ],
+          centerTitle: false,
+          backgroundColor: brightness == Brightness.light ? Colors.white : null,
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              _customInfoWindowController.hideInfoWindow!();
+              _scaffoldKey.currentState?.openDrawer();
+            },
+            icon: Padding(
+              padding: const EdgeInsets.all(0),
+              child: Icon(
+                Icons.menu,
+                color: brightness == Brightness.light ? Colors.black : null,
+              ),
+            ),
           ),
         ),
       ),

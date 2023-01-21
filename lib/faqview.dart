@@ -26,11 +26,15 @@ class _FAQViewState extends State<FAQView> {
           color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title: Text(
-          "faq".tr(),
-          style: TextStyle(
-              color: brightness == Brightness.light ? Colors.black : null),
-        ),
+        flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 70.0, right: 70),
+            child: SafeArea(
+              child: Image.asset(
+                brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {

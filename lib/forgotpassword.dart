@@ -163,6 +163,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                       height: 30,
                     ),
                     RoundedLoadingButton(
+                      width: double.infinity,
+                      borderRadius: 10,
                       controller: _btnController,
                       onPressed: _doSomething,
                       child:  Text('send'.tr(),

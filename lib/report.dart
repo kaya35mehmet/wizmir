@@ -66,11 +66,15 @@ class _ReportViewState extends State<ReportView> {
           color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-        title: Text(
-          "reportaproblem".tr(),
-          style: TextStyle(
-              color: brightness == Brightness.light ? Colors.black : null),
-        ),
+        flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 70.0, right: 70),
+            child: SafeArea(
+              child: Image.asset(
+                brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -120,18 +124,30 @@ class _ReportViewState extends State<ReportView> {
               if (snapshot.data != null) {
                 var lang = context.locale.toString();
                 var items = list
-                    .map((item) => DropdownMenuItem<String>(
-                          value:
-                              lang == "en_US" ? item.sorunTuruIng : item.name,
-                          child: Text(
-                            lang == "en_US" ? item.sorunTuruIng : item.name,
-                            style: const TextStyle(
-                              fontSize: 14,
-                            ),
+                    .map(
+                      (item) => DropdownMenuItem<String>(
+                        value: lang == "en_US" ? item.sorunTuruIng : item.name,
+                        child: Text(
+                          lang == "en_US" ? item.sorunTuruIng : item.name,
+                          style: const TextStyle(
+                            fontSize: 14,
                           ),
-                        ))
+                        ),
+                      ),
+                    )
                     .toList();
-              
+                items.insert(
+                  0,
+                  DropdownMenuItem<String>(
+                    value: "öneri",
+                    child: Text(
+                      "suggestion".tr(),
+                      style: const TextStyle(
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                );
                 return Column(
                   children: [
                     Expanded(
@@ -189,25 +205,29 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                              problem == "Other" ||problem ==  "Diğer" ?  TextField(
-                                controller: desccnt,
-                                  minLines: 4,
-                                  maxLines: 7,
-                                  decoration: InputDecoration(
-                                    focusedBorder: const OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: Colors.blue, width: 1.0),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: brightness == Brightness.light
-                                              ? Colors.grey
-                                              : Colors.white,
-                                          width: 1.0),
-                                    ),
-                                    hintText: 'description'.tr(),
-                                  ),
-                                ): const Center(),
+                                problem == "Other" || problem == "Diğer" || problem == "öneri"
+                                    ? TextField(
+                                        controller: desccnt,
+                                        minLines: 4,
+                                        maxLines: 7,
+                                        decoration: InputDecoration(
+                                          focusedBorder:
+                                              const OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: Colors.blue, width: 1.0),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                                color: brightness ==
+                                                        Brightness.light
+                                                    ? Colors.grey
+                                                    : Colors.white,
+                                                width: 1.0),
+                                          ),
+                                          hintText: 'description'.tr(),
+                                        ),
+                                      )
+                                    : const Center(),
                                 const SizedBox(
                                   height: 10,
                                 ),
@@ -262,7 +282,7 @@ class _ReportViewState extends State<ReportView> {
                                   },
                                   child: file == null
                                       ? DottedBorder(
-                                        color: Colors.grey,
+                                          color: Colors.grey,
                                           borderType: BorderType.RRect,
                                           radius: const Radius.circular(4),
                                           padding: const EdgeInsets.all(2),
@@ -439,7 +459,7 @@ class _ReportViewState extends State<ReportView> {
                                   widget.locations != null
                                       ? widget.locations!.id
                                       : "",
-                                  file != null ?File(file!.path): null)
+                                  file != null ? File(file!.path) : null)
                               .then((value) {
                             Toast.show("sent".tr(),
                                 duration: Toast.lengthShort,
