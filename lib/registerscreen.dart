@@ -14,9 +14,9 @@ import 'package:wizmir/otp.dart';
 import 'package:wizmir/transitions.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key, this.includeMarkAsDoneButton = true})
+  const RegisterPage({Key? key, this.includeMarkAsDoneButton = true, this.phonenumber})
       : super(key: key);
-
+  final String? phonenumber;
   final bool includeMarkAsDoneButton;
 
   @override
@@ -62,7 +62,8 @@ class _RegisterPageState extends State<RegisterPage> {
 }
 
 class SlideAnimationWidget extends StatefulWidget {
-  const SlideAnimationWidget({Key? key}) : super(key: key);
+  const SlideAnimationWidget({Key? key, this.phonenumber}) : super(key: key);
+  final String? phonenumber;
 
   @override
   State<SlideAnimationWidget> createState() => _SlideAnimationWidgetState();
@@ -99,6 +100,11 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
     
     });
     getkvkkdata();
+    if(widget.phonenumber != null){
+      setState(() {
+        phonenumber = widget.phonenumber;
+      });
+    }
     super.initState();
   }
 
@@ -408,6 +414,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                           height: 10,
                         ),
                         RoundedLoadingButton(
+                          borderRadius: 10,
+                          width: double.infinity,
                           controller: _btnController,
                           onPressed: _doSomething,
                           child: Text('register'.tr(),

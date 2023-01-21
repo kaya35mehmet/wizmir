@@ -70,13 +70,14 @@ class _MyWidgetState extends State<NearPointsPage> {
       controller: _pc,
       backdropColor: Colors.transparent,
       color: Colors.transparent,
-      minHeight: 90,
+      minHeight: 75,
       panel: Column(
         children: [
           Container(
-            margin: const EdgeInsets.only(bottom:18.0),
+            margin: const EdgeInsets.only(bottom:0.0),
             child: AnimatedButton(
-              color: Colors.blue,
+              height: 50,
+              color: Colors.lightBlue,
               onPressed: () {
                 if (_pc.isPanelOpen) {
                   _pc.close();

@@ -3,7 +3,7 @@ description: A new Flutter project.
 
 publish_to: 'none'
 
-version: 1.0.0+21
+version: 1.0.0+23
 
 environment:
   sdk: ">=2.17.6 <3.0.0"
@@ -51,6 +51,7 @@ dependencies:
   url_launcher: ^6.1.7
   flutter_launch: ^0.3.0
   at_gauges: ^1.0.1
+  art_sweetalert: ^0.0.5
   # open_whatsapp: ^0.0.1
 
 dev_dependencies:

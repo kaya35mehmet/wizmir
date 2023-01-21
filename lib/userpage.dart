@@ -40,12 +40,12 @@ class _UserPageState extends State<UserPage> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-          padding: const EdgeInsets.only(left: 50.0, right: 50, bottom: 10),
+          padding: const EdgeInsets.only(left: 70.0, right: 70),
           child: SafeArea(
             child: Image.asset(
               brightness == Brightness.light
-                  ? "assets/images/ibblogo.png"
-                  : "assets/images/ibblogolight.png",
+                  ? "assets/images/1.png"
+                  : "assets/images/2.png",
               fit: BoxFit.cover,
             ),
           ),
@@ -68,68 +68,309 @@ class _UserPageState extends State<UserPage> {
                 if (snapshot.data != null) {
                   return Column(
                     children: [
-                      Card(
-                        color: Colors.white,
-                        elevation: 0,
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "${details?.toplamGiris}",
-                                      style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: 200,
+                            child: Stack(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 32, left: 8, right: 8, bottom: 16),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            color: HexColor("#FFB295")
+                                                .withOpacity(0.6),
+                                            offset: const Offset(1.1, 4.0),
+                                            blurRadius: 8.0),
+                                      ],
+                                      gradient: const LinearGradient(
+                                        colors: <Color>[
+                                          Color(0xFF00529c),
+                                          Color.fromARGB(255, 83, 165, 237),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        bottomRight: Radius.circular(8.0),
+                                        bottomLeft: Radius.circular(8.0),
+                                        topLeft: Radius.circular(8.0),
+                                        topRight: Radius.circular(4.0),
+                                      ),
                                     ),
-                                    const SizedBox(height: 10.0),
-                                    Text(
-                                      "totalnumberoflogin".tr(),
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 54,
+                                          left: 16,
+                                          right: 16,
+                                          bottom: 8),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Align(
+                                             alignment: Alignment.center,
+                                            child: Text(
+                                              "${details?.toplamGiris}",
+                                              textAlign: TextAlign.center,
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                                letterSpacing: 0.2,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8, bottom: 8),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: Text(
+                                                      "totalnumberoflogin".tr(),
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 16,
+                                                        letterSpacing: 0.2,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
-                                               style:
-                                          Theme.of(context).textTheme.headline6,
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Container(
+                                    width: 84,
+                                    height: 84,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      shape: BoxShape.circle,
                                     ),
-                                    Text(
-                                      " ${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
-                                               style:
-                                          Theme.of(context).textTheme.headline6,
-                                    ),
-                                    const SizedBox(height: 10.0),
-                                    Text(
-                                      "totalusagetime".tr(),
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black54),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const Positioned(
+                                  top: 16,
+                                  left: 4,
+                                  child: SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: Icon(
+                                      Icons.login,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
+                          SizedBox(
+                            height: 200,
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            child: Stack(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 32, left: 8, right: 8, bottom: 16),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            color: HexColor("#FFB295")
+                                                .withOpacity(0.6),
+                                            offset: const Offset(1.1, 4.0),
+                                            blurRadius: 8.0),
+                                      ],
+                                      gradient: const LinearGradient(
+                                        colors: <Color>[
+                                          Color(0xFF00529c),
+                                          Color.fromARGB(255, 83, 165, 237),
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                      ),
+                                      borderRadius: const BorderRadius.only(
+                                        bottomRight: Radius.circular(8.0),
+                                        bottomLeft: Radius.circular(8.0),
+                                        topLeft: Radius.circular(8.0),
+                                        topRight: Radius.circular(4.0),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 54,
+                                          left: 16,
+                                          right: 16,
+                                          bottom: 8),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Align(
+                                            alignment: Alignment.center,
+                                            child: Column(
+                                              children: [
+                                                 Text(
+                                              "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                                letterSpacing: 0.2,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            Text(
+                                              "${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                                letterSpacing: 0.2,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                              ],
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  top: 8, bottom: 8),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: <Widget>[
+                                                  Flexible(
+                                                    child: Text(
+                                                      "totalusagetime".tr(),
+                                                      style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 16,
+                                                        letterSpacing: 0.2,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 0,
+                                  left: 0,
+                                  child: Container(
+                                    width: 84,
+                                    height: 84,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.2),
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                ),
+                                const Positioned(
+                                  top: 16,
+                                  left: 4,
+                                  child: SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: Icon(
+                                      Icons.data_usage,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
+                      // Card(
+                      //   color: Colors.white,
+                      //   elevation: 0,
+                      //   margin: const EdgeInsets.symmetric(
+                      //     vertical: 8.0,
+                      //   ),
+                      //   shape: RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.circular(10.0),
+                      //   ),
+                      //   child: Padding(
+                      //     padding: const EdgeInsets.all(16.0),
+                      //     child: Row(
+                      //       children: [
+                      //         Expanded(
+                      //           child: Column(
+                      //             children: [
+                      //               Text(
+                      //                 "${details?.toplamGiris}",
+                      //                 style: const TextStyle(
+                      //                     fontSize: 28,
+                      //                     fontWeight: FontWeight.bold,
+                      //                     color: Colors.black),
+                      //               ),
+                      //               const SizedBox(height: 10.0),
+                      //               Text(
+                      //                 "totalnumberoflogin".tr(),
+                      //                 style: const TextStyle(
+                      //                     fontSize: 16,
+                      //                     fontWeight: FontWeight.bold,
+                      //                     color: Colors.black54),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //         Expanded(
+                      //           child: Column(
+                      //             children: [
+                      //               Text(
+                      //                 "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
+                      //                 style:
+                      //                     Theme.of(context).textTheme.headline6,
+                      //               ),
+                      //               Text(
+                      //                 "${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
+                      //                 style:
+                      //                     Theme.of(context).textTheme.headline6,
+                      //               ),
+                      //               const SizedBox(height: 10.0),
+                      //               Text(
+                      //                 "totalusagetime".tr(),
+                      //                 style: const TextStyle(
+                      //                     fontSize: 16,
+                      //                     fontWeight: FontWeight.bold,
+                      //                     color: Colors.black54),
+                      //               ),
+                      //             ],
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       AspectRatio(
                         aspectRatio: 1.3,
                         child: Card(
@@ -326,5 +567,17 @@ class _UserPageState extends State<UserPage> {
         }
       },
     );
+  }
+}
+
+class HexColor extends Color {
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll('#', '');
+    if (hexColor.length == 6) {
+      hexColor = 'FF' + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
   }
 }

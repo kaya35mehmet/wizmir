@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:animated_button/animated_button.dart';
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -291,37 +292,52 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   void _callbackislogin(phonenumber, password) {
-    login(phonenumber, password).then((value) {
+    login(phonenumber, password).then((value) async {
       if (value.success == "0") {
-        showDialog(
+        ArtDialogResponse response = await ArtSweetAlert.show(
+            barrierDismissible: false,
             context: context,
-            builder: (_) => AlertDialog(
-                  // title: Text('Dialog Title'),
-                  content: Text('wrongusernameorpassword'.tr()),
-                  actions: <Widget>[
-                    Center(
-                      child: AnimatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        duration: 70,
-                        height: 50,
-                        width: 200,
-                        enabled: true,
-                        shadowDegree: ShadowDegree.dark,
-                        color: Colors.blue,
-                        child: Text(
-                          "ok".tr(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ));
+            artDialogArgs: ArtDialogArgs(
+                // denyButtonText: "Cancel",
+                // title: "Are you sure?",
+                confirmButtonColor: Colors.lightBlue,
+                text: "wrongusernameorpassword".tr(),
+                confirmButtonText: "ok".tr(),
+                type: ArtSweetAlertType.warning));
+
+       
+
+        
+        // showDialog(
+        //     context: context,
+        //     builder: (_) =>
+        //     AlertDialog(
+        //           // title: Text('Dialog Title'),
+        //           content: Text('wrongusernameorpassword'.tr()),
+        //           actions: <Widget>[
+        //             Center(
+        //               child: AnimatedButton(
+        //                 onPressed: () {
+        //                   Navigator.pop(context);
+        //                 },
+        //                 duration: 70,
+        //                 height: 50,
+        //                 width: 200,
+        //                 enabled: true,
+        //                 shadowDegree: ShadowDegree.dark,
+        //                 color: Colors.blue,
+        //                 child: Text(
+        //                   "ok".tr(),
+        //                   style: const TextStyle(
+        //                     color: Colors.white,
+        //                     fontSize: 18,
+        //                     fontWeight: FontWeight.w500,
+        //                   ),
+        //                 ),
+        //               ),
+        //             ),
+        //           ],
+        //         ));
         // Toast.show("wrongusernameorpassword".tr(),
         //     duration: Toast.lengthShort, gravity: Toast.bottom);
       } else {
@@ -680,10 +696,12 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           //      child: Image.asset("assets/images/ibblogo.png", fit: BoxFit.cover)
           //   ),
           flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 50.0, right: 50,bottom: 10),
+            padding: const EdgeInsets.only(left: 70.0, right: 70),
             child: SafeArea(
               child: Image.asset(
-                brightness == Brightness.light ? "assets/images/ibblogo.png" : "assets/images/ibblogolight.png",
+                brightness == Brightness.light
+                    ? "assets/images/1.png"
+                    : "assets/images/2.png",
                 fit: BoxFit.cover,
               ),
             ),

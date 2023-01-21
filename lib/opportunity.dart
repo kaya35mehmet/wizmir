@@ -21,11 +21,11 @@ class _OpportunityState extends State<Opportunity> {
           color: brightness == Brightness.light ? Colors.black : null,
         ),
         centerTitle: true,
-         flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 50.0, right: 50,bottom: 10),
+        flexibleSpace: Padding(
+            padding: const EdgeInsets.only(left: 70.0, right: 70),
             child: SafeArea(
               child: Image.asset(
-                brightness == Brightness.light ? "assets/images/ibblogo.png" : "assets/images/ibblogolight.png",
+                brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
                 fit: BoxFit.cover,
               ),
             ),

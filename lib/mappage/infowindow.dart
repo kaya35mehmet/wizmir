@@ -118,7 +118,7 @@ class InfoWindowScreen extends StatelessWidget {
                             width: 50,
                             enabled: true,
                             shadowDegree: ShadowDegree.light,
-                            color: Colors.blue,
+                            color: Colors.lightBlue,
                             child: const Icon(
                               Icons.directions,
                               color: Colors.white,

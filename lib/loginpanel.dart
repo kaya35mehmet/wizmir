@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:wizmir/forgotpassword.dart';
 import 'package:wizmir/functions.dart';
@@ -30,13 +31,16 @@ class _MyWidgetState extends State<LoginPanelPage> {
   String initialCountry = 'TR';
   PhoneNumber number = PhoneNumber(isoCode: 'TR');
   // final PanelController _pc = PanelController();
-  String? phonenumber;
+  String? phonenumber = "";
   Widget arrow = const Icon(Icons.arrow_upward);
   bool? islogin;
   bool? floatingActionButtonvisible;
   TextEditingController controller = TextEditingController();
   TextEditingController usercnt = TextEditingController();
   TextEditingController passcnt = TextEditingController();
+   final RoundedLoadingButtonController _btnController =
+      RoundedLoadingButtonController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -151,59 +155,86 @@ class _MyWidgetState extends State<LoginPanelPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  InternationalPhoneNumberInput(
-                    searchBoxDecoration: const InputDecoration(
-                        labelText:
-                            "Ülke adına veya arama koduna göre arama yapın"),
-                    onInputChanged: (PhoneNumber number) {
-                      setState(() {
-                        phonenumber = number.phoneNumber;
-                      });
-                    },
-                    onInputValidated: (bool value) {},
-                    selectorConfig: const SelectorConfig(
-                      selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                  Padding(
+                    padding: const EdgeInsets.only(left:20.0, right: 20),
+                    child: InternationalPhoneNumberInput(
+                      inputDecoration: const InputDecoration(
+                        border: OutlineInputBorder()
+                      ),
+                      searchBoxDecoration: InputDecoration(
+                          labelText:
+                              "searchbycountrynameordialingcode".tr()),
+                      onInputChanged: (PhoneNumber number) {
+                        setState(() {
+                          phonenumber = number.phoneNumber;
+                        });
+                      },
+                      onInputValidated: (bool value) {},
+                      selectorConfig: const SelectorConfig(
+                        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                      ),
+                      ignoreBlank: false,
+                      hintText: "phonenumber".tr(),
+                      errorMessage: "wrongnumber".tr(),
+                      autoValidateMode: AutovalidateMode.disabled,
+                      selectorTextStyle: TextStyle(
+                          color: brightness == Brightness.light
+                              ? Colors.black
+                              : null),
+                      initialValue: number,
+                      textFieldController: controller,
+                      formatInput: false,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          signed: true, decimal: true),
+                      inputBorder: const OutlineInputBorder(),
                     ),
-                    ignoreBlank: false,
-                    hintText: "phonenumber".tr(),
-                    errorMessage: "wrongnumber".tr(),
-                    autoValidateMode: AutovalidateMode.disabled,
-                    selectorTextStyle: TextStyle(
-                        color: brightness == Brightness.light
-                            ? Colors.black
-                            : null),
-                    initialValue: number,
-                    textFieldController: controller,
-                    formatInput: false,
-                    keyboardType: const TextInputType.numberWithOptions(
-                        signed: true, decimal: true),
-                    inputBorder: const OutlineInputBorder(),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  TextField(
-                    controller: passcnt,
-                    keyboardType: TextInputType.text,
-                    obscureText: true,
-                    decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.all(8),
-                        labelText: 'password'.tr(),
-                        border: const OutlineInputBorder()),
+                  Padding(
+                    padding: const EdgeInsets.only(left:20.0, right: 20),
+                    child: TextField(
+                      controller: passcnt,
+                      keyboardType: TextInputType.text,
+                      obscureText: true,
+                      decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(8),
+                          labelText: 'password'.tr(),
+                          border: const OutlineInputBorder()),
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      widget.pc.close();
-                      widget.callbackislogin(phonenumber!, passcnt.text);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
+                  
+                  Padding(
+                    padding: const EdgeInsets.only(left:20.0, right: 20),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: RoundedLoadingButton(
+                        width: double.infinity,
+                        borderRadius: 10,
+                          controller: _btnController,
+                           onPressed: () {
+                          widget.pc.close();
+                          widget.callbackislogin(phonenumber!, passcnt.text);
+                        },
+                        child: Text("login".tr(),
+                              style: TextStyle(color: brightness == Brightness.light ? Colors.white : null)),
+                        ),
                     ),
-                    child: Text("login".tr()),
                   ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     widget.pc.close();
+                  //     widget.callbackislogin(phonenumber!, passcnt.text);
+                  //   },
+                  //   style: ElevatedButton.styleFrom(
+                  //     minimumSize: const Size.fromHeight(50),
+                  //   ),
+                  //   child: Text("login".tr()),
+                  // ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -228,7 +259,8 @@ class _MyWidgetState extends State<LoginPanelPage> {
                         closedColor: brightness == Brightness.light ? Colors.white:const Color(0xFF424242),
                         transitionType: _transitionType,
                         openBuilder: (BuildContext context, VoidCallback _) {
-                          return const RegisterPage(
+                          return  RegisterPage(
+                            phonenumber: phonenumber!,
                             includeMarkAsDoneButton: false,
                           );
                         },
