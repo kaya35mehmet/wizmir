@@ -1,3 +1,4 @@
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -85,7 +86,7 @@ class NavigationDrawer extends StatelessWidget {
                       height: 10,
                     ),
                     ListTile(
-                        dense: true,
+                      dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: Icon(
@@ -98,38 +99,36 @@ class NavigationDrawer extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                      onTap: () {
+                      onTap: () async {
                         Scaffold.of(context).closeDrawer();
                         if (islogin) {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('areyousure'.tr()),
-                              actions: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        primary: Colors.grey),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text('cancel'.tr())),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      var storage =
-                                          const FlutterSecureStorage();
-                                      storage.delete(key: "guid").then((value) {
-                                        callback();
-                                        storage.delete(key: "isadmin");
-                                        Navigator.pop(context);
-                                      });
-                                      Toast.show("checkedout".tr(),
-                                          duration: Toast.lengthShort,
-                                          gravity: Toast.bottom);
-                                    },
-                                    child: Text('ok'.tr()))
-                              ],
-                            ),
-                          );
+                          ArtDialogResponse response = await ArtSweetAlert.show(
+                              barrierDismissible: false,
+                              context: context,
+                              artDialogArgs: ArtDialogArgs(
+                                  denyButtonText: "cancel".tr(),
+                                  // title: "Are you sure?",
+                                  confirmButtonColor: Colors.lightBlue,
+                                  text: "areyousure".tr(),
+                                  confirmButtonText: "ok".tr(),
+                                  type: ArtSweetAlertType.warning));
+
+                          if (response.isTapConfirmButton) {
+                            var storage = const FlutterSecureStorage();
+                            storage.delete(key: "guid").then((value) {
+                              callback();
+                              storage.delete(key: "isadmin");
+                              Navigator.pop(context);
+                            });
+                            Toast.show("checkedout".tr(),
+                                duration: Toast.lengthShort,
+                                gravity: Toast.bottom);
+                            return;
+                          }
+
+                          if (response.isTapDenyButton) {
+                            return;
+                          }
                         } else {
                           pc.open();
                         }
@@ -140,9 +139,9 @@ class NavigationDrawer extends StatelessWidget {
                     ),
                     islogin
                         ? ListTile(
-                          minVerticalPadding: -10,
-                          dense: true,
-                            visualDensity: const  VisualDensity(
+                            minVerticalPadding: -10,
+                            dense: true,
+                            visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
                               Icons.graphic_eq_rounded,
@@ -183,7 +182,6 @@ class NavigationDrawer extends StatelessWidget {
                               ),
                             ),
                             onTap: () {
-                              Scaffold.of(context).closeDrawer();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -216,7 +214,6 @@ class NavigationDrawer extends StatelessWidget {
                               ),
                             ),
                             onTap: () {
-                              Scaffold.of(context).closeDrawer();
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -263,7 +260,7 @@ class NavigationDrawer extends StatelessWidget {
                           )
                         : const Center(),
                     ListTile(
-                        dense: true,
+                      dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: const Icon(
@@ -287,7 +284,7 @@ class NavigationDrawer extends StatelessWidget {
                       color: Colors.white30,
                     ),
                     ListTile(
-                        dense: true,
+                      dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: const Icon(
@@ -311,7 +308,7 @@ class NavigationDrawer extends StatelessWidget {
                       color: Colors.white30,
                     ),
                     ListTile(
-                        dense: true,
+                      dense: true,
                       visualDensity:
                           const VisualDensity(horizontal: 0, vertical: -4),
                       leading: const Icon(

@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({
@@ -50,7 +51,12 @@ class CameraPageState extends State<CameraPage> {
           if (snapshot.connectionState == ConnectionState.done) {
             return CameraPreview(_controller);
           } else {
-            return const Center(child: CircularProgressIndicator());
+            return const LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                );
           }
         },
       ),

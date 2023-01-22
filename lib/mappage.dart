@@ -14,6 +14,7 @@ import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:octo_image/octo_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -304,42 +305,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 text: "wrongusernameorpassword".tr(),
                 confirmButtonText: "ok".tr(),
                 type: ArtSweetAlertType.warning));
-
-       
-
-        
-        // showDialog(
-        //     context: context,
-        //     builder: (_) =>
-        //     AlertDialog(
-        //           // title: Text('Dialog Title'),
-        //           content: Text('wrongusernameorpassword'.tr()),
-        //           actions: <Widget>[
-        //             Center(
-        //               child: AnimatedButton(
-        //                 onPressed: () {
-        //                   Navigator.pop(context);
-        //                 },
-        //                 duration: 70,
-        //                 height: 50,
-        //                 width: 200,
-        //                 enabled: true,
-        //                 shadowDegree: ShadowDegree.dark,
-        //                 color: Colors.blue,
-        //                 child: Text(
-        //                   "ok".tr(),
-        //                   style: const TextStyle(
-        //                     color: Colors.white,
-        //                     fontSize: 18,
-        //                     fontWeight: FontWeight.w500,
-        //                   ),
-        //                 ),
-        //               ),
-        //             ),
-        //           ],
-        //         ));
-        // Toast.show("wrongusernameorpassword".tr(),
-        //     duration: Toast.lengthShort, gravity: Toast.bottom);
       } else {
         Toast.show("loginsuccessful".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -798,7 +763,12 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   ],
                 );
               } else {
-                return const CircularProgressIndicator();
+                return const LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                );
               }
             }),
       ),

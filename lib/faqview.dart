@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:wizmir/models/faq.dart';
 
 class FAQView extends StatefulWidget {
@@ -74,7 +75,12 @@ class _FAQViewState extends State<FAQView> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [CircularProgressIndicator()],
+                  children: const [ LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )],
                 );
               }
             }),

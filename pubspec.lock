@@ -588,6 +588,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  logo_n_spinner:
+    dependency: "direct main"
+    description:
+      name: logo_n_spinner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2+1"
   map_launcher:
     dependency: "direct main"
     description:

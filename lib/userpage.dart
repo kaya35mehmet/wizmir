@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:wizmir/models/userdetails.dart';
 import 'indicator.dart';
 import 'color_extensions.dart';
@@ -50,12 +51,12 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         elevation: 0,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
@@ -503,7 +504,12 @@ class _UserPageState extends State<UserPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
-                      children: const [CircularProgressIndicator()],
+                      children: const [LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )],
                     ),
                   );
                 }
