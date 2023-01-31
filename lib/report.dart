@@ -60,7 +60,8 @@ class _ReportViewState extends State<ReportView> {
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
-
+     final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    final bool mobilelayout = 600 < shortestSide;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -68,7 +69,9 @@ class _ReportViewState extends State<ReportView> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 70.0, right: 70),
+            padding: EdgeInsets.only(
+              left: mobilelayout ? 240 : 70.0,
+              right: mobilelayout ? 240 : 70),
             child: SafeArea(
               child: Image.asset(
                 brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",

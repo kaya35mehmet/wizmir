@@ -1,5 +1,6 @@
 import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -236,7 +237,7 @@ class NavigationDrawer extends StatelessWidget {
                             visualDensity: const VisualDensity(
                                 horizontal: 0, vertical: -4),
                             leading: const Icon(
-                              Icons.adjust,
+                              CupertinoIcons.gift,
                               color: Colors.white,
                             ),
                             title: Text(
@@ -247,10 +248,11 @@ class NavigationDrawer extends StatelessWidget {
                             ),
                             onTap: () {
                               Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const Opportunity()));
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const Opportunity(),
+                                ),
+                              );
                             },
                           )
                         : const Center(),
