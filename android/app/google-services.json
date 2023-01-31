@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "924207924375",
+    "project_id": "wizmirnet-807a7",
+    "storage_bucket": "wizmirnet-807a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924207924375:android:0c4ff917a4c5a26e7195d2",
+        "android_client_info": {
+          "package_name": "com.wizmirnet.net"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924207924375-ltpj1l3a4t3lacq33jderjr7cpk1t78t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDslTI3_K0s7AmGcJsttNajrBkO_8is258"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924207924375-ltpj1l3a4t3lacq33jderjr7cpk1t78t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

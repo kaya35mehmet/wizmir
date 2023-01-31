@@ -38,9 +38,8 @@ class _MyWidgetState extends State<LoginPanelPage> {
   TextEditingController controller = TextEditingController();
   TextEditingController usercnt = TextEditingController();
   TextEditingController passcnt = TextEditingController();
-   final RoundedLoadingButtonController _btnController =
+  final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +76,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
           ? Colors.transparent
           : const Color(0xFF424242),
       minHeight: 0,
-      maxHeight: MediaQuery.of(context).size.height * 0.55,
+      maxHeight: MediaQuery.of(context).size.height * 0.65,
       panel: Column(
         children: [
           Expanded(
@@ -88,7 +87,7 @@ class _MyWidgetState extends State<LoginPanelPage> {
                     : const Color(0xFF424242),
               ),
               padding: const EdgeInsets.all(10),
-              height: MediaQuery.of(context).size.height * 0.4,
+              // height: MediaQuery.of(context).size.height * 0.5,
               child: Column(
                 children: [
                   Center(
@@ -140,60 +139,65 @@ class _MyWidgetState extends State<LoginPanelPage> {
                   ),
                   const Divider(),
                   Padding(
-                          padding: const EdgeInsets.only(
-                              left: 80.0, right: 80, bottom: 4),
-                          child: Image.asset(
-                            "assets/images/wizmirnetson.png",
-                            width: MediaQuery.of(context).size.width * 0.4,
-                          )
-                          // SvgPicture.asset(
-                          //   "assets/images/wizmirnet_icon2.svg",
-                          //   fit: BoxFit.contain,
-                          //   width: MediaQuery.of(context).size.width * 0.5,
-                          // ),
-                          ),
+                      padding: const EdgeInsets.only(
+                          left: 80.0, right: 80, bottom: 4),
+                      child: Image.asset(
+                        "assets/images/wizmirnetson.png",
+                        width: MediaQuery.of(context).size.width * 0.4,
+                      )
+                      // SvgPicture.asset(
+                      //   "assets/images/wizmirnet_icon2.svg",
+                      //   fit: BoxFit.contain,
+                      //   width: MediaQuery.of(context).size.width * 0.5,
+                      // ),
+                      ),
                   const SizedBox(
                     height: 20,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left:20.0, right: 20),
-                    child: InternationalPhoneNumberInput(
-                      inputDecoration: const InputDecoration(
-                        border: OutlineInputBorder()
+                    padding: const EdgeInsets.only(left: 20.0, right: 20),
+                    child: Container(
+                      padding: const EdgeInsets.only(left:10),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        border:  Border.all(color: Colors.grey)
                       ),
-                      searchBoxDecoration: InputDecoration(
-                          labelText:
-                              "searchbycountrynameordialingcode".tr()),
-                      onInputChanged: (PhoneNumber number) {
-                        setState(() {
-                          phonenumber = number.phoneNumber;
-                        });
-                      },
-                      onInputValidated: (bool value) {},
-                      selectorConfig: const SelectorConfig(
-                        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                      child: InternationalPhoneNumberInput(
+                        // inputDecoration: const InputDecoration(
+                        //     border: OutlineInputBorder(gapPadding: 0)),
+                        searchBoxDecoration: InputDecoration(
+                            labelText: "searchbycountrynameordialingcode".tr()),
+                        onInputChanged: (PhoneNumber number) {
+                          setState(() {
+                            phonenumber = number.phoneNumber;
+                          });
+                        },
+                        onInputValidated: (bool value) {},
+                        selectorConfig: const SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                        ),
+                        ignoreBlank: false,
+                        hintText: "phonenumber".tr(),
+                        errorMessage: "wrongnumber".tr(),
+                        autoValidateMode: AutovalidateMode.disabled,
+                        selectorTextStyle: TextStyle(
+                            color: brightness == Brightness.light
+                                ? Colors.black
+                                : null),
+                        initialValue: number,
+                        textFieldController: controller,
+                        formatInput: false,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        // inputBorder: const OutlineInputBorder(),
                       ),
-                      ignoreBlank: false,
-                      hintText: "phonenumber".tr(),
-                      errorMessage: "wrongnumber".tr(),
-                      autoValidateMode: AutovalidateMode.disabled,
-                      selectorTextStyle: TextStyle(
-                          color: brightness == Brightness.light
-                              ? Colors.black
-                              : null),
-                      initialValue: number,
-                      textFieldController: controller,
-                      formatInput: false,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: true),
-                      inputBorder: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left:20.0, right: 20),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20),
                     child: TextField(
                       controller: passcnt,
                       keyboardType: TextInputType.text,
@@ -207,22 +211,26 @@ class _MyWidgetState extends State<LoginPanelPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  
+
                   Padding(
-                    padding: const EdgeInsets.only(left:20.0, right: 20),
+                    padding: const EdgeInsets.only(left: 20.0, right: 20),
                     child: SizedBox(
                       width: double.infinity,
                       child: RoundedLoadingButton(
-                        width: double.infinity,
+                        // width: double.infinity,
                         borderRadius: 10,
-                          controller: _btnController,
-                           onPressed: () {
+                        controller: _btnController,
+                        onPressed: () {
                           widget.pc.close();
                           widget.callbackislogin(phonenumber!, passcnt.text);
+                          _btnController.stop();
                         },
                         child: Text("login".tr(),
-                              style: TextStyle(color: brightness == Brightness.light ? Colors.white : null)),
-                        ),
+                            style: TextStyle(
+                                color: brightness == Brightness.light
+                                    ? Colors.white
+                                    : null)),
+                      ),
                     ),
                   ),
                   // ElevatedButton(
@@ -250,16 +258,17 @@ class _MyWidgetState extends State<LoginPanelPage> {
                         ),
                         child: Text(
                           "forgotpassword".tr(),
-                          style: const TextStyle(
-                               fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       OpenContainer(
                         // openColor: brightness == Brightness.light ? Colors.white:Colors.black,
-                        closedColor: brightness == Brightness.light ? Colors.white:const Color(0xFF424242),
+                        closedColor: brightness == Brightness.light
+                            ? Colors.white
+                            : const Color(0xFF424242),
                         transitionType: _transitionType,
                         openBuilder: (BuildContext context, VoidCallback _) {
-                          return  RegisterPage(
+                          return RegisterPage(
                             phonenumber: phonenumber!,
                             includeMarkAsDoneButton: false,
                           );
@@ -269,8 +278,11 @@ class _MyWidgetState extends State<LoginPanelPage> {
                             (BuildContext context, VoidCallback openContainer) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text("register".tr(),style: const TextStyle(
-                               fontWeight: FontWeight.bold),),
+                            child: Text(
+                              "register".tr(),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           );
                         },
                       ),

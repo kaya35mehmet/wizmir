@@ -14,7 +14,8 @@ import 'package:wizmir/otp.dart';
 import 'package:wizmir/transitions.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key, this.includeMarkAsDoneButton = true, this.phonenumber})
+  const RegisterPage(
+      {Key? key, this.includeMarkAsDoneButton = true, this.phonenumber})
       : super(key: key);
   final String? phonenumber;
   final bool includeMarkAsDoneButton;
@@ -24,7 +25,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
@@ -71,10 +71,6 @@ class SlideAnimationWidget extends StatefulWidget {
 
 enum Gender { erkek, kadin }
 
-List<String> list = List<String>.generate(
-    80, (int index) => (DateTime.now().year - index).toString(),
-    growable: true);
-
 class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
@@ -91,16 +87,17 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   String age = "";
   bool checkvalue = false;
   String kvkk = "";
-
+  List<String> list = List<String>.generate(
+      80, (int index) => (DateTime.now().year - index).toString(),
+      growable: true);
   @override
   void initState() {
     list.insert(0, "choose".tr());
     setState(() {
       age = list.first;
-    
     });
     getkvkkdata();
-    if(widget.phonenumber != null){
+    if (widget.phonenumber != null) {
       setState(() {
         phonenumber = widget.phonenumber;
       });
@@ -109,70 +106,68 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   }
 
   getkvkkdata() async {
-      kvkk = await getkvkk();
+    kvkk = await getkvkk();
   }
 
   void _doSomething() async {
     if (checkvalue) {
       if (age != "Choose" && age != "Seçiniz") {
-      if (phonenumber != null && namecnt.text != "") {
-        if (phonenumber!.length == 13) {
-          if (passcnt.text.length > 5) {
-            User user = User(
-              telefon: phonenumber!,
-              ad: namecnt.text,
-              soyad: surnamecnt.text,
-              sifre: passcnt.text,
-              cinsiyet: cinsiyet,
-              yas: age,
-            );
-            Timer(
-              const Duration(milliseconds: 500),
-              () {
-                sendsms(phonenumber!, "register").then((value) {
-                  if (value == "333") {
-                    Navigator.push(
-                      context,
-                      ScaleTransitions(
-                        OTPPage(
-                          type: "2",
-                          username: phonenumber!,
-                          user: user,
-                          isadmin: false,
+        if (phonenumber != null && namecnt.text != "") {
+          if (phonenumber!.length == 13) {
+            if (passcnt.text.length > 5) {
+              User user = User(
+                telefon: phonenumber!,
+                ad: namecnt.text,
+                soyad: surnamecnt.text,
+                sifre: passcnt.text,
+                cinsiyet: cinsiyet,
+                yas: age,
+              );
+              Timer(
+                const Duration(milliseconds: 500),
+                () {
+                  sendsms(phonenumber!, "register").then((value) {
+                    if (value == "333") {
+                      Navigator.push(
+                        context,
+                        ScaleTransitions(
+                          OTPPage(
+                            type: "2",
+                            username: phonenumber!,
+                            user: user,
+                            isadmin: false,
+                          ),
                         ),
-                      ),
-                    );
-                  } else {
-                    Toast.show("anerroroccurred_pleasetryagain".tr(),
-                        duration: Toast.lengthShort, gravity: Toast.bottom);
-                  }
-                });
-              },
-            );
+                      );
+                    } else {
+                      Toast.show("anerroroccurred_pleasetryagain".tr(),
+                          duration: Toast.lengthShort, gravity: Toast.bottom);
+                    }
+                  });
+                },
+              );
+            } else {
+              Toast.show("yourpasswordmustbeatleast6digits".tr(),
+                  duration: Toast.lengthShort, gravity: Toast.bottom);
+            }
           } else {
-            Toast.show("yourpasswordmustbeatleast6digits".tr(),
+            Toast.show("phonenumbermustbe10digits".tr(),
                 duration: Toast.lengthShort, gravity: Toast.bottom);
           }
         } else {
-          Toast.show("phonenumbermustbe10digits".tr(),
+          Toast.show("donotleavethefieldsblank".tr(),
               duration: Toast.lengthShort, gravity: Toast.bottom);
         }
       } else {
-        Toast.show("donotleavethefieldsblank".tr(),
+        Toast.show("chooseyourage".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
       }
     } else {
-      Toast.show("chooseyourage".tr(),
-          duration: Toast.lengthShort, gravity: Toast.bottom);
-    }
-    } else {
-         Toast.show("pleasecheck".tr(),
+      Toast.show("pleasecheck".tr(),
           duration: Toast.lengthShort, gravity: Toast.bottom);
     }
     _btnController.reset();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -227,33 +222,39 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         const SizedBox(
                           height: 20,
                         ),
-                        InternationalPhoneNumberInput(
-                          searchBoxDecoration: InputDecoration(
-                              labelText:
-                                  "searchbycountrynameordialingcode".tr()),
-                          onInputChanged: (PhoneNumber number) {
-                            setState(() {
-                              phonenumber = number.phoneNumber;
-                            });
-                          },
-                          onInputValidated: (bool value) {},
-                          selectorConfig: const SelectorConfig(
-                            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                        Container(
+                          padding: const EdgeInsets.only(left: 10),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(4)),
+                              border: Border.all(color: Colors.grey)),
+                          child: InternationalPhoneNumberInput(
+                            searchBoxDecoration: InputDecoration(
+                                labelText:
+                                    "searchbycountrynameordialingcode".tr()),
+                            onInputChanged: (PhoneNumber number) {
+                              setState(() {
+                                phonenumber = number.phoneNumber;
+                              });
+                            },
+                            onInputValidated: (bool value) {},
+                            selectorConfig: const SelectorConfig(
+                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                            ),
+                            ignoreBlank: false,
+                            hintText: "phonenumber".tr(),
+                            errorMessage: "wrongnumber".tr(),
+                            autoValidateMode: AutovalidateMode.disabled,
+                            selectorTextStyle: TextStyle(
+                                color: brightness == Brightness.light
+                                    ? Colors.black
+                                    : null),
+                            initialValue: number,
+                            textFieldController: cnt,
+                            formatInput: false,
+                            keyboardType: const TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
                           ),
-                          ignoreBlank: false,
-                          hintText: "phonenumber".tr(),
-                          errorMessage: "wrongnumber".tr(),
-                          autoValidateMode: AutovalidateMode.disabled,
-                          selectorTextStyle: TextStyle(
-                              color: brightness == Brightness.light
-                                  ? Colors.black
-                                  : null),
-                          initialValue: number,
-                          textFieldController: cnt,
-                          formatInput: false,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
-                          inputBorder: const OutlineInputBorder(),
                         ),
                         const SizedBox(
                           height: 20,
@@ -370,11 +371,13 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Checkbox(value: checkvalue, onChanged: (value) {
-                              setState(() {
-                                checkvalue = !checkvalue;
-                              });
-                            }),
+                            Checkbox(
+                                value: checkvalue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    checkvalue = !checkvalue;
+                                  });
+                                }),
                             Flexible(
                               child: GestureDetector(
                                 onTap: () {
@@ -384,9 +387,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                                     builder: (context) => AlertDialog(
                                       content: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        children:  [
-                                          Text(kvkk)
-                                        ],
+                                        children: [Text(kvkk)],
                                       ),
                                       actions: [
                                         SizedBox(

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:wizmir/models/faq.dart';
 
 class FAQView extends StatefulWidget {
@@ -20,6 +21,8 @@ class _FAQViewState extends State<FAQView> {
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
+        final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    final bool mobilelayout = 600 < shortestSide;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -27,7 +30,9 @@ class _FAQViewState extends State<FAQView> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 70.0, right: 70),
+            padding: EdgeInsets.only(
+              left: mobilelayout ? 240 : 70.0,
+              right: mobilelayout ? 240 : 70),
             child: SafeArea(
               child: Image.asset(
                 brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
@@ -74,7 +79,12 @@ class _FAQViewState extends State<FAQView> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [CircularProgressIndicator()],
+                  children: const [ LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )],
                 );
               }
             }),

@@ -9,11 +9,10 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_launch/flutter_launch.dart';
-import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:octo_image/octo_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -21,6 +20,7 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wizmir/drawer.dart';
+import 'package:wizmir/fcm.dart';
 import 'package:wizmir/functions.dart' as functions;
 import 'package:wizmir/mappage/infowindow.dart';
 import 'package:wizmir/mappage/wifialert.dart';
@@ -54,7 +54,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Locations? selectedLocation;
   List<Locations>? locations;
   Set<Marker>? _markers = <Marker>{};
-  // BitmapDescriptor? myMarker;
   final CustomInfoWindowController _customInfoWindowController =
       CustomInfoWindowController();
 
@@ -63,7 +62,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   bool floatingActionButtonvisible = true;
   bool nearlocationsvisible = true;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-
   final PanelController _pc = PanelController();
   List<NearLocations> nlist = [];
   Marker? selectedMarker;
@@ -71,9 +69,21 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   late double infoviewheight;
   String? _darkMapStyle;
   FlickManager? flickManager;
+  String notificationTitle = 'No Title';
+  String notificationBody = 'No Body';
+  String notificationData = 'No Data';
 
   @override
   void initState() {
+    // _changeData(String msg) => setState(() => notificationData = msg);
+    // _changeBody(String msg) => setState(() => notificationBody = msg);
+    // _changeTitle(String msg) => setState(() => notificationTitle = msg);
+    // final firebaseMessaging = FCM();
+    // firebaseMessaging.setNotifications();
+    // firebaseMessaging.streamCtlr.stream.listen(_changeData);
+    // firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
+    // firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
+
     setState(() {
       isadmin = widget.isadmin;
       infoviewheight = widget.isadmin ? 280 : 210;
@@ -197,7 +207,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Future<void> generateMarkers(context, current) async {
     var ikon = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/wifi6.svg", 36);
-    var ikon2 = await functions.bitmapDescriptorFromSvgAsset(
+    // var ikon2 = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(36, 36)), "assets/icons/bakimda.png");
+    var ikon2 =  await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/wifi7inactive.svg", 36);
     var buradayim = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/buradayim5.svg", 90);
@@ -304,42 +315,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 text: "wrongusernameorpassword".tr(),
                 confirmButtonText: "ok".tr(),
                 type: ArtSweetAlertType.warning));
-
-       
-
-        
-        // showDialog(
-        //     context: context,
-        //     builder: (_) =>
-        //     AlertDialog(
-        //           // title: Text('Dialog Title'),
-        //           content: Text('wrongusernameorpassword'.tr()),
-        //           actions: <Widget>[
-        //             Center(
-        //               child: AnimatedButton(
-        //                 onPressed: () {
-        //                   Navigator.pop(context);
-        //                 },
-        //                 duration: 70,
-        //                 height: 50,
-        //                 width: 200,
-        //                 enabled: true,
-        //                 shadowDegree: ShadowDegree.dark,
-        //                 color: Colors.blue,
-        //                 child: Text(
-        //                   "ok".tr(),
-        //                   style: const TextStyle(
-        //                     color: Colors.white,
-        //                     fontSize: 18,
-        //                     fontWeight: FontWeight.w500,
-        //                   ),
-        //                 ),
-        //               ),
-        //             ),
-        //           ],
-        //         ));
-        // Toast.show("wrongusernameorpassword".tr(),
-        //     duration: Toast.lengthShort, gravity: Toast.bottom);
       } else {
         Toast.show("loginsuccessful".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -466,77 +441,80 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     showDialog(
       barrierDismissible: false,
       context: context,
-      builder: (context) => AlertDialog(
-        contentPadding: EdgeInsets.zero,
-        content: Stack(
-          children: [
-            Container(
-              child: value.turu == "resim"
-                  ? OctoImage(
-                      image: CachedNetworkImageProvider(value.url),
-                      placeholderBuilder: OctoPlaceholder.blurHash(
-                        'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
-                      ),
-                      errorBuilder: OctoError.icon(color: Colors.red),
-                      fit: BoxFit.cover,
-                    )
-                  : AspectRatio(
-                      aspectRatio: 16 / 9,
-                      child: FlickVideoPlayer(
-                          flickVideoWithControls: FlickVideoWithControls(
-                            videoFit: BoxFit.fitHeight,
-                            controls: FlickPortraitControls(
-                              progressBarSettings: FlickProgressBarSettings(
-                                  playedColor: Colors.green),
+      builder: (context) => Align(
+        alignment: Alignment.center,
+        child: AlertDialog(
+          contentPadding: EdgeInsets.zero,
+          content: Stack(
+            children: [
+              Container(
+                child: value.turu == "resim"
+                    ? OctoImage(
+                        image: CachedNetworkImageProvider(value.url),
+                        placeholderBuilder: OctoPlaceholder.blurHash(
+                          'LEHV6nWB2yk8pyo0adR*.7kCMdnj',
+                        ),
+                        errorBuilder: OctoError.icon(color: Colors.red),
+                        fit: BoxFit.cover,
+                      )
+                    : AspectRatio(
+                        aspectRatio: 16 / 9,
+                        child: FlickVideoPlayer(
+                            flickVideoWithControls: FlickVideoWithControls(
+                              videoFit: BoxFit.fitHeight,
+                              controls: FlickPortraitControls(
+                                progressBarSettings: FlickProgressBarSettings(
+                                    playedColor: Colors.green),
+                              ),
                             ),
-                          ),
-                          flickManager: setflickManager(value.url)),
-                    ),
-            ),
-            Positioned(
-              top: 0,
-              right: 0,
-              child: IconButton(
-                onPressed: () async {
-                  await ImageDownloader.downloadImage(value.url).whenComplete(
-                    () => Toast.show("succesful".tr(),
-                        duration: Toast.lengthLong, gravity: Toast.bottom),
-                  );
+                            flickManager: setflickManager(value.url)),
+                      ),
+              ),
+              Positioned(
+                top: 0,
+                right: 0,
+                child: IconButton(
+                  onPressed: () async {
+                    await ImageDownloader.downloadImage(value.url).whenComplete(
+                      () => Toast.show("succesful".tr(),
+                          duration: Toast.lengthLong, gravity: Toast.bottom),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.download,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            ],
+          ),
+          actions: [
+            Center(
+              child: AnimatedButton(
+                onPressed: () {
+                  if (flickManager != null) {
+                    flickManager!.dispose();
+                  }
+                  Navigator.pop(context);
                 },
-                icon: const Icon(
-                  Icons.download,
-                  color: Colors.white,
+                duration: 70,
+                height: 50,
+                width: 200,
+                enabled: true,
+                shadowDegree: ShadowDegree.dark,
+                color: Colors.blue,
+                child: Text(
+                  "close".tr(),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ),
-        actions: [
-          Center(
-            child: AnimatedButton(
-              onPressed: () {
-                if (flickManager != null) {
-                  flickManager!.dispose();
-                }
-                Navigator.pop(context);
-              },
-              duration: 70,
-              height: 50,
-              width: 200,
-              enabled: true,
-              shadowDegree: ShadowDegree.dark,
-              color: Colors.blue,
-              child: Text(
-                "close".tr(),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -559,6 +537,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var shortestSide = MediaQuery.of(context).size.shortestSide;
+    var mobilelayout = 600 < shortestSide;
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     Widget icon = Icon(Icons.location_on,
         color: brightness == Brightness.light ? Colors.blue : Colors.white);
@@ -688,51 +668,45 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               ],
             )
           : null,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(50.0),
-        child: AppBar(
-          // title: Container(   // <--- Change here
-          //      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.height * 0.1), // <-- play with the double number
-          //      child: Image.asset("assets/images/ibblogo.png", fit: BoxFit.cover)
-          //   ),
-          flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 70.0, right: 70),
-            child: SafeArea(
-              child: Image.asset(
-                brightness == Brightness.light
-                    ? "assets/images/1.png"
-                    : "assets/images/2.png",
-                fit: BoxFit.cover,
-              ),
+      appBar: AppBar(
+        flexibleSpace: Padding(
+          padding: EdgeInsets.only(
+              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70),
+          child: SafeArea(
+            child: Image.asset(
+              brightness == Brightness.light
+                  ? "assets/images/1.png"
+                  : "assets/images/2.png",
+              fit: BoxFit.cover,
             ),
           ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NotificationScreen()));
-                },
-                icon: Icon(
-                  Icons.notifications,
-                  color: brightness == Brightness.light ? Colors.black : null,
-                ))
-          ],
-          centerTitle: false,
-          backgroundColor: brightness == Brightness.light ? Colors.white : null,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () {
-              _customInfoWindowController.hideInfoWindow!();
-              _scaffoldKey.currentState?.openDrawer();
-            },
-            icon: Padding(
-              padding: const EdgeInsets.all(0),
-              child: Icon(
-                Icons.menu,
+        ),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NotificationScreen()));
+              },
+              icon: Icon(
+                Icons.notifications,
                 color: brightness == Brightness.light ? Colors.black : null,
-              ),
+              ))
+        ],
+        centerTitle: false,
+        backgroundColor: brightness == Brightness.light ? Colors.white : null,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () {
+            _customInfoWindowController.hideInfoWindow!();
+            _scaffoldKey.currentState?.openDrawer();
+          },
+          icon: Padding(
+            padding: const EdgeInsets.all(0),
+            child: Icon(
+              Icons.menu,
+              color: brightness == Brightness.light ? Colors.black : null,
             ),
           ),
         ),
@@ -798,7 +772,12 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   ],
                 );
               } else {
-                return const CircularProgressIndicator();
+                return const LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                );
               }
             }),
       ),

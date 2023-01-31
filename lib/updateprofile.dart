@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
 import 'package:wizmir/mappage.dart';
@@ -33,16 +34,17 @@ class _UpdateProfilePageState extends State<UpdateProfilePage> {
           style: TextStyle(
               color: brightness == Brightness.light ? Colors.black : null),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         elevation: 0,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
-      body: Padding(
+      body: 
+      Padding(
         padding: const EdgeInsets.all(20.0),
         child: SlideAnimationWidget(
           isadmin: widget.isadmin,
@@ -313,7 +315,12 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    CircularProgressIndicator(),
+                   LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )
                   ],
                 ),
               );

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:toast/toast.dart';
 import 'package:wizmir/camera.dart';
 import 'package:wizmir/models/locations.dart';
@@ -59,7 +60,8 @@ class _ReportViewState extends State<ReportView> {
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
-
+     final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    final bool mobilelayout = 600 < shortestSide;
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -67,7 +69,9 @@ class _ReportViewState extends State<ReportView> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-            padding: const EdgeInsets.only(left: 70.0, right: 70),
+            padding: EdgeInsets.only(
+              left: mobilelayout ? 240 : 70.0,
+              right: mobilelayout ? 240 : 70),
             child: SafeArea(
               child: Image.asset(
                 brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
@@ -334,113 +338,6 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                // Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       left: 30.0, right: 30),
-                                //   child: Row(children: [
-                                //     Expanded(
-                                //       child: Container(
-                                //           margin: const EdgeInsets.only(
-                                //               left: 10.0, right: 20.0),
-                                //           child: Divider(
-                                //             color:
-                                //                 brightness == Brightness.light
-                                //                     ? Colors.black26
-                                //                     : null,
-                                //             height: 36,
-                                //           )),
-                                //     ),
-                                //     Text(
-                                //       "or".tr(),
-                                //       style: TextStyle(
-                                //           color: brightness == Brightness.light
-                                //               ? Colors.black26
-                                //               : null),
-                                //     ),
-                                //     Expanded(
-                                //       child: Container(
-                                //           margin: const EdgeInsets.only(
-                                //               left: 20.0, right: 10.0),
-                                //           child: Divider(
-                                //             color:
-                                //                 brightness == Brightness.light
-                                //                     ? Colors.black26
-                                //                     : null,
-                                //             height: 36,
-                                //           )),
-                                //     ),
-                                //   ]),
-                                // ),
-                                // const SizedBox(
-                                //   height: 10,
-                                // ),
-                                // OutlinedButton(
-                                //   onPressed: () async {
-                                //     WidgetsFlutterBinding.ensureInitialized();
-                                //     final cameras = await availableCameras();
-                                //     final firstCamera = cameras.first;
-                                //     // ignore: use_build_context_synchronously
-                                //     Navigator.push(
-                                //       context,
-                                //       ScaleTransitions(
-                                //         CameraPage(
-                                //           camera: firstCamera,
-                                //         ),
-                                //       ),
-                                //     ).then((value) {
-                                //       setState(() {
-                                //         file = value;
-                                //       });
-                                //     });
-                                //   },
-                                //   child: Padding(
-                                //     padding: const EdgeInsets.all(16.0),
-                                //     child: Icon(
-                                //       Icons.camera_alt,
-                                //       size: 30,
-                                //       color: brightness == Brightness.light
-                                //           ? Colors.black54
-                                //           : null,
-                                //     ),
-                                //   ),
-                                // )
-                                //  Padding(
-                                //   padding: const EdgeInsets.only(
-                                //       left: 30.0, right: 30),
-                                //   child: Row(children: [
-                                //     Expanded(
-                                //       child: Container(
-                                //           margin: const EdgeInsets.only(
-                                //               left: 10.0, right: 20.0),
-                                //           child: Divider(
-                                //             color:
-                                //                 brightness == Brightness.light
-                                //                     ? Colors.black26
-                                //                     : null,
-                                //             height: 36,
-                                //           )),
-                                //     ),
-                                //     Text(
-                                //       "or".tr(),
-                                //       style: TextStyle(
-                                //           color: brightness == Brightness.light
-                                //               ? Colors.black26
-                                //               : null),
-                                //     ),
-                                //     Expanded(
-                                //       child: Container(
-                                //           margin: const EdgeInsets.only(
-                                //               left: 20.0, right: 10.0),
-                                //           child: Divider(
-                                //             color:
-                                //                 brightness == Brightness.light
-                                //                     ? Colors.black26
-                                //                     : null,
-                                //             height: 36,
-                                //           )),
-                                //     ),
-                                //   ]),
-                                // ),
                               ],
                             ),
                           ),
@@ -480,7 +377,12 @@ class _ReportViewState extends State<ReportView> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    CircularProgressIndicator(),
+                    LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )
                   ],
                 );
               }

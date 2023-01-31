@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_speedtest/flutter_speedtest.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:wizmir/functions.dart' as functions;
 import 'package:wizmir/models/speedtest.dart';
 
@@ -370,7 +371,12 @@ class _SpeedTestState extends State<SpeedTest> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [CircularProgressIndicator()],
+                    children: const [ LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )],
                   ),
                 );
               }

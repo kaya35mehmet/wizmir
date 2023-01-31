@@ -54,48 +54,52 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: showanim
-          ? Image.asset(
-              "assets/images/newsplash.gif",
-              fit: BoxFit.cover,
-              height: double.infinity,
-              width: double.infinity,
-              alignment: Alignment.center,
-            )
-          : Stack(
-              children: [
-                !showanim
-                    ? Align(
-                        alignment: Alignment.center,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 38.0),
-                          child: Image.asset("assets/images/wizmirnetson.png",width: 200,)
-                          // SvgPicture.asset(
-                          //   "assets/images/wizmirnet_icon2.svg",
-                          //   width: 200,
-                          // ),
-                        ),
-                      )
-                    : const Center(),
-                !showanim
-                    ? Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 38.0),
-                          child: widget.brightness == Brightness.light
-                              ? SvgPicture.asset(
-                                  "assets/images/tuncbey_light.svg",
-                                  width: 200,
-                                )
-                              : Image.asset(
-                                  "assets/images/tuncsoyer.png",
-                                  width: 200,
-                                ),
-                        ),
-                      )
-                    : const Center(),
-              ],
-            ),
+      body: 
+      // showanim
+      //     ? 
+          Center(
+            child: Image.asset(
+                "assets/images/splashyeni.gif",
+                fit: BoxFit.cover,
+                height: double.infinity,
+                // width: double.infinity,
+                alignment: Alignment.center,
+              ),
+          )
+          // : Stack(
+          //     children: [
+          //       !showanim
+          //           ? Align(
+          //               alignment: Alignment.center,
+          //               child: Padding(
+          //                 padding: const EdgeInsets.only(bottom: 38.0),
+          //                 child: Image.asset("assets/images/wizmirnetson.png",width: 200,)
+          //                 // SvgPicture.asset(
+          //                 //   "assets/images/wizmirnet_icon2.svg",
+          //                 //   width: 200,
+          //                 // ),
+          //               ),
+          //             )
+          //           : const Center(),
+          //       !showanim
+          //           ? Align(
+          //               alignment: Alignment.bottomCenter,
+          //               child: Padding(
+          //                 padding: const EdgeInsets.only(bottom: 38.0),
+          //                 child: widget.brightness == Brightness.light
+          //                     ? SvgPicture.asset(
+          //                         "assets/images/tuncbey_light.svg",
+          //                         width: 200,
+          //                       )
+          //                     : Image.asset(
+          //                         "assets/images/tuncsoyer.png",
+          //                         width: 200,
+          //                       ),
+          //               ),
+          //             )
+          //           : const Center(),
+          //     ],
+          //   ),
     );
   }
 }

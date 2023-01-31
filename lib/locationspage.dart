@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:wizmir/addDescription.dart';
 import 'package:wizmir/models/locations.dart';
 
@@ -112,7 +113,7 @@ class _MyWidgetState extends State<Loc> {
         body: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          color: Colors.black12,
+          color: Colors.white,
           child: FutureBuilder(
             future: locations,
             builder: (BuildContext context,
@@ -264,7 +265,12 @@ class _MyWidgetState extends State<Loc> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [CircularProgressIndicator()],
+                  children: const [LogoandSpinner(
+                  imageAssets: 'assets/images/saatkulesi.png',
+                  reverse: true,
+                  arcColor: Colors.blue,
+                  spinSpeed: Duration(milliseconds: 500),
+                )],
                 );
               }
             },

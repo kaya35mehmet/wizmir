@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:logo_n_spinner/logo_n_spinner.dart';
 import 'package:wizmir/models/userdetails.dart';
 import 'indicator.dart';
 import 'color_extensions.dart';
@@ -32,6 +33,8 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    final bool mobilelayout = 600 < shortestSide;
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +43,7 @@ class _UserPageState extends State<UserPage> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-          padding: const EdgeInsets.only(left: 70.0, right: 70),
+          padding:  EdgeInsets.only(left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240: 70),
           child: SafeArea(
             child: Image.asset(
               brightness == Brightness.light
@@ -50,12 +53,12 @@ class _UserPageState extends State<UserPage> {
             ),
           ),
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        // leading: IconButton(
+        //   icon: const Icon(Icons.arrow_back),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         elevation: 0,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
       ),
@@ -112,7 +115,7 @@ class _UserPageState extends State<UserPage> {
                                       child: Stack(
                                         children: <Widget>[
                                           Align(
-                                             alignment: Alignment.center,
+                                            alignment: Alignment.center,
                                             child: Text(
                                               "${details?.toplamGiris}",
                                               textAlign: TextAlign.center,
@@ -227,24 +230,24 @@ class _UserPageState extends State<UserPage> {
                                             alignment: Alignment.center,
                                             child: Column(
                                               children: [
-                                                 Text(
-                                              "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                                letterSpacing: 0.2,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              "${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 16,
-                                                letterSpacing: 0.2,
-                                                color: Colors.white,
-                                              ),
-                                            ),
+                                                Text(
+                                                  "${snapshot.data!.toplamSureSaat.toInt()} ${'hour'.tr()}",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 20,
+                                                    letterSpacing: 0.2,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "${snapshot.data!.toplamSureDakika.toInt()} ${'minute'.tr()}",
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                    letterSpacing: 0.2,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -391,7 +394,13 @@ class _UserPageState extends State<UserPage> {
                                     color: const Color(0xff0293ee),
                                     text: 'totaldownload'.tr(),
                                     isSquare: false,
-                                    size: touchedIndex == 0 ? 18 : 16,
+                                    size: mobilelayout
+                                        ? touchedIndex == 1
+                                            ? 38
+                                            : 36
+                                        : touchedIndex == 1
+                                            ? 18
+                                            : 16,
                                     textColor: touchedIndex == 0
                                         ? Colors.black
                                         : Colors.grey,
@@ -400,7 +409,13 @@ class _UserPageState extends State<UserPage> {
                                     color: const Color(0xfff8b250),
                                     text: 'totalupload'.tr(),
                                     isSquare: false,
-                                    size: touchedIndex == 1 ? 18 : 16,
+                                    size: mobilelayout
+                                        ? touchedIndex == 1
+                                            ? 38
+                                            : 36
+                                        : touchedIndex == 1
+                                            ? 18
+                                            : 16,
                                     textColor: touchedIndex == 1
                                         ? Colors.black
                                         : Colors.grey,
@@ -438,7 +453,7 @@ class _UserPageState extends State<UserPage> {
                                           show: false,
                                         ),
                                         sectionsSpace: 1,
-                                        centerSpaceRadius: 0,
+                                        centerSpaceRadius: 10,
                                         sections: showingSections(
                                             snapshot.data!.toplamUpload,
                                             snapshot.data!.toplamDownload)),
@@ -503,7 +518,14 @@ class _UserPageState extends State<UserPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
-                      children: const [CircularProgressIndicator()],
+                      children: const [
+                        LogoandSpinner(
+                          imageAssets: 'assets/images/saatkulesi.png',
+                          reverse: true,
+                          arcColor: Colors.blue,
+                          spinSpeed: Duration(milliseconds: 500),
+                        )
+                      ],
                     ),
                   );
                 }
@@ -519,7 +541,6 @@ class _UserPageState extends State<UserPage> {
       (i) {
         final isTouched = i == touchedIndex;
         final opacity = isTouched ? 1.0 : 0.6;
-
         const color0 = Color(0xff0293ee);
         const color1 = Color(0xfff8b250);
 
@@ -530,9 +551,6 @@ class _UserPageState extends State<UserPage> {
               value: 25,
               title:
                   "${download.toString().substring(0, download.toString().indexOf("."))}${download.toString().substring(download.toString().indexOf("."), download.toString().indexOf(".") + 3)}GB",
-              // title: download.toString().length > 7
-              //     ? '${download.toString().substring(0, 7)}GB'
-              //     : '${download}GB',
               radius: 80,
               titleStyle: const TextStyle(
                   fontSize: 18,
@@ -549,9 +567,6 @@ class _UserPageState extends State<UserPage> {
               value: 25,
               title:
                   "${upload.toString().substring(0, upload.toString().indexOf("."))}${upload.toString().substring(upload.toString().indexOf("."), upload.toString().indexOf(".") + 3)}GB",
-              // title: upload.toString().length > 7
-              //     ? '${upload.toString().substring(0, 7)}GB'
-              //     : '${upload}GB',
               radius: 65,
               titleStyle: const TextStyle(
                   fontSize: 18,

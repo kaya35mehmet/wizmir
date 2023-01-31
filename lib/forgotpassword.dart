@@ -134,30 +134,37 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                     const SizedBox(
                       height: 30,
                     ),
-                    InternationalPhoneNumberInput(
-                      searchBoxDecoration: InputDecoration(
-                          labelText:
-                              "searchbycountrynameordialingcode".tr()),
-                      onInputChanged: (PhoneNumber number) {
-                        setState(() {
-                          phonenumber = number.phoneNumber;
-                        });
-                      },
-                      onInputValidated: (bool value) {},
-                      selectorConfig: const SelectorConfig(
-                        selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                    Container(
+                      padding: const EdgeInsets.only(left:10),
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(4)),
+                        border:  Border.all(color: Colors.grey)
                       ),
-                      ignoreBlank: false,
-                      hintText: "phonenumber".tr(),
-                      errorMessage: "wrongnumber".tr(),
-                      autoValidateMode: AutovalidateMode.disabled,
-                      selectorTextStyle:  TextStyle(color: brightness == Brightness.light ? Colors.black : null),
-                      initialValue: number,
-                      textFieldController: cnt,
-                      formatInput: false,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          signed: true, decimal: true),
-                      inputBorder: const OutlineInputBorder(),
+                      child: InternationalPhoneNumberInput(
+                        searchBoxDecoration: InputDecoration(
+                            labelText:
+                                "searchbycountrynameordialingcode".tr()),
+                        onInputChanged: (PhoneNumber number) {
+                          setState(() {
+                            phonenumber = number.phoneNumber;
+                          });
+                        },
+                        onInputValidated: (bool value) {},
+                        selectorConfig: const SelectorConfig(
+                          selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                        ),
+                        ignoreBlank: false,
+                        hintText: "phonenumber".tr(),
+                        errorMessage: "wrongnumber".tr(),
+                        autoValidateMode: AutovalidateMode.disabled,
+                        selectorTextStyle:  TextStyle(color: brightness == Brightness.light ? Colors.black : null),
+                        initialValue: number,
+                        textFieldController: cnt,
+                        formatInput: false,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            signed: true, decimal: true),
+                        // inputBorder: const OutlineInputBorder(),
+                      ),
                     ),
                     const SizedBox(
                       height: 30,
