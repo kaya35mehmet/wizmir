@@ -5,6 +5,7 @@ import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -29,6 +30,7 @@ import 'package:wizmir/models/locations.dart';
 import 'package:wizmir/models/login.dart';
 import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
+import 'package:wizmir/models/user.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wizmir/notification.dart';
@@ -72,6 +74,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   String notificationTitle = 'No Title';
   String notificationBody = 'No Body';
   String notificationData = 'No Data';
+  String? token;
 
   @override
   void initState() {
@@ -208,7 +211,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     var ikon = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/wifi6.svg", 36);
     // var ikon2 = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(36, 36)), "assets/icons/bakimda.png");
-    var ikon2 =  await functions.bitmapDescriptorFromSvgAsset(
+    var ikon2 = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/wifi7inactive.svg", 36);
     var buradayim = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/buradayim5.svg", 90);

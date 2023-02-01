@@ -5,16 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-// import 'package:responsive_framework/responsive_framework.dart';
-// import 'package:wizmir/splashscreen.dart';
-// import 'package:wizmir/splsh.dart';
 import 'package:wizmir/ss.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Firebase.initializeApp();
-  await EasyLocalization.ensureInitialized();
 
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
+  Firebase.initializeApp();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);

@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+
 
 Future<Login> login(String username, String password) async {
   username = username.replaceAll('+', '');
@@ -41,14 +43,15 @@ Future<Login> login(String username, String password) async {
           await storage.write(key: "isadmin", value: "0");
         }
       }
+      getToken();
       return Login(
           username: username,
           password: password,
           isadmin: isadmin,
           success: res,
-          fullprofile: dddata[1] != "" && dddata[2] != "" ? true : false
-          );
+          fullprofile: dddata[1] != "" && dddata[2] != "" ? true : false);
     } else {
+      getToken();
       return Login(
           username: username, password: password, isadmin: false, success: "0");
     }
@@ -130,6 +133,28 @@ Future<String> changepassword(
   }
 }
 
+Future<void> fcmtoken(String token) async {
+  var storage = const FlutterSecureStorage();
+  String? username = await storage.read(key: "number");
+
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/fcmtoken.php');
+  await http
+      .post(url, body: <String, String>{'username': username!, 'token': token});
+}
+
+getToken() async {
+
+  var storage = const FlutterSecureStorage();
+  String? username = await storage.read(key: "number");
+  var token = await FirebaseMessaging.instance.getToken();
+  // fcmtoken(token!);
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/fcmtoken.php');
+  await http
+      .post(url, body: <String, String>{'username': username!, 'token': token!});
+}
+
 class Login {
   String username;
   String password;
@@ -137,13 +162,13 @@ class Login {
   String? success;
   bool? fullprofile;
 
-  Login(
-      {required this.username,
-      required this.password,
-      this.isadmin,
-      this.success,
-      this.fullprofile,
-      });
+  Login({
+    required this.username,
+    required this.password,
+    this.isadmin,
+    this.success,
+    this.fullprofile,
+  });
 
   factory Login.fromJson(Map json) {
     return Login(
