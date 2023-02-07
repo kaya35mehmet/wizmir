@@ -102,5 +102,9 @@
     "opportunity" : "Opportunity",
     "comingsoon":"Opportunities To Be Offered By WizmirNet Are Coming Soon",
     "suggestion" : "Suggestion",
-    "nonotification" : "No Notification"
+    "nonotification" : "No Notification",
+    "city": "City : ",
+    "district" :"District : ",
+    "job" : "Job : ",
+    "email" : "E-mail"
 }

@@ -265,6 +265,7 @@ class _UserPageState extends State<UserPage> {
                                                   Flexible(
                                                     child: Text(
                                                       "totalusagetime".tr(),
+                                                      textAlign: TextAlign.center,
                                                       style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.w500,

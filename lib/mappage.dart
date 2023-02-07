@@ -10,6 +10,9 @@ import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as ln;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -21,7 +24,6 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wizmir/drawer.dart';
-import 'package:wizmir/fcm.dart';
 import 'package:wizmir/functions.dart' as functions;
 import 'package:wizmir/mappage/infowindow.dart';
 import 'package:wizmir/mappage/wifialert.dart';
@@ -30,7 +32,6 @@ import 'package:wizmir/models/locations.dart';
 import 'package:wizmir/models/login.dart';
 import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
-import 'package:wizmir/models/user.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wizmir/notification.dart';
@@ -71,22 +72,25 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   late double infoviewheight;
   String? _darkMapStyle;
   FlickManager? flickManager;
-  String notificationTitle = 'No Title';
-  String notificationBody = 'No Body';
-  String notificationData = 'No Data';
   String? token;
+  int id = 0;
+  var flutterLocalNotificationsPlugin = ln.FlutterLocalNotificationsPlugin();
+
+  Future<void> _showNotification(title, body) async {
+    const ln.AndroidNotificationDetails androidNotificationDetails =
+        ln.AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: ln.Importance.max,
+            priority: ln.Priority.high,
+            ticker: 'ticker');
+    const ln.NotificationDetails notificationDetails =
+        ln.NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin
+        .show(id++, title, body, notificationDetails, payload: 'item x');
+  }
 
   @override
   void initState() {
-    // _changeData(String msg) => setState(() => notificationData = msg);
-    // _changeBody(String msg) => setState(() => notificationBody = msg);
-    // _changeTitle(String msg) => setState(() => notificationTitle = msg);
-    // final firebaseMessaging = FCM();
-    // firebaseMessaging.setNotifications();
-    // firebaseMessaging.streamCtlr.stream.listen(_changeData);
-    // firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
-    // firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
-
     setState(() {
       isadmin = widget.isadmin;
       infoviewheight = widget.isadmin ? 280 : 210;
@@ -104,6 +108,10 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     startTimer();
     super.initState();
     _loadMapStyles();
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      _showNotification(event.notification!.title,event.notification!.body);
+      
+    });
   }
 
   Future _loadMapStyles() async {
@@ -161,6 +169,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   checklocation() async {
     latLngfuture = getData();
+    var token = await FirebaseMessaging.instance.getToken();
+    print(token);
   }
 
   Future<void> reloadmap() async {
@@ -538,6 +548,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
@@ -569,19 +581,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   child: FloatingActionButton(
                     backgroundColor: Colors.transparent,
                     heroTag: "btnwhatsapp",
-                    // onPressed: () async {
-                    //   //  FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
-                    //   FlutterLaunch.launchWhatsapp(
-                    //       phone: "905309194035", message: "");
-
-                    //   // await launchUrl(
-                    //   //   Uri(
-                    //   //       scheme: 'https',
-                    //   //       host: 'https://wa.me/+905309194035',
-                    //   //       ),
-                    //   //   mode: LaunchMode.externalApplication,
-                    //   // );
-                    // },
                     onPressed: () => openWhatsapp(),
                     child: SizedBox(
                       width: 100,
@@ -596,8 +595,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     heroTag: "btnhim",
                     onPressed: () async {
                       const number = '153';
-                      // await FlutterPhoneDirectCaller.callNumber(number);
-
                       final Uri launchUri = Uri(
                         scheme: 'tel',
                         path: number,

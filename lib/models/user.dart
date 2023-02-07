@@ -1,6 +1,4 @@
 import 'dart:convert';
-// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,6 +14,10 @@ Future<String> register(User user, String sms) async {
     "cinsiyet": user.cinsiyet,
     "yas": user.yas.toString(),
     "sms": sms,
+    "ilceid": user.ilceid!,
+    "ilid": user.ilid!,
+    "meslek" : user.meslek!,
+    "eposta" : user.eposta!,
   });
 
   if (response.statusCode == 200) {
@@ -40,7 +42,8 @@ Future<User> getuserbyusername() async {
 
   if (response.statusCode == 200) {
     var res = json.decode(response.body);
-    return User.getjson(res);
+    var u =User.getjson(res);
+    return u;
   } else {
     throw Exception('Failed');
   }
@@ -65,7 +68,7 @@ Future<String> profilecomplete(String username, cinsiyet, yas) async {
   }
 }
 
-Future<String> updateprfil(String username, ad, soyad, cinsiyet, yas) async {
+Future<String> updateprfil(String username, ad, soyad, eposta, cinsiyet, yas, il, ilce, meslek) async {
   username = username.replaceAll('+', '');
   var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/updateprofile.php');
 
@@ -75,6 +78,10 @@ Future<String> updateprfil(String username, ad, soyad, cinsiyet, yas) async {
     "soyad":soyad,
     "cinsiyet": cinsiyet,
     "yas": yas.toString(),
+    "ilid": il,
+    "ilceid": ilce,
+    "meslek": meslek,
+    "eposta": eposta,
   });
 
   if (response.statusCode == 200) {
@@ -86,7 +93,6 @@ Future<String> updateprfil(String username, ad, soyad, cinsiyet, yas) async {
 }
 
 
-
 class User {
   String telefon;
   String ad;
@@ -94,7 +100,11 @@ class User {
   String sifre;
   String cinsiyet;
   String? rol;
-  String yas;
+  String? yas;
+  String? ilceid;
+  String? ilid;
+  String? meslek;
+  String? eposta;
 
   User(
       {required this.telefon,
@@ -103,7 +113,12 @@ class User {
       required this.sifre,
       required this.cinsiyet,
       this.rol,
-      required this.yas});
+      this.yas,
+      this.ilceid,
+      this.ilid,
+      this.meslek,
+      this.eposta,
+      });
 
   factory User.getjson(Map user) {
     return User(
@@ -112,6 +127,10 @@ class User {
         soyad: user["lastname"],
         sifre: user["password"],
         cinsiyet: user["Cinsiyet"],
-        yas: user["Yas"]);
+        yas: user["Yas"],
+        ilceid: user["ilce"],
+        ilid: user["il"],
+        eposta: user["email"],
+        meslek: user["meslek"]);
   }
 }

@@ -25,8 +25,7 @@ class _OpportunityState extends State<Opportunity> {
         centerTitle: true,
         flexibleSpace: Padding(
           padding: EdgeInsets.only(
-              left: mobilelayout ? 240 : 70.0,
-              right: mobilelayout ? 240 : 70),
+              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70),
           child: SafeArea(
             child: Image.asset(
               brightness == Brightness.light
@@ -49,24 +48,25 @@ class _OpportunityState extends State<Opportunity> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Flexible(
-                    child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Text(
-                    "comingsoon".tr(),
-                    style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                )),
-              ],
-            )
+            Image.asset("assets/images/firsatlar.png")
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   mainAxisSize: MainAxisSize.max,
+            //   children: [
+            //     Flexible(
+            //         child: Padding(
+            //       padding: const EdgeInsets.all(18.0),
+            //       child: Text(
+            //         "comingsoon".tr(),
+            //         style: const TextStyle(
+            //             fontSize: 20,
+            //             color: Colors.grey,
+            //             fontWeight: FontWeight.bold),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     )),
+            //   ],
+            // )
           ]),
     );
   }

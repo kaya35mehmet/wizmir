@@ -4,7 +4,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-
 Future<Login> login(String username, String password) async {
   username = username.replaceAll('+', '');
   String passwordmd5 = md5.convert(utf8.encode(password)).toString();
@@ -143,16 +142,19 @@ Future<void> fcmtoken(String token) async {
 }
 
 getToken() async {
-
   var storage = const FlutterSecureStorage();
   String? username = await storage.read(key: "number");
   var token = await FirebaseMessaging.instance.getToken();
-  // fcmtoken(token!);
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-
   var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/fcmtoken.php');
-  await http
-      .post(url, body: <String, String>{'username': username!, 'token': token!});
+  final response = await http.post(url,
+      body: <String, String>{'username': username!, 'token': token!});
+
+  if (response.statusCode == 200) {
+    var res = json.decode(response.body);
+    return res.toString();
+  } else {
+    
+  }
 }
 
 class Login {

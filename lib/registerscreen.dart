@@ -7,6 +7,8 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
+import 'package:wizmir/models/cities.dart';
+import 'package:wizmir/models/job.dart';
 import 'package:wizmir/models/kvkk.dart';
 import 'package:wizmir/models/login.dart';
 import 'package:wizmir/models/user.dart';
@@ -31,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
         title: Text(
           'register'.tr(),
@@ -78,6 +81,7 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   TextEditingController cnt = TextEditingController();
   TextEditingController namecnt = TextEditingController();
   TextEditingController surnamecnt = TextEditingController();
+  TextEditingController emailcnt = TextEditingController();
   String initialCountry = 'TR';
   PhoneNumber number = PhoneNumber(isoCode: 'TR');
   String? phonenumber;
@@ -87,6 +91,12 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   String age = "";
   bool checkvalue = false;
   String kvkk = "";
+  City? city;
+  District? district;
+  Job? job;
+  List<City> cities = [];
+  List<District> districts = [];
+  List<Job> jobs = [];
   List<String> list = List<String>.generate(
       80, (int index) => (DateTime.now().year - index).toString(),
       growable: true);
@@ -96,6 +106,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
     setState(() {
       age = list.first;
     });
+    getcities();
+    getjobs();
     getkvkkdata();
     if (widget.phonenumber != null) {
       setState(() {
@@ -105,6 +117,32 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
     super.initState();
   }
 
+  getcities() async {
+    var sehirler = await getcitiesfromdb();
+    var sehir = sehirler.firstWhere((element) => element.id == "35");
+    sehirler.remove(sehir);
+    sehirler.insert(0, sehir);
+    // sehirler.insert(0, City(id: "0", sehiradi: "choose".tr()));
+    setState(() {
+      cities = sehirler;
+    });
+  }
+
+  getdistricts(id) async {
+    var ilceler = await getdistrictfromdb(id);
+    //  ilceler.insert(0, District(id: "0", ilceadi: "choose".tr()));
+    setState(() {
+      districts = ilceler;
+    });
+  }
+
+  getjobs() async {
+    var meslekler = await getjobsfromdb();
+    setState(() {
+      jobs = meslekler;
+    });
+  }
+
   getkvkkdata() async {
     kvkk = await getkvkk();
   }
@@ -112,17 +150,22 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   void _doSomething() async {
     if (checkvalue) {
       if (age != "Choose" && age != "Seçiniz") {
-        if (phonenumber != null && namecnt.text != "") {
+        if (phonenumber != null &&
+            namecnt.text != "" &&
+            district != null &&
+            job != null) {
           if (phonenumber!.length == 13) {
             if (passcnt.text.length > 5) {
               User user = User(
-                telefon: phonenumber!,
-                ad: namecnt.text,
-                soyad: surnamecnt.text,
-                sifre: passcnt.text,
-                cinsiyet: cinsiyet,
-                yas: age,
-              );
+                  telefon: phonenumber!,
+                  ad: namecnt.text,
+                  soyad: surnamecnt.text,
+                  sifre: passcnt.text,
+                  cinsiyet: cinsiyet,
+                  yas: age,
+                  ilceid: district!.id,
+                  meslek: job!.id,
+                  eposta: emailcnt.text);
               Timer(
                 const Duration(milliseconds: 500),
                 () {
@@ -282,6 +325,18 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                           height: 20,
                         ),
                         TextField(
+                          controller: emailcnt,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: InputDecoration(
+                              hintText: "email".tr(),
+                              contentPadding: const EdgeInsets.all(8),
+                              labelText: 'email'.tr(),
+                              border: const OutlineInputBorder()),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextField(
                           controller: passcnt,
                           keyboardType: TextInputType.text,
                           obscureText: true,
@@ -295,34 +350,185 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                         ),
                         Row(
                           children: [
-                            Text(
-                              "age".tr(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                "age".tr(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
                             ),
                             const SizedBox(
                               width: 4,
                             ),
-                            DropdownButton<String>(
-                              value: age,
-                              elevation: 0,
-                              style: TextStyle(
-                                  color: brightness == Brightness.light
-                                      ? Colors.black
-                                      : null),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  age = value!.toString();
-                                });
-                              },
-                              items: list.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value.toString(),
-                                  child: Text(value.toString(),
-                                      style: const TextStyle(fontSize: 16)),
-                                );
-                              }).toList(),
+                            Expanded(
+                              flex: 2,
+                              child: DropdownButton<String>(
+                                value: age,
+                                elevation: 0,
+                                style: TextStyle(
+                                    color: brightness == Brightness.light
+                                        ? Colors.black
+                                        : null),
+                                onChanged: (String? value) {
+                                  setState(() {
+                                    age = value!.toString();
+                                  });
+                                },
+                                items: list.map<DropdownMenuItem<String>>(
+                                    (String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value.toString(),
+                                    child: Text(value.toString(),
+                                        style: const TextStyle(fontSize: 16)),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                "city".tr(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: cities.isNotEmpty
+                                  ? DropdownButton<City>(
+                                      value: city,
+                                      elevation: 0,
+                                      style: TextStyle(
+                                          color: brightness == Brightness.light
+                                              ? Colors.black
+                                              : null),
+                                      onChanged: (City? value) {
+                                        setState(() {
+                                          city = value!;
+                                        });
+                                        getdistricts(value!.id);
+                                      },
+                                      items: cities.map<DropdownMenuItem<City>>(
+                                          (City value) {
+                                        return DropdownMenuItem<City>(
+                                          value: value,
+                                          child: Text(value.sehiradi,
+                                              style: const TextStyle(
+                                                  fontSize: 14)),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : Center(),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                "district".tr(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: DropdownButton<District>(
+                                value: district,
+                                elevation: 0,
+                                style: TextStyle(
+                                    color: brightness == Brightness.light
+                                        ? Colors.black
+                                        : null),
+                                onChanged: (District? value) {
+                                  setState(() {
+                                    district = value!;
+                                  });
+                                },
+                                items: districts.isNotEmpty
+                                    ? districts.map<DropdownMenuItem<District>>(
+                                        (District value) {
+                                        return DropdownMenuItem<District>(
+                                          value: value,
+                                          child: Text(value.ilceadi,
+                                              style: const TextStyle(
+                                                  fontSize: 14)),
+                                        );
+                                      }).toList()
+                                    : [DropdownMenuItem<District>(
+                                      enabled: false,
+                                          value: District(id: "", ilceadi: ""),
+                                          child: Text("".tr(),
+                                              style: const TextStyle(
+                                                  fontSize: 14)),
+                                        )],
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                "job".tr(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 4,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: jobs.isNotEmpty
+                                  ? DropdownButton<Job>(
+                                      value: job,
+                                      elevation: 0,
+                                      style: TextStyle(
+                                          color: brightness == Brightness.light
+                                              ? Colors.black
+                                              : null),
+                                      onChanged: (Job? value) {
+                                        setState(() {
+                                          job = value!;
+                                        });
+                                      },
+                                      items: jobs.map<DropdownMenuItem<Job>>(
+                                          (Job value) {
+                                        return DropdownMenuItem<Job>(
+                                          value: value,
+                                          child: Text(value.title,
+                                              style: const TextStyle(
+                                                  fontSize: 14)),
+                                        );
+                                      }).toList(),
+                                    )
+                                  : DropdownButton<Job>(
+                                      elevation: 0,
+                                      onChanged: (Job? value) {},
+                                      items: [
+                                        DropdownMenuItem<Job>(
+                                          value:
+                                              Job(id: "", title: "choose".tr()),
+                                          child: Text("choose".tr(),
+                                              style: const TextStyle(
+                                                  fontSize: 14)),
+                                        )
+                                      ],
+                                    ),
                             ),
                           ],
                         ),

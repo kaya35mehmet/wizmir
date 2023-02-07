@@ -102,5 +102,9 @@
     "opportunity" : "Fırsatlar",
     "comingsoon" : "WizmirNet'in Sunacağı Fırsatlar Yakında",
     "suggestion" : "Öneri",
-    "nonotification" : "Bildirim Yok"
+    "nonotification" : "Bildirim Yok",
+    "city": "İl : ",
+    "district" :"İlçe : ",
+    "job" : "Meslek : ",
+    "email" : "E-posta"
 }
