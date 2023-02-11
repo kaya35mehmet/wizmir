@@ -9,7 +9,7 @@ Future<List<Job>> getjobsfromdb() async {
     Job(id: "3", title: "Belediye Personeli"),
     Job(id: "4", title: "Asker"),
     Job(id: "5", title: "Tekstilci"),
-    Job(id: "6", title: "Çiçekçi"),
+    Job(id: "6", title: "Diğer"),
     Job(id: "7", title: "Şoför"),
     Job(id: "8", title: "Avukat"),
     Job(id: "9", title: "Doktor"),

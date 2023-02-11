@@ -1,9 +1,9 @@
 name: wizmir
-description: A new Flutter project.
+description: İzmir Büyükşehir Belediyesi ücretsiz ve engelsiz internet ağı.
 
 publish_to: 'none'
 
-version: 1.0.0+26
+version: 1.0.0+27
 
 environment:
   sdk: ">=2.17.6 <3.0.0"

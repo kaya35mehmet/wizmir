@@ -519,12 +519,12 @@ class _UserPageState extends State<UserPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children:  [
                         LogoandSpinner(
-                          imageAssets: 'assets/images/saatkulesi.png',
+                          imageAssets: brightness == Brightness.light ? 'assets/images/saatkulesi.png' : 'assets/images/saatkulesi_dark1.png',
                           reverse: true,
                           arcColor: Colors.blue,
-                          spinSpeed: Duration(milliseconds: 500),
+                          spinSpeed:const Duration(milliseconds: 500),
                         )
                       ],
                     ),

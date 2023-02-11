@@ -37,10 +37,10 @@ class InfoWindowScreen extends StatelessWidget {
       child: Stack(
         children: [
           Row(
-            mainAxisAlignment:location.baslatildi ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
+            mainAxisAlignment:location.baslatildi || !location.aktifmi ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: [
-              location.baslatildi ?  Padding(
+              location.baslatildi || !location.aktifmi ?  Padding(
                 padding: const EdgeInsets.only(left:8.0),
                 child:  Text("incare".tr(), style:const TextStyle(color: Colors.red,fontWeight: FontWeight.bold,fontSize: 16), ),
               ):const Text(""),

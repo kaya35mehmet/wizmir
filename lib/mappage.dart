@@ -12,7 +12,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as ln;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -109,8 +108,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     super.initState();
     _loadMapStyles();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
-      _showNotification(event.notification!.title,event.notification!.body);
-      
+      _showNotification(event.notification!.title, event.notification!.body);
     });
   }
 
@@ -120,51 +118,83 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   Future<dynamic> getlocation() async {
     try {
-      return await functions.determinePosition();
-    } catch (e) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => AlertDialog(
-          // title: const Text(
-          //   "Lütfen konum izni veriniz!",
-          //   textAlign: TextAlign.center,
-          // ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(80.0),
-                child: Image.asset(
-                  "assets/icons/warning.png",
-                  width: 150,
+      var valu = await functions.determinePosition();
+      if (valu == 0) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(80.0),
+                  child: Image.asset(
+                    "assets/icons/warning.png",
+                    width: 150,
+                  ),
                 ),
-              ),
-              Text(
-                "pleaseenablelocationpermission".tr(),
-                textAlign: TextAlign.center,
-              ),
+                Text(
+                  "pleaseturnondevicelocation".tr(),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Geolocator.openLocationSettings();
+                      exit(0);
+                    },
+                    child: Text("ok".tr())),
+              )
             ],
           ),
-          actions: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () async {
-                    openAppSettings().then((value) {
-                      exit(0);
-                      // Restart.restartApp();
-                      // SystemNavigator.pop();
-                    });
+        );
+      } else if (valu == 1) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(80.0),
+                  child: Image.asset(
+                    "assets/icons/warning.png",
+                    width: 150,
+                  ),
+                ),
+                Text(
+                  "pleaseenablelocationpermission".tr(),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      openAppSettings().then((value) {
+                        exit(0);
+                        // Restart.restartApp();
+                        // SystemNavigator.pop();
+                      });
 
-                    //  Map<Permission,PermissionStatus> status = await[Permission.location].request();
-                  },
-                  child: Text("ok".tr())),
-            )
-          ],
-        ),
-      );
-    }
+                      //  Map<Permission,PermissionStatus> status = await[Permission.location].request();
+                    },
+                    child: Text("ok".tr())),
+              )
+            ],
+          ),
+        );
+      }
+      return valu;
+    } catch (e) {}
   }
 
   checklocation() async {
@@ -192,6 +222,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         kullanicisayisi: '',
         id: '',
         baslatildi: false,
+        sarj: 0,
         lokasyon: ''));
     // ignore: use_build_context_synchronously
     wifiAlert(
@@ -222,9 +253,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         context, "assets/icons/wifi6.svg", 36);
     // var ikon2 = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(36, 36)), "assets/icons/bakimda.png");
     var ikon2 = await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/wifi7inactive.svg", 36);
+        context, "assets/icons/image2vector.svg", 36);
     var buradayim = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/buradayim5.svg", 90);
+    var trace1 = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/trace1.svg", 72);
+    var trace2 = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/wifibattery.svg", 48);
+    
     var localMarkers = <Marker>{};
     for (var location in locations!) {
       var dist = Geolocator.distanceBetween(
@@ -262,14 +298,18 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 ? buradayim
                 : !isadmin! && dist > 50
                     ? location.aktifmi
-                        ? ikon
+                        ? location.sarj == 1
+                            ? trace1
+                            : ikon
                         : ikon2
                     : isadmin! && location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
                             BitmapDescriptor.hueOrange)
                         : location.aktifmi
-                            ? BitmapDescriptor.defaultMarkerWithHue(
-                                BitmapDescriptor.hueGreen)
+                            ? location.sarj == 1
+                                ? trace2
+                                : BitmapDescriptor.defaultMarkerWithHue(
+                                    BitmapDescriptor.hueGreen)
                             : BitmapDescriptor.defaultMarker),
       );
     }
@@ -548,8 +588,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
@@ -772,11 +810,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   ],
                 );
               } else {
-                return const LogoandSpinner(
-                  imageAssets: 'assets/images/saatkulesi.png',
+                return LogoandSpinner(
+                  imageAssets: brightness == Brightness.light
+                      ? 'assets/images/saatkulesi.png'
+                      : 'assets/images/saatkulesi_dark1.png',
                   reverse: true,
                   arcColor: Colors.blue,
-                  spinSpeed: Duration(milliseconds: 500),
+                  spinSpeed: const Duration(milliseconds: 500),
                 );
               }
             }),

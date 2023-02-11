@@ -541,12 +541,12 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children:  [
                     LogoandSpinner(
-                      imageAssets: 'assets/images/saatkulesi.png',
+                      imageAssets: brightness == Brightness.light ? 'assets/images/saatkulesi.png' : 'assets/images/saatkulesi_dark1.png',
                       reverse: true,
                       arcColor: Colors.blue,
-                      spinSpeed: Duration(milliseconds: 500),
+                      spinSpeed:const Duration(milliseconds: 500),
                     )
                   ],
                 ),
