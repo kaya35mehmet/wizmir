@@ -11,7 +11,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart' as maplauncher;
 import 'dart:ui' as ui;
 
-const String iamhere = 'assets/icons/buradayim.svg';
+// const String iamhere = 'assets/icons/buradayim.svg';
 
 Future<dynamic> determinePosition() async {
   bool serviceEnabled;

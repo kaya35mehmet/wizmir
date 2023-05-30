@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:toast/toast.dart';
+import 'package:wizmir/mappage.dart';
 import 'package:wizmir/models/cities.dart';
 import 'package:wizmir/models/job.dart';
 import 'package:wizmir/models/kvkk.dart';
@@ -86,8 +88,8 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
   PhoneNumber number = PhoneNumber(isoCode: 'TR');
   String? phonenumber;
   TextEditingController passcnt = TextEditingController();
-  Gender? _character = Gender.kadin;
-  String cinsiyet = "female".tr();
+  Gender? _character;
+  String? cinsiyet = "";
   String age = "";
   bool checkvalue = false;
   String kvkk = "";
@@ -149,60 +151,55 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
 
   void _doSomething() async {
     if (checkvalue) {
-      if (age != "Choose" && age != "Seçiniz") {
-        if (phonenumber != null &&
-            namecnt.text != "" &&
-            district != null &&
-            job != null) {
-          if (phonenumber!.length == 13) {
-            if (passcnt.text.length > 5) {
-              User user = User(
-                  telefon: phonenumber!,
-                  ad: namecnt.text,
-                  soyad: surnamecnt.text,
-                  sifre: passcnt.text,
-                  cinsiyet: cinsiyet,
-                  yas: age,
-                  ilceid: district!.id,
-                  meslek: job!.id,
-                  eposta: emailcnt.text);
-              Timer(
-                const Duration(milliseconds: 500),
-                () {
-                  sendsms(phonenumber!, "register").then((value) {
-                    if (value == "333") {
-                      Navigator.push(
-                        context,
-                        ScaleTransitions(
-                          OTPPage(
-                            type: "2",
-                            username: phonenumber!,
-                            user: user,
-                            isadmin: false,
-                          ),
+      if (phonenumber != null &&
+          namecnt.text != "" &&
+          district != null &&
+          job != null) {
+        if (phonenumber!.length == 13) {
+          if (passcnt.text.length > 5) {
+            User user = User(
+                telefon: phonenumber!,
+                ad: namecnt.text,
+                soyad: surnamecnt.text,
+                sifre: passcnt.text,
+                cinsiyet: cinsiyet!,
+                yas: age,
+                ilceid: district!.id,
+                meslek: job!.id,
+                eposta: emailcnt.text);
+            Timer(
+              const Duration(milliseconds: 500),
+              () {
+                sendsms(phonenumber!, "register").then((value) {
+                  if (value == "333") {
+                    Navigator.push(
+                      context,
+                      ScaleTransitions(
+                        OTPPage(
+                          type: "2",
+                          username: phonenumber!,
+                          user: user,
+                          isadmin: false,
                         ),
-                      );
-                    } else {
-                      Toast.show("anerroroccurred_pleasetryagain".tr(),
-                          duration: Toast.lengthShort, gravity: Toast.bottom);
-                    }
-                  });
-                },
-              );
-            } else {
-              Toast.show("yourpasswordmustbeatleast6digits".tr(),
-                  duration: Toast.lengthShort, gravity: Toast.bottom);
-            }
+                      ),
+                    );
+                  } else {
+                    Toast.show("anerroroccurred_pleasetryagain".tr(),
+                        duration: Toast.lengthShort, gravity: Toast.bottom);
+                  }
+                });
+              },
+            );
           } else {
-            Toast.show("phonenumbermustbe10digits".tr(),
+            Toast.show("yourpasswordmustbeatleast6digits".tr(),
                 duration: Toast.lengthShort, gravity: Toast.bottom);
           }
         } else {
-          Toast.show("donotleavethefieldsblank".tr(),
+          Toast.show("phonenumbermustbe10digits".tr(),
               duration: Toast.lengthShort, gravity: Toast.bottom);
         }
       } else {
-        Toast.show("chooseyourage".tr(),
+        Toast.show("donotleavethefieldsblank".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
       }
     } else {
@@ -276,9 +273,42 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                                 labelText:
                                     "searchbycountrynameordialingcode".tr()),
                             onInputChanged: (PhoneNumber number) {
-                              setState(() {
-                                phonenumber = number.phoneNumber;
-                              });
+                              if (number.phoneNumber!.length >= 13) {
+                                phonecontrol(number.phoneNumber!)
+                                    .then((value) async {
+                                  if (value == "0") {
+                                    setState(() {
+                                      phonenumber = number.phoneNumber;
+                                    });
+                                  } else {
+                                    ArtDialogResponse response =
+                                        await ArtSweetAlert.show(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            artDialogArgs: ArtDialogArgs(
+                                                // denyButtonText: "Cancel",
+                                                // title: "Are you sure?",
+                                                confirmButtonColor:
+                                                    Colors.lightBlue,
+                                                text:
+                                                    "haveaccount"
+                                                        .tr(),
+                                                confirmButtonText: "ok".tr(),
+                                                type:
+                                                    ArtSweetAlertType.warning));
+                                    if (response.isTapConfirmButton) {
+                                      // ignore: use_build_context_synchronously
+                                      Navigator.pop(context);
+                                      // Toast.show(
+                                      //     "theoperationissuccessful_pleaselogin"
+                                      //         .tr(),
+                                      //     duration: Toast.lengthShort,
+                                      //     gravity: Toast.bottom);
+                                      return;
+                                    }
+                                  }
+                                });
+                              }
                             },
                             onInputValidated: (bool value) {},
                             selectorConfig: const SelectorConfig(
@@ -467,13 +497,15 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                                                   fontSize: 14)),
                                         );
                                       }).toList()
-                                    : [DropdownMenuItem<District>(
-                                      enabled: false,
+                                    : [
+                                        DropdownMenuItem<District>(
+                                          enabled: false,
                                           value: District(id: "", ilceadi: ""),
                                           child: Text("".tr(),
                                               style: const TextStyle(
                                                   fontSize: 14)),
-                                        )],
+                                        )
+                                      ],
                               ),
                             ),
                           ],

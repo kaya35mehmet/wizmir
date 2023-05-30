@@ -51,7 +51,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>to report problems from wifi locations</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>As Izmir municipality, we offer free internet to our citizens. We request location information to direct our citizens to the navigation application and to provide proximity information so that they can reach the internet point.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app does not require access to the microphone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

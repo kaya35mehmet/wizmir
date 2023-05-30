@@ -31,10 +31,11 @@ import 'package:wizmir/models/locations.dart';
 import 'package:wizmir/models/login.dart';
 import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
+import 'package:wizmir/models/notifications.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wizmir/notification.dart';
-import 'package:wizmir/profilecomplete.dart';
+// import 'package:wizmir/profilecomplete.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage(
@@ -74,6 +75,8 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   String? token;
   int id = 0;
   var flutterLocalNotificationsPlugin = ln.FlutterLocalNotificationsPlugin();
+  NewNotification? nn;
+  bool notificationisread = true;
 
   Future<void> _showNotification(title, body) async {
     const ln.AndroidNotificationDetails androidNotificationDetails =
@@ -109,6 +112,16 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     _loadMapStyles();
     FirebaseMessaging.onMessage.listen((RemoteMessage event) {
       _showNotification(event.notification!.title, event.notification!.body);
+    });
+  }
+
+  getnotifi() async {
+    var nnn = await getnotifications();
+    setState(() {
+      nn = nnn;
+      if (nn != null && nn!.isnewnotification) {
+        notificationisread = false;
+      }
     });
   }
 
@@ -230,6 +243,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         latLng,
         context);
     nlist = nearlist();
+    getnotifi();
     await Future<dynamic>.delayed(const Duration(milliseconds: 4000));
 
     return LatLng(dd.latitude, dd.longitude);
@@ -249,18 +263,34 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   Future<void> generateMarkers(context, current) async {
-    var ikon = await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/wifi6.svg", 36);
-    // var ikon2 = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(36, 36)), "assets/icons/bakimda.png");
-    var ikon2 = await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/image2vector.svg", 36);
+    Brightness brightness = SchedulerBinding.instance.window.platformBrightness;
     var buradayim = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/buradayim5.svg", 90);
-    var trace1 = await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/trace1.svg", 72);
-    var trace2 = await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/wifibattery.svg", 48);
-    
+
+    var ikon = brightness != Brightness.dark
+        ? await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifi7.svg", 36)
+        : await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifi7dark.svg", 36);
+
+    // var ikondark = await functions.bitmapDescriptorFromSvgAsset(
+    //     context, "assets/icons/wifidark.svg", 72);
+
+    var bakimda = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/image2vector.svg", 36);
+
+    var wifibattery = brightness != Brightness.dark
+        ? await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifibattery.svg", 72)
+        : await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifibatterydark2.svg", 48);
+
+    var wifibatteryadmin = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/wifibatteryadmin.svg", 48);
+
+    // var wifibatterydark = await functions.bitmapDescriptorFromSvgAsset(
+    //     context, "assets/icons/wifibatterydark.svg", 48);
+
     var localMarkers = <Marker>{};
     for (var location in locations!) {
       var dist = Geolocator.distanceBetween(
@@ -299,15 +329,15 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 : !isadmin! && dist > 50
                     ? location.aktifmi
                         ? location.sarj == 1
-                            ? trace1
+                            ? wifibattery
                             : ikon
-                        : ikon2
+                        : bakimda
                     : isadmin! && location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
                             BitmapDescriptor.hueOrange)
                         : location.aktifmi
                             ? location.sarj == 1
-                                ? trace2
+                                ? wifibatteryadmin
                                 : BitmapDescriptor.defaultMarkerWithHue(
                                     BitmapDescriptor.hueGreen)
                             : BitmapDescriptor.defaultMarker),
@@ -368,6 +398,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 text: "wrongusernameorpassword".tr(),
                 confirmButtonText: "ok".tr(),
                 type: ArtSweetAlertType.warning));
+                
       } else {
         Toast.show("loginsuccessful".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -378,14 +409,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           generateMarkers(context, latLng);
         });
 
-        if (!value.fullprofile!) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProfileComplete(
-                        username: phonenumber,
-                      )));
-        }
+        // if (!value.fullprofile!) {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => ProfileComplete(
+        //                 username: phonenumber,
+        //               )));
+        // }
       }
     });
     FocusScope.of(context).requestFocus(FocusNode());
@@ -458,6 +489,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         var importantdays = await storage.read(key: "importantdays");
         String id = "";
         int kalangosterimSayisi = -1;
+        
         if (importantdays == null) {
           showdialog(value);
           await storage.write(
@@ -468,14 +500,25 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
         if (importantdays != null) {
           id = importantdays.split(":")[0];
+          int gosterimSayisi = int.parse(importantdays.split(":")[1]);
           kalangosterimSayisi = int.parse(importantdays.split(":")[2]);
 
+
           if (id == value.id && kalangosterimSayisi > 0) {
+            int yenigosterimsayisi= 0;
+            if (gosterimSayisi == value.gosterimSayisi) {
+              yenigosterimsayisi = gosterimSayisi;
+            }else{
+              yenigosterimsayisi = value.gosterimSayisi;
+              int fark = value.gosterimSayisi - gosterimSayisi;
+              kalangosterimSayisi += fark;
+            }
+
             showdialog(value);
             await storage.write(
                 key: "importantdays",
                 value:
-                    "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+                    "${value.id}:${yenigosterimsayisi}:${--kalangosterimSayisi}");
           }
 
           if (id != value.id) {
@@ -592,13 +635,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     var mobilelayout = 600 < shortestSide;
-    var brightness = SchedulerBinding.instance.window.platformBrightness;
+    Brightness brightness = SchedulerBinding.instance.window.platformBrightness;
     Widget icon = Icon(Icons.location_on,
         color: brightness == Brightness.light ? Colors.blue : Colors.white);
     Widget iconrefresh = Icon(Icons.refresh,
         color: brightness == Brightness.light ? Colors.blue : Colors.white);
     ToastContext().init(context);
-
+    double _width = 20;
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -709,28 +752,67 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         flexibleSpace: Padding(
           padding: EdgeInsets.only(
-              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70),
+              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70,),
           child: SafeArea(
             child: Image.asset(
               brightness == Brightness.light
                   ? "assets/images/1.png"
                   : "assets/images/2.png",
-              fit: BoxFit.cover,
+              
             ),
           ),
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NotificationScreen()));
-              },
-              icon: Icon(
-                Icons.notifications,
-                color: brightness == Brightness.light ? Colors.black : null,
-              ))
+            onPressed: () {
+              setState(() {
+                notificationisread = true;
+              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      NotificationScreen(list: nn!.notificationlist),
+                ),
+              );
+            },
+            icon: !notificationisread
+                ? Stack(
+                    children: <Widget>[
+                      const Icon(Icons.notifications),
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 12,
+                            minHeight: 12,
+                          ),
+                          child: const Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.notifications,
+                      color:
+                          brightness == Brightness.light ? Colors.black : null,
+                    ),
+                  ),
+          ),
         ],
         centerTitle: false,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,

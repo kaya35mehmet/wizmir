@@ -86,6 +86,7 @@ class InfoWindowScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => ReportView(
+                                  isadmin: isadmin,
                                   islogin: islogin,
                                   locations: location,
                                 ),

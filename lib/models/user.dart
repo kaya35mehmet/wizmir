@@ -68,6 +68,23 @@ Future<String> profilecomplete(String username, cinsiyet, yas) async {
   }
 }
 
+Future<String> deleteaccount(String username) async {
+  username = username.replaceAll('+', '');
+  var url =
+      Uri.parse('https://yonetim.wizmir.net/mobilapi/deleteaccount.php');
+
+  final response = await http.post(url, body: <String, String>{
+    "username": username,
+  });
+
+  if (response.statusCode == 200) {
+    var res = json.decode(response.body);
+    return res.toString();
+  } else {
+    throw Exception('Failed');
+  }
+}
+
 Future<String> updateprfil(String username, ad, soyad, eposta, cinsiyet, yas, il, ilce, meslek) async {
   username = username.replaceAll('+', '');
   var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/updateprofile.php');

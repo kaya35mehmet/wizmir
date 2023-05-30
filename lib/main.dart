@@ -10,7 +10,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wizmir/ss.dart';
 
-
 int id = 0;
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -58,7 +57,6 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
   }
 }
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
@@ -66,11 +64,11 @@ void main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-final NotificationAppLaunchDetails? notificationAppLaunchDetails = !kIsWeb &&
+  final NotificationAppLaunchDetails? notificationAppLaunchDetails = !kIsWeb &&
           Platform.isLinux
       ? null
       : await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
- 
+
   if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
     selectedNotificationPayload =
         notificationAppLaunchDetails!.notificationResponse?.payload;
@@ -257,8 +255,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-  
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'WizmirNET',
       darkTheme: ThemeData(
         brightness: Brightness.dark,

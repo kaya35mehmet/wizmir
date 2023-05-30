@@ -31,7 +31,6 @@ class _OpportunityState extends State<Opportunity> {
               brightness == Brightness.light
                   ? "assets/images/1.png"
                   : "assets/images/2.png",
-              fit: BoxFit.cover,
             ),
           ),
         ),

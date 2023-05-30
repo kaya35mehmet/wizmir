@@ -107,6 +107,22 @@ Future<String> newpassword(String username, String password) async {
   }
 }
 
+Future<String> phonecontrol(String phone) async {
+  phone = phone.replaceAll('+', '');
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/phonecontrol.php');
+
+  final response = await http.post(url, body: <String, String>{
+    "phone": phone,
+  });
+
+  if (response.statusCode == 200) {
+    var res = json.decode(response.body);
+    return res.toString();
+  } else {
+    throw Exception('Failed');
+  }
+}
+
 Future<String> changepassword(
     String username, String oldpassword, String newpassword) async {
   username = username.replaceAll('+', '');

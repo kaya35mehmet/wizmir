@@ -36,7 +36,6 @@ class _FAQViewState extends State<FAQView> {
             child: SafeArea(
               child: Image.asset(
                 brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
-                fit: BoxFit.cover,
               ),
             ),
           ),

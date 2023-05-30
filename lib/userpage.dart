@@ -49,7 +49,6 @@ class _UserPageState extends State<UserPage> {
               brightness == Brightness.light
                   ? "assets/images/1.png"
                   : "assets/images/2.png",
-              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -165,10 +164,10 @@ class _UserPageState extends State<UserPage> {
                                   child: Container(
                                     width: 84,
                                     height: 84,
-                                    decoration: BoxDecoration(
+                                    decoration: brightness == Brightness.light ? BoxDecoration(
                                       color: Colors.white.withOpacity(0.2),
                                       shape: BoxShape.circle,
-                                    ),
+                                    ) : null,
                                   ),
                                 ),
                                 const Positioned(
@@ -291,7 +290,7 @@ class _UserPageState extends State<UserPage> {
                                     width: 84,
                                     height: 84,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.2),
+                                      color: brightness == Brightness.light ? Colors.white.withOpacity(0.2) : null,
                                       shape: BoxShape.circle,
                                     ),
                                   ),

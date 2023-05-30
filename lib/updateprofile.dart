@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:logo_n_spinner/logo_n_spinner.dart';
@@ -118,9 +120,9 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
     setState(() {
       districts = ilceler;
     });
-     district = districtid != null
-                  ? districts.firstWhere((element) => element.id == districtid)
-                  : null;
+    district = districtid != null
+        ? districts.firstWhere((element) => element.id == districtid)
+        : null;
   }
 
   getjobs() async {
@@ -179,7 +181,6 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    
     double w = MediaQuery.of(context).size.width;
     var brightness = SchedulerBinding.instance.window.platformBrightness;
     return SingleChildScrollView(
@@ -187,7 +188,6 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
           future: data,
           builder: (context, snapshot) {
             if (snapshot.data != null) {
-             
               return AnimationLimiter(
                 child: AnimationConfiguration.staggeredList(
                   position: 2,
@@ -526,8 +526,64 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                             ),
                           ),
                           const SizedBox(
-                            height: 40,
+                            height: 0,
                           ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              TextButton(
+                                  onPressed: () async {
+                                    ArtDialogResponse response =
+                                        await ArtSweetAlert.show(
+                                            barrierDismissible: false,
+                                            context: context,
+                                            artDialogArgs: ArtDialogArgs(
+                                                denyButtonText: "cancel".tr(),
+                                                denyButtonColor:
+                                                    Colors.lightBlue,
+                                                // title: "Are you sure?",
+                                                confirmButtonColor: Colors.red,
+                                                text: "areyousure".tr(),
+                                                confirmButtonText: "ok".tr(),
+                                                type:
+                                                    ArtSweetAlertType.warning));
+
+                                    if (response.isTapConfirmButton) {
+                                      var storage =
+                                          const FlutterSecureStorage();
+
+                                      storage.read(key: "number").then((value) {
+                                        deleteaccount(value!).then((value) {
+                                          storage
+                                              .delete(key: "guid")
+                                              .then((value) {
+                                            storage.delete(key: "isadmin");
+                                            Navigator.pushAndRemoveUntil(
+                                                context,
+                                                ScaleTransitions(const MapPage(
+                                                  title: "WizmirNET",
+                                                  guid: "0",
+                                                  isadmin: false,
+                                                )),
+                                                ModalRoute.withName('/'));
+                                          });
+                                          Toast.show("accountdeleted".tr(),
+                                          duration: Toast.lengthShort,
+                                          gravity: Toast.bottom);
+                                        });
+                                      });
+                                      return;
+                                    }
+                                    if (response.isTapDenyButton) {
+                                      return;
+                                    }
+                                  },
+                                  child: Text(
+                                    "deletemyaccount".tr(),
+                                    style: const TextStyle(color: Colors.red),
+                                  )),
+                            ],
+                          )
                         ],
                       ),
                     ),
@@ -541,12 +597,14 @@ class _SlideAnimationWidgetState extends State<SlideAnimationWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children:  [
+                  children: [
                     LogoandSpinner(
-                      imageAssets: brightness == Brightness.light ? 'assets/images/saatkulesi.png' : 'assets/images/saatkulesi_dark1.png',
+                      imageAssets: brightness == Brightness.light
+                          ? 'assets/images/saatkulesi.png'
+                          : 'assets/images/saatkulesi_dark1.png',
                       reverse: true,
                       arcColor: Colors.blue,
-                      spinSpeed:const Duration(milliseconds: 500),
+                      spinSpeed: const Duration(milliseconds: 500),
                     )
                   ],
                 ),

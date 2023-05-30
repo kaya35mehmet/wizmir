@@ -65,6 +65,7 @@
     "all": "Hepsi",
     "active": "Aktif",
     "passive": "Pasif",
+    "delete" : "Sil",
     "pleaseenablelocationpermission": "Lütfen Konum İzni Veriniz!",
     "pleaseturnondevicelocation": "Lütfen Cihaz Konumunu Açın!",
     "notifications" : "Bildirimler",
@@ -108,5 +109,16 @@
     "city": "İl : ",
     "district" :"İlçe : ",
     "job" : "Meslek : ",
-    "email" : "E-posta"
+    "email" : "E-posta",
+    "deletemyaccount":"Hesabımı Sil",
+    "accountdeleted" : "Hesap Silindi",
+    "haveaccount" :"Telefon numaranız kayıtlı.\n Lütfen şifreniz ile giriş yapınız!",
+    "status" : "Bilgilendirme",
+    "TotalRegisteredUser":"Toplam Kayıtlı Kullanıcı",
+    "TotalOnlineUser":"Toplam Online Kullanıcı",
+    "TotalNumberofEntries":"Toplam Giriş Sayısı",
+    "TotalUpload":"Toplam Upload",
+    "TotalDownload":"Toplam Download",
+    "LastCron":"Son Cron",
+    "NumberofLocations":"Lokasyon Sayısı"
 }
