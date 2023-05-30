@@ -5,10 +5,13 @@ import 'package:art_sweetalert/art_sweetalert.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:custom_info_window/custom_info_window.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as ln;
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -20,7 +23,6 @@ import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wizmir/drawer.dart';
-import 'package:wizmir/fcm.dart';
 import 'package:wizmir/functions.dart' as functions;
 import 'package:wizmir/mappage/infowindow.dart';
 import 'package:wizmir/mappage/wifialert.dart';
@@ -29,10 +31,11 @@ import 'package:wizmir/models/locations.dart';
 import 'package:wizmir/models/login.dart';
 import 'package:wizmir/loginpanel.dart';
 import 'package:wizmir/models/nearcluster.dart';
+import 'package:wizmir/models/notifications.dart';
 import 'package:wizmir/nearpoints.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:wizmir/notification.dart';
-import 'package:wizmir/profilecomplete.dart';
+// import 'package:wizmir/profilecomplete.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage(
@@ -69,21 +72,27 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   late double infoviewheight;
   String? _darkMapStyle;
   FlickManager? flickManager;
-  String notificationTitle = 'No Title';
-  String notificationBody = 'No Body';
-  String notificationData = 'No Data';
+  String? token;
+  int id = 0;
+  var flutterLocalNotificationsPlugin = ln.FlutterLocalNotificationsPlugin();
+  NewNotification? nn;
+  bool notificationisread = true;
+
+  Future<void> _showNotification(title, body) async {
+    const ln.AndroidNotificationDetails androidNotificationDetails =
+        ln.AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: ln.Importance.max,
+            priority: ln.Priority.high,
+            ticker: 'ticker');
+    const ln.NotificationDetails notificationDetails =
+        ln.NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin
+        .show(id++, title, body, notificationDetails, payload: 'item x');
+  }
 
   @override
   void initState() {
-    // _changeData(String msg) => setState(() => notificationData = msg);
-    // _changeBody(String msg) => setState(() => notificationBody = msg);
-    // _changeTitle(String msg) => setState(() => notificationTitle = msg);
-    // final firebaseMessaging = FCM();
-    // firebaseMessaging.setNotifications();
-    // firebaseMessaging.streamCtlr.stream.listen(_changeData);
-    // firebaseMessaging.bodyCtlr.stream.listen(_changeBody);
-    // firebaseMessaging.titleCtlr.stream.listen(_changeTitle);
-
     setState(() {
       isadmin = widget.isadmin;
       infoviewheight = widget.isadmin ? 280 : 210;
@@ -101,6 +110,19 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     startTimer();
     super.initState();
     _loadMapStyles();
+    FirebaseMessaging.onMessage.listen((RemoteMessage event) {
+      _showNotification(event.notification!.title, event.notification!.body);
+    });
+  }
+
+  getnotifi() async {
+    var nnn = await getnotifications();
+    setState(() {
+      nn = nnn;
+      if (nn != null && nn!.isnewnotification) {
+        notificationisread = false;
+      }
+    });
   }
 
   Future _loadMapStyles() async {
@@ -109,55 +131,89 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   Future<dynamic> getlocation() async {
     try {
-      return await functions.determinePosition();
-    } catch (e) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) => AlertDialog(
-          // title: const Text(
-          //   "Lütfen konum izni veriniz!",
-          //   textAlign: TextAlign.center,
-          // ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(80.0),
-                child: Image.asset(
-                  "assets/icons/warning.png",
-                  width: 150,
+      var valu = await functions.determinePosition();
+      if (valu == 0) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(80.0),
+                  child: Image.asset(
+                    "assets/icons/warning.png",
+                    width: 150,
+                  ),
                 ),
-              ),
-              Text(
-                "pleaseenablelocationpermission".tr(),
-                textAlign: TextAlign.center,
-              ),
+                Text(
+                  "pleaseturnondevicelocation".tr(),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      Geolocator.openLocationSettings();
+                      exit(0);
+                    },
+                    child: Text("ok".tr())),
+              )
             ],
           ),
-          actions: [
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  onPressed: () async {
-                    openAppSettings().then((value) {
-                      exit(0);
-                      // Restart.restartApp();
-                      // SystemNavigator.pop();
-                    });
+        );
+      } else if (valu == 1) {
+        showDialog(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(80.0),
+                  child: Image.asset(
+                    "assets/icons/warning.png",
+                    width: 150,
+                  ),
+                ),
+                Text(
+                  "pleaseenablelocationpermission".tr(),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actions: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                    onPressed: () async {
+                      openAppSettings().then((value) {
+                        exit(0);
+                        // Restart.restartApp();
+                        // SystemNavigator.pop();
+                      });
 
-                    //  Map<Permission,PermissionStatus> status = await[Permission.location].request();
-                  },
-                  child: Text("ok".tr())),
-            )
-          ],
-        ),
-      );
-    }
+                      //  Map<Permission,PermissionStatus> status = await[Permission.location].request();
+                    },
+                    child: Text("ok".tr())),
+              )
+            ],
+          ),
+        );
+      }
+      return valu;
+    } catch (e) {}
   }
 
   checklocation() async {
     latLngfuture = getData();
+    var token = await FirebaseMessaging.instance.getToken();
+    print(token);
   }
 
   Future<void> reloadmap() async {
@@ -179,6 +235,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         kullanicisayisi: '',
         id: '',
         baslatildi: false,
+        sarj: 0,
         lokasyon: ''));
     // ignore: use_build_context_synchronously
     wifiAlert(
@@ -186,6 +243,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         latLng,
         context);
     nlist = nearlist();
+    getnotifi();
     await Future<dynamic>.delayed(const Duration(milliseconds: 4000));
 
     return LatLng(dd.latitude, dd.longitude);
@@ -205,13 +263,34 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   }
 
   Future<void> generateMarkers(context, current) async {
-    var ikon = await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/wifi6.svg", 36);
-    // var ikon2 = await BitmapDescriptor.fromAssetImage(const ImageConfiguration(size: Size(36, 36)), "assets/icons/bakimda.png");
-    var ikon2 =  await functions.bitmapDescriptorFromSvgAsset(
-        context, "assets/icons/wifi7inactive.svg", 36);
+    Brightness brightness = SchedulerBinding.instance.window.platformBrightness;
     var buradayim = await functions.bitmapDescriptorFromSvgAsset(
         context, "assets/icons/buradayim5.svg", 90);
+
+    var ikon = brightness != Brightness.dark
+        ? await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifi7.svg", 36)
+        : await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifi7dark.svg", 36);
+
+    // var ikondark = await functions.bitmapDescriptorFromSvgAsset(
+    //     context, "assets/icons/wifidark.svg", 72);
+
+    var bakimda = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/image2vector.svg", 36);
+
+    var wifibattery = brightness != Brightness.dark
+        ? await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifibattery.svg", 72)
+        : await functions.bitmapDescriptorFromSvgAsset(
+            context, "assets/icons/wifibatterydark2.svg", 48);
+
+    var wifibatteryadmin = await functions.bitmapDescriptorFromSvgAsset(
+        context, "assets/icons/wifibatteryadmin.svg", 48);
+
+    // var wifibatterydark = await functions.bitmapDescriptorFromSvgAsset(
+    //     context, "assets/icons/wifibatterydark.svg", 48);
+
     var localMarkers = <Marker>{};
     for (var location in locations!) {
       var dist = Geolocator.distanceBetween(
@@ -249,14 +328,18 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 ? buradayim
                 : !isadmin! && dist > 50
                     ? location.aktifmi
-                        ? ikon
-                        : ikon2
+                        ? location.sarj == 1
+                            ? wifibattery
+                            : ikon
+                        : bakimda
                     : isadmin! && location.baslatildi
                         ? BitmapDescriptor.defaultMarkerWithHue(
                             BitmapDescriptor.hueOrange)
                         : location.aktifmi
-                            ? BitmapDescriptor.defaultMarkerWithHue(
-                                BitmapDescriptor.hueGreen)
+                            ? location.sarj == 1
+                                ? wifibatteryadmin
+                                : BitmapDescriptor.defaultMarkerWithHue(
+                                    BitmapDescriptor.hueGreen)
                             : BitmapDescriptor.defaultMarker),
       );
     }
@@ -315,6 +398,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 text: "wrongusernameorpassword".tr(),
                 confirmButtonText: "ok".tr(),
                 type: ArtSweetAlertType.warning));
+                
       } else {
         Toast.show("loginsuccessful".tr(),
             duration: Toast.lengthShort, gravity: Toast.bottom);
@@ -325,14 +409,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           generateMarkers(context, latLng);
         });
 
-        if (!value.fullprofile!) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProfileComplete(
-                        username: phonenumber,
-                      )));
-        }
+        // if (!value.fullprofile!) {
+        //   Navigator.push(
+        //       context,
+        //       MaterialPageRoute(
+        //           builder: (context) => ProfileComplete(
+        //                 username: phonenumber,
+        //               )));
+        // }
       }
     });
     FocusScope.of(context).requestFocus(FocusNode());
@@ -405,6 +489,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
         var importantdays = await storage.read(key: "importantdays");
         String id = "";
         int kalangosterimSayisi = -1;
+        
         if (importantdays == null) {
           showdialog(value);
           await storage.write(
@@ -415,14 +500,25 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
         if (importantdays != null) {
           id = importantdays.split(":")[0];
+          int gosterimSayisi = int.parse(importantdays.split(":")[1]);
           kalangosterimSayisi = int.parse(importantdays.split(":")[2]);
 
+
           if (id == value.id && kalangosterimSayisi > 0) {
+            int yenigosterimsayisi= 0;
+            if (gosterimSayisi == value.gosterimSayisi) {
+              yenigosterimsayisi = gosterimSayisi;
+            }else{
+              yenigosterimsayisi = value.gosterimSayisi;
+              int fark = value.gosterimSayisi - gosterimSayisi;
+              kalangosterimSayisi += fark;
+            }
+
             showdialog(value);
             await storage.write(
                 key: "importantdays",
                 value:
-                    "${value.id}:${value.gosterimSayisi}:${--kalangosterimSayisi}");
+                    "${value.id}:${yenigosterimsayisi}:${--kalangosterimSayisi}");
           }
 
           if (id != value.id) {
@@ -539,13 +635,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     var shortestSide = MediaQuery.of(context).size.shortestSide;
     var mobilelayout = 600 < shortestSide;
-    var brightness = SchedulerBinding.instance.window.platformBrightness;
+    Brightness brightness = SchedulerBinding.instance.window.platformBrightness;
     Widget icon = Icon(Icons.location_on,
         color: brightness == Brightness.light ? Colors.blue : Colors.white);
     Widget iconrefresh = Icon(Icons.refresh,
         color: brightness == Brightness.light ? Colors.blue : Colors.white);
     ToastContext().init(context);
-
+    double _width = 20;
     return Scaffold(
       key: _scaffoldKey,
       resizeToAvoidBottomInset: true,
@@ -566,19 +662,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   child: FloatingActionButton(
                     backgroundColor: Colors.transparent,
                     heroTag: "btnwhatsapp",
-                    // onPressed: () async {
-                    //   //  FlutterOpenWhatsapp.sendSingleMessage("905309194035", "");
-                    //   FlutterLaunch.launchWhatsapp(
-                    //       phone: "905309194035", message: "");
-
-                    //   // await launchUrl(
-                    //   //   Uri(
-                    //   //       scheme: 'https',
-                    //   //       host: 'https://wa.me/+905309194035',
-                    //   //       ),
-                    //   //   mode: LaunchMode.externalApplication,
-                    //   // );
-                    // },
                     onPressed: () => openWhatsapp(),
                     child: SizedBox(
                       width: 100,
@@ -593,8 +676,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                     heroTag: "btnhim",
                     onPressed: () async {
                       const number = '153';
-                      // await FlutterPhoneDirectCaller.callNumber(number);
-
                       final Uri launchUri = Uri(
                         scheme: 'tel',
                         path: number,
@@ -671,28 +752,67 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         flexibleSpace: Padding(
           padding: EdgeInsets.only(
-              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70),
+              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70,),
           child: SafeArea(
             child: Image.asset(
               brightness == Brightness.light
                   ? "assets/images/1.png"
                   : "assets/images/2.png",
-              fit: BoxFit.cover,
+              
             ),
           ),
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const NotificationScreen()));
-              },
-              icon: Icon(
-                Icons.notifications,
-                color: brightness == Brightness.light ? Colors.black : null,
-              ))
+            onPressed: () {
+              setState(() {
+                notificationisread = true;
+              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      NotificationScreen(list: nn!.notificationlist),
+                ),
+              );
+            },
+            icon: !notificationisread
+                ? Stack(
+                    children: <Widget>[
+                      const Icon(Icons.notifications),
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: const BoxConstraints(
+                            minWidth: 12,
+                            minHeight: 12,
+                          ),
+                          child: const Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.notifications,
+                      color:
+                          brightness == Brightness.light ? Colors.black : null,
+                    ),
+                  ),
+          ),
         ],
         centerTitle: false,
         backgroundColor: brightness == Brightness.light ? Colors.white : null,
@@ -772,11 +892,13 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   ],
                 );
               } else {
-                return const LogoandSpinner(
-                  imageAssets: 'assets/images/saatkulesi.png',
+                return LogoandSpinner(
+                  imageAssets: brightness == Brightness.light
+                      ? 'assets/images/saatkulesi.png'
+                      : 'assets/images/saatkulesi_dark1.png',
                   reverse: true,
                   arcColor: Colors.blue,
-                  spinSpeed: Duration(milliseconds: 500),
+                  spinSpeed: const Duration(milliseconds: 500),
                 );
               }
             }),

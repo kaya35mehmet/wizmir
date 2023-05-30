@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -41,14 +42,15 @@ Future<Login> login(String username, String password) async {
           await storage.write(key: "isadmin", value: "0");
         }
       }
+      getToken();
       return Login(
           username: username,
           password: password,
           isadmin: isadmin,
           success: res,
-          fullprofile: dddata[1] != "" && dddata[2] != "" ? true : false
-          );
+          fullprofile: dddata[1] != "" && dddata[2] != "" ? true : false);
     } else {
+      getToken();
       return Login(
           username: username, password: password, isadmin: false, success: "0");
     }
@@ -105,6 +107,22 @@ Future<String> newpassword(String username, String password) async {
   }
 }
 
+Future<String> phonecontrol(String phone) async {
+  phone = phone.replaceAll('+', '');
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/phonecontrol.php');
+
+  final response = await http.post(url, body: <String, String>{
+    "phone": phone,
+  });
+
+  if (response.statusCode == 200) {
+    var res = json.decode(response.body);
+    return res.toString();
+  } else {
+    throw Exception('Failed');
+  }
+}
+
 Future<String> changepassword(
     String username, String oldpassword, String newpassword) async {
   username = username.replaceAll('+', '');
@@ -130,6 +148,31 @@ Future<String> changepassword(
   }
 }
 
+Future<void> fcmtoken(String token) async {
+  var storage = const FlutterSecureStorage();
+  String? username = await storage.read(key: "number");
+
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/fcmtoken.php');
+  await http
+      .post(url, body: <String, String>{'username': username!, 'token': token});
+}
+
+getToken() async {
+  var storage = const FlutterSecureStorage();
+  String? username = await storage.read(key: "number");
+  var token = await FirebaseMessaging.instance.getToken();
+  var url = Uri.parse('https://yonetim.wizmir.net/mobilapi/fcmtoken.php');
+  final response = await http.post(url,
+      body: <String, String>{'username': username!, 'token': token!});
+
+  if (response.statusCode == 200) {
+    var res = json.decode(response.body);
+    return res.toString();
+  } else {
+    
+  }
+}
+
 class Login {
   String username;
   String password;
@@ -137,13 +180,13 @@ class Login {
   String? success;
   bool? fullprofile;
 
-  Login(
-      {required this.username,
-      required this.password,
-      this.isadmin,
-      this.success,
-      this.fullprofile,
-      });
+  Login({
+    required this.username,
+    required this.password,
+    this.isadmin,
+    this.success,
+    this.fullprofile,
+  });
 
   factory Login.fromJson(Map json) {
     return Login(

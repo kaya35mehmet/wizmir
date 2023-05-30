@@ -36,7 +36,6 @@ class _FAQViewState extends State<FAQView> {
             child: SafeArea(
               child: Image.asset(
                 brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
-                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -79,11 +78,11 @@ class _FAQViewState extends State<FAQView> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [ LogoandSpinner(
-                  imageAssets: 'assets/images/saatkulesi.png',
+                  children:  [ LogoandSpinner(
+                  imageAssets: brightness == Brightness.light ? 'assets/images/saatkulesi.png' : 'assets/images/saatkulesi_dark1.png',
                   reverse: true,
                   arcColor: Colors.blue,
-                  spinSpeed: Duration(milliseconds: 500),
+                  spinSpeed: const Duration(milliseconds: 500),
                 )],
                 );
               }

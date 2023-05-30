@@ -49,7 +49,6 @@ class _UserPageState extends State<UserPage> {
               brightness == Brightness.light
                   ? "assets/images/1.png"
                   : "assets/images/2.png",
-              fit: BoxFit.cover,
             ),
           ),
         ),
@@ -165,10 +164,10 @@ class _UserPageState extends State<UserPage> {
                                   child: Container(
                                     width: 84,
                                     height: 84,
-                                    decoration: BoxDecoration(
+                                    decoration: brightness == Brightness.light ? BoxDecoration(
                                       color: Colors.white.withOpacity(0.2),
                                       shape: BoxShape.circle,
-                                    ),
+                                    ) : null,
                                   ),
                                 ),
                                 const Positioned(
@@ -265,6 +264,7 @@ class _UserPageState extends State<UserPage> {
                                                   Flexible(
                                                     child: Text(
                                                       "totalusagetime".tr(),
+                                                      textAlign: TextAlign.center,
                                                       style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.w500,
@@ -290,7 +290,7 @@ class _UserPageState extends State<UserPage> {
                                     width: 84,
                                     height: 84,
                                     decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.2),
+                                      color: brightness == Brightness.light ? Colors.white.withOpacity(0.2) : null,
                                       shape: BoxShape.circle,
                                     ),
                                   ),
@@ -518,12 +518,12 @@ class _UserPageState extends State<UserPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
-                      children: const [
+                      children:  [
                         LogoandSpinner(
-                          imageAssets: 'assets/images/saatkulesi.png',
+                          imageAssets: brightness == Brightness.light ? 'assets/images/saatkulesi.png' : 'assets/images/saatkulesi_dark1.png',
                           reverse: true,
                           arcColor: Colors.blue,
-                          spinSpeed: Duration(milliseconds: 500),
+                          spinSpeed:const Duration(milliseconds: 500),
                         )
                       ],
                     ),

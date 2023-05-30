@@ -21,7 +21,7 @@ class _VideoPageState extends State<VideoPage> {
     flickManager = FlickManager(
       
       videoPlayerController:
-          VideoPlayerController.asset("assets/video.mp4"),
+          VideoPlayerController.asset("assets/video3.mp4"),
     );
   }
 

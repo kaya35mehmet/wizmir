@@ -20,8 +20,8 @@ Future<List<Locations>> getdetail() async {
   final response = await http.get(url);
   if (response.statusCode == 200) {
     Iterable res = json.decode(response.body);
-
-    return res.map((e) => Locations.fromJsonall(e)).toList();
+    var list = res.map((e) => Locations.fromJsonall(e)).toList();
+    return list;
   } else {
     throw Exception('Failed');
   }
@@ -84,18 +84,21 @@ class Locations {
   String? aciklama;
   bool baslatildi;
   String lokasyon;
+  int sarj;
 
-  Locations(
-      {required this.id,
-      this.lat,
-      this.lng,
-      required this.antenAdi,
-      required this.aktifmi,
-      required this.mylocation,
-      required this.kullanicisayisi,
-      this.aciklama,
-      required this.lokasyon,
-      required this.baslatildi});
+  Locations({
+    required this.id,
+    this.lat,
+    this.lng,
+    required this.antenAdi,
+    required this.aktifmi,
+    required this.mylocation,
+    required this.kullanicisayisi,
+    this.aciklama,
+    required this.lokasyon,
+    required this.baslatildi,
+    required this.sarj,
+  });
 
   Locations.copyWith(Locations item, String desc)
       : id = item.id,
@@ -107,6 +110,7 @@ class Locations {
         lokasyon = item.lokasyon,
         kullanicisayisi = item.kullanicisayisi,
         aciklama = desc,
+        sarj = item.sarj,
         baslatildi = item.baslatildi;
 
   Locations.copyWithwork(Locations item, bool baslat)
@@ -118,6 +122,7 @@ class Locations {
         mylocation = item.mylocation,
         kullanicisayisi = item.kullanicisayisi,
         aciklama = item.aciklama,
+        sarj = item.sarj,
         lokasyon = item.lokasyon,
         baslatildi = baslat;
 
@@ -133,6 +138,7 @@ class Locations {
       aciklama: json["Aciklama"],
       baslatildi: json["calisma"] != null ? true : false,
       lokasyon: json["Lokasyon"],
+      sarj: int.parse(json["Sarj"]),
     );
   }
 
@@ -146,6 +152,7 @@ class Locations {
       aciklama: json["Aciklama"],
       baslatildi: json["calisma"] != null ? true : false,
       lokasyon: json["Lokasyon"],
+      sarj: int.parse(json["Sarj"]),
     );
   }
 }

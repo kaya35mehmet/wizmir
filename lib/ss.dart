@@ -139,8 +139,8 @@ class _SecondClassState extends State<SecondClass>
                 child: AnimatedContainer(
                   curve: Curves.fastLinearToSlowEaseIn,
                   duration: const Duration(seconds: 2),
-                  height: _value ? 50 : 200,
-                  width: _value ? 50 : 200,
+                  height: _value ? 250 : 250,
+                  width: _value ? 250 : 250,
                   decoration: BoxDecoration(
                     boxShadow: const [
                       BoxShadow(
@@ -155,8 +155,8 @@ class _SecondClassState extends State<SecondClass>
                     child: Column(
                       children: [
                         Container(
-                          width: 100,
-                          height: 100,
+                          width: 80,
+                          height: 80,
                           decoration: BoxDecoration(
                               color: Colors.white.withOpacity(.5),
                               shape: BoxShape.circle),
@@ -192,16 +192,18 @@ class _SecondClassState extends State<SecondClass>
                         SlideTransition(
                           position: _offsetAnimation2,
                           child: const Padding(
-                            padding: EdgeInsets.all(8.0),
+                            padding: EdgeInsets.all(18.0),
                             child: Text(
-                              "WİZMİRNET",
+                              "ÜCRETSİZ VE ENGELSİZ İNTERNET",
+                              textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 28,
+                                  fontSize: 22,
                                   color: Colors.white,
                                   fontWeight: FontWeight.w700),
                             ),
                           ),
                         ),
+                       
                       ],
                     ),
                   ),

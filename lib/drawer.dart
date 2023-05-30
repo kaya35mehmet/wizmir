@@ -12,6 +12,7 @@ import 'package:wizmir/locationspage.dart';
 import 'package:wizmir/opportunity.dart';
 import 'package:wizmir/report.dart';
 import 'package:wizmir/speedtest.dart';
+import 'package:wizmir/statuspage.dart';
 import 'package:wizmir/updateprofile.dart';
 import 'package:wizmir/userpage.dart';
 import 'package:wizmir/video.dart';
@@ -329,6 +330,7 @@ class NavigationDrawer extends StatelessWidget {
                           MaterialPageRoute(
                             builder: (context) => ReportView(
                               islogin: islogin,
+                              isadmin: isadmin,
                             ),
                           ),
                         );
@@ -397,6 +399,36 @@ class NavigationDrawer extends StatelessWidget {
                             color: Colors.white30,
                           )
                         : const Center(),
+                         isadmin
+                        ? ListTile(
+                            dense: true,
+                            visualDensity: const VisualDensity(
+                                horizontal: 0, vertical: -4),
+                            leading: const Icon(
+                              Icons.grain,
+                              color: Colors.white,
+                            ),
+                            title: Text(
+                              "status".tr(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const StatusPage(),
+                                ),
+                              );
+                            },
+                          )
+                        : const Center(),
+                         isadmin
+                        ? const Divider(
+                            color: Colors.white30,
+                          )
+                        : const Center(),
                     isadmin || userview
                         ? ListTile(
                             dense: true,
@@ -418,6 +450,7 @@ class NavigationDrawer extends StatelessWidget {
                             },
                           )
                         : const Center(),
+                    
                     isadmin
                         ? const Divider(
                             color: Colors.white30,

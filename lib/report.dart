@@ -16,9 +16,11 @@ import 'package:wizmir/models/reports.dart';
 import 'package:wizmir/transitions.dart';
 
 class ReportView extends StatefulWidget {
+  final bool isadmin;
   final bool islogin;
   final Locations? locations;
-  const ReportView({Key? key, required this.islogin, this.locations})
+  const ReportView(
+      {Key? key, required this.islogin, this.locations, required this.isadmin})
       : super(key: key);
 
   @override
@@ -32,6 +34,8 @@ class _ReportViewState extends State<ReportView> {
   String? phonenumber;
   TextEditingController cnt = TextEditingController();
   TextEditingController desccnt = TextEditingController();
+  TextEditingController muhtarcnt = TextEditingController();
+
   String problem = "";
 
   List<Problems> list = [];
@@ -60,7 +64,7 @@ class _ReportViewState extends State<ReportView> {
   @override
   Widget build(BuildContext context) {
     var brightness = SchedulerBinding.instance.window.platformBrightness;
-     final double shortestSide = MediaQuery.of(context).size.shortestSide;
+    final double shortestSide = MediaQuery.of(context).size.shortestSide;
     final bool mobilelayout = 600 < shortestSide;
     return Scaffold(
       appBar: AppBar(
@@ -69,16 +73,16 @@ class _ReportViewState extends State<ReportView> {
         ),
         centerTitle: true,
         flexibleSpace: Padding(
-            padding: EdgeInsets.only(
-              left: mobilelayout ? 240 : 70.0,
-              right: mobilelayout ? 240 : 70),
-            child: SafeArea(
-              child: Image.asset(
-                brightness == Brightness.light ? "assets/images/1.png" : "assets/images/2.png",
-                fit: BoxFit.cover,
-              ),
+          padding: EdgeInsets.only(
+              left: mobilelayout ? 240 : 70.0, right: mobilelayout ? 240 : 70),
+          child: SafeArea(
+            child: Image.asset(
+              brightness == Brightness.light
+                  ? "assets/images/1.png"
+                  : "assets/images/2.png",
             ),
           ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -209,7 +213,9 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-                                problem == "Other" || problem == "Diğer" || problem == "öneri"
+                                problem == "Other" ||
+                                        problem == "Diğer" ||
+                                        problem == "öneri"
                                     ? TextField(
                                         controller: desccnt,
                                         minLines: 4,
@@ -235,7 +241,6 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 10,
                                 ),
-
                                 !widget.islogin
                                     ? InternationalPhoneNumberInput(
                                         searchBoxDecoration: InputDecoration(
@@ -338,6 +343,15 @@ class _ReportViewState extends State<ReportView> {
                                 const SizedBox(
                                   height: 20,
                                 ),
+                                TextField(
+                                  controller: muhtarcnt,
+                                  minLines: 5,
+                                  maxLines: 10,
+                                  decoration:  InputDecoration(
+                                    border: const OutlineInputBorder(),
+                                    labelText: 'whatsproblem'.tr(),
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -349,6 +363,9 @@ class _ReportViewState extends State<ReportView> {
                           left: 8.0, right: 8, bottom: 30),
                       child: ElevatedButton(
                         onPressed: () {
+                          if(muhtarcnt.text != "") {
+                            problem =  muhtarcnt.text;
+                          }
                           sendreport(
                                   phonenumber,
                                   problem,
@@ -376,13 +393,15 @@ class _ReportViewState extends State<ReportView> {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     LogoandSpinner(
-                  imageAssets: 'assets/images/saatkulesi.png',
-                  reverse: true,
-                  arcColor: Colors.blue,
-                  spinSpeed: Duration(milliseconds: 500),
-                )
+                      imageAssets: brightness == Brightness.light
+                          ? 'assets/images/saatkulesi.png'
+                          : 'assets/images/saatkulesi_dark1.png',
+                      reverse: true,
+                      arcColor: Colors.blue,
+                      spinSpeed: const Duration(milliseconds: 500),
+                    )
                   ],
                 );
               }
