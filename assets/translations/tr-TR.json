@@ -9,6 +9,7 @@
     "faq": "Sıkça Sorulan Sorular",
     "cancel": "İptal",
     "reportaproblem": "Sorun/Öneri Bildir",
+    "reportdisaster": "Afet Bildir",
     "speedtest": "Hız Testi",
     "locations": "Lokasyonlar",
     "version": "Versiyon",
@@ -120,5 +121,9 @@
     "TotalUpload":"Toplam Upload",
     "TotalDownload":"Toplam Download",
     "LastCron":"Son Cron",
-    "NumberofLocations":"Lokasyon Sayısı"
+    "NumberofLocations":"Lokasyon Sayısı",
+    "totaldestroyedbuilding" : "Yıkılan Bina Sayısı",
+    "damagedbuildingtotal":"Hasarlı Bina Sayısı",
+    "totalinjured":"Yaralı Sayısı",
+    "totaldeath":"Vefat Sayısı"
 }

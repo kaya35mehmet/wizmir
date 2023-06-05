@@ -9,6 +9,7 @@
     "faq":"Frequently Asked Questions",
     "cancel" : "Cancel",
     "reportaproblem":"Report/Suggestion",
+    "reportdisaster":"Report Disaster",
     "speedtest":"Speed Test",
     "locations":"Locations",
     "version":"Version",
@@ -120,5 +121,9 @@
     "TotalUpload":"Total Upload",
     "TotalDownload":"Total Download",
     "LastCron":"Last Cron",
-    "NumberofLocations":"Number of Locations"
+    "NumberofLocations":"Number of Locations",
+    "totaldestroyedbuilding" : "Total Destroyed Building",
+    "damagedbuildingtotal":"Total Damaged Building",
+    "totalinjured":"Total Injured",
+    "totaldeath":"Total Death"
 }

@@ -11,6 +11,7 @@ import 'package:wizmir/faqview.dart';
 import 'package:wizmir/locationspage.dart';
 import 'package:wizmir/opportunity.dart';
 import 'package:wizmir/report.dart';
+import 'package:wizmir/reportdisaster.dart';
 import 'package:wizmir/speedtest.dart';
 import 'package:wizmir/statuspage.dart';
 import 'package:wizmir/updateprofile.dart';
@@ -336,6 +337,7 @@ class NavigationDrawer extends StatelessWidget {
                         );
                       },
                     ),
+                    
                     const Divider(
                       color: Colors.white30,
                     ),
@@ -424,11 +426,41 @@ class NavigationDrawer extends StatelessWidget {
                             },
                           )
                         : const Center(),
+                        isadmin ? const Divider(
+                      color: Colors.white30,
+                    ): const Center(),
+                    isadmin ? ListTile(
+                      dense: true,
+                      visualDensity:
+                          const VisualDensity(horizontal: 0, vertical: -4),
+                      leading: const Icon(
+                        Icons.warning,
+                        color: Colors.white,
+                      ),
+                      title: Text(
+                        "reportdisaster".tr(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ReportDisasterView(
+                              islogin: islogin,
+                              isadmin: isadmin,
+                            ),
+                          ),
+                        );
+                      },
+                    ): const Center(),
                          isadmin
                         ? const Divider(
                             color: Colors.white30,
                           )
                         : const Center(),
+                        
                     isadmin || userview
                         ? ListTile(
                             dense: true,
